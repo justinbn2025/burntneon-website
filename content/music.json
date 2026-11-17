@@ -10,8 +10,6 @@
     ]},
     { "name": "Production and mixing", "tracks": [
       { "title": "Sleepwalking", "artist": "", "role": "", "src": "sleepwalking.mp3" },
-      { "title": "Lonely Again", "artist": "", "role": "", "src": "lonely-again.mp3" },
-      { "title": "Dancing with the Enemy", "artist": "", "role": "", "src": "dancing-with-the-enemy.mp3" },
       { "title": "Shifted (remix)", "artist": "", "role": "", "src": "shifted-remix.mp3" },
       { "title": "Turn Up the Music (instrumental)", "artist": "", "role": "", "src": "turn-up-the-music-instrumental.mp3" }
     ]}
