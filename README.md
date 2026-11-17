@@ -47,6 +47,9 @@ Examples:
   in `"src"`, or paste a full `https://` link to a file hosted elsewhere.
 - **Add a podcast before/after:** fill in `title`, `note`, `before` and `after`.
   The two files must be the same length and start at the same moment.
+  Only the first sample shows while `"show_more_samples": false` in
+  `podcasts.json`; set it to `true` to bring back the "More examples" section
+  for samples 2 and up.
 
 ### Placeholders
 

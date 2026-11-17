@@ -506,7 +506,11 @@ def podcasts():
     body = hero("podcasts", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#packages"),
                 first + '<p class="hint">%s</p>' % t(PAGES["shared"]["sample_hint"]),
                 "", "Background: your editing screen with a podcast waveform, headphones in frame")
-    more = "".join(ab_player(s, i) for i, s in enumerate(samples[1:], 2))
+    # "show_more_samples": false in podcasts.json hides the "More examples" section
+    # (and stops the build asking for those samples) until it is switched back on.
+    more = ""
+    if PODCASTS.get("show_more_samples", True):
+        more = "".join(ab_player(s, i) for i, s in enumerate(samples[1:], 2))
     if more:
         m = p["more_samples"]
         body += section(heading(t(m["label"]), t(m["heading"])) + '<div class="grid ab-grid">%s</div>' % more, "glow-tr")

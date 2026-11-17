@@ -2,6 +2,8 @@
   "turnaround_days": "",
   "revision_rounds": "",
 
+  "show_more_samples": false,
+
   "samples": [
     {
       "title": "Interview cleanup",
