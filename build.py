@@ -514,9 +514,13 @@ def podcasts():
     if more:
         m = p["more_samples"]
         body += section(heading(t(m["label"]), t(m["heading"])) + '<div class="grid ab-grid">%s</div>' % more, "glow-tr")
+    # Section backgrounds alternate dots / glow. The banner is dotted, so whichever section
+    # follows it takes the glow: "More examples" when it is shown, otherwise the steps.
+    look_steps, look_packages = (("band-dots band-line", "glow-bl band-line") if more
+                                 else ("glow-tr", "band-dots band-line"))
     st = p["steps"]
     body += section(heading(t(st["label"]), t(st["heading"])) + steps([(t(i["title"]), t(i["text"])) for i in st["items"]]),
-                    "band-dots band-line")
+                    look_steps)
     pk = p["packages"]
     packs = ""
     for pack in PODCASTS["packages"]:
@@ -529,7 +533,7 @@ def podcasts():
                      items, "" if pack.get("highlight") else " btn-ghost", mailto("Podcast: " + pack["name"]),
                      t(pk["button"]), e(pack["name"])))
     body += section(heading(t(pk["label"]), t(pk["heading"])) + '<div class="grid packs">%s</div>' % packs
-                    + '<p class="aside">%s</p>' % t(pk["note"]), "glow-bl band-line", "packages")
+                    + '<p class="aside">%s</p>' % t(pk["note"]), look_packages, "packages")
     q = p["questions"]
     body += section(heading(t(q["label"]), t(q["heading"])) + '<div class="grid faq">%s</div>' % "".join(
         "<div><h3>%s</h3><p>%s</p></div>" % (e(x["q"]), e(x["a"])) for x in PODCASTS["questions"]), "band-line")
