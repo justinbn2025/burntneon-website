@@ -45,14 +45,17 @@
     }, { rootMargin: '0px 0px -8% 0px' });
     each('.band > .wrap', function (el) { el.classList.add('reveal'); seen.observe(el); });
   }
-  /* The dot texture pulses once when a dotted section comes into view. */
+  /* The dot texture ripples once when a dotted section comes into view.
+     Only the first two dotted sections on a page do this (the banner and the next one);
+     any after that keep the still texture. */
   if (!calm && 'IntersectionObserver' in window) {
     var pulse = new IntersectionObserver(function (entries) {
       entries.forEach(function (en) {
         if (en.isIntersecting) { en.target.classList.add('pulse'); pulse.unobserve(en.target); }
       });
     }, { threshold: 0.35 });
-    each('.hero, .band-dots', function (el) { pulse.observe(el); });
+    Array.prototype.slice.call(document.querySelectorAll('.hero, .band-dots'), 0, 2)
+      .forEach(function (el) { pulse.observe(el); });
   }
   /* Background video: a visible pause button, and it starts paused for visitors who ask for less motion. */
   each('.hero-pause', function (b) {
