@@ -269,7 +269,8 @@ def ab_player(sample, n):
             % ("" if ready else " slot", name, data, title, note, name, off, PLAY, off, off, name, off))
 
 
-def quotes(page, eyebrow, look="band-dots"):
+def quotes(page, eyebrow, look="band-dots", reviews_line=""):
+    """Client quotes for one page. reviews_line is that page's own line under the quotes, if it has one."""
     items = [q for q in QUOTES if page in q.get("pages", [])]
     filled = [q for q in items if q.get("quote")]
     if len(filled) < len(items):
@@ -282,11 +283,7 @@ def quotes(page, eyebrow, look="band-dots"):
         % (e(q["quote"]) if q.get("quote") else '<span class="todo">[client quote]</span>',
            e(", ".join(x for x in (q.get("name"), q.get("role")) if x)) or '<span class="todo">[name, role or project]</span>')
         for q in show)
-    line = ""
-    if page != "film" and (SITE.get("review_count") or SHOW):
-        line = '<p class="reviews">%s</p>' % t(PAGES["shared"]["reviews_line"])
-    elif page != "film":
-        missing("number of reviews")
+    line = '<p class="reviews">%s</p>' % t(reviews_line) if reviews_line else ""
     return section(heading(eyebrow) + '<div class="grid quotes">%s</div>%s' % (figs, line), look)
 
 
@@ -503,7 +500,7 @@ def music():
                     % (heading(t(th["label"]), t(th["heading"])), t(th["text"]), mailto(th.get("email_subject", "")), t(th["button"]),
                        image("theater.jpg", "A score on the music stand", "wide-img", "Photo: a score on the stand, or recording a cast number")),
                     "band-line")
-    body += quotes("music", t(p["quotes_label"]), "glow-tr band-line")   # see the note in film()
+    body += quotes("music", t(p["quotes_label"]), "glow-tr band-line", p.get("reviews_line", ""))   # see the note in film()
     body += contact(p["contact"])
     return layout("music", p["browser_title"], p["search_description"], body)
 
