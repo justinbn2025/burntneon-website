@@ -131,7 +131,16 @@ def logo():
 
 
 def layout(page, title, description, body):
-    nav = "".join('<li><a href="%s"%s>%s</a></li>' % (href, ' aria-current="page"' if key == page else "", e(PAGES["shared"]["menu"][key]))
+    short = PAGES["shared"].get("menu_on_phones", {})
+
+    def label(key):
+        """Menu wording, with a shorter version for narrow screens where one is given."""
+        full = e(PAGES["shared"]["menu"][key])
+        if not short.get(key):
+            return full
+        return '<span class="nav-wide">%s</span><span class="nav-narrow">%s</span>' % (full, e(short[key]))
+
+    nav = "".join('<li><a href="%s"%s>%s</a></li>' % (href, ' aria-current="page"' if key == page else "", label(key))
                   for href, key in NAV)
     links = SITE["links"]
     foot = "".join('<li><a href="%s" rel="noopener">%s</a></li>' % (e(links[k]), label)
@@ -173,7 +182,8 @@ def layout(page, title, description, body):
 <header class="site-header">
 <div class="wrap nav-row">
 {logo}
-<nav aria-label="Main"><ul class="nav-list" role="list">{nav}<li><a class="btn btn-small" href="{mail}">{menu_button}</a></li></ul></nav>
+<nav aria-label="Main"><ul class="nav-list" role="list">{nav}</ul></nav>
+<a class="btn btn-small nav-cta" href="{mail}">{menu_button}</a>
 </div>
 <div class="wave" aria-hidden="true"><div class="wave-base">{wave}</div><div class="wave-fill">{wave}</div><i class="wave-head"></i></div>
 </header>

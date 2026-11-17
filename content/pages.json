@@ -9,6 +9,7 @@
 
   "shared": {
     "menu": { "film": "Film & Games", "music": "Music", "podcasts": "Podcasts", "about": "About" },
+    "menu_on_phones": { "film": "Film" },
     "menu_button": "Get in touch",
     "skip_link": "Skip to content",
     "reviews_line": "5.0 average across {review_count} client reviews on Fiverr and SoundBetter.",
