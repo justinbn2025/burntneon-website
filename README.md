@@ -21,9 +21,9 @@ scratch each time and your changes there are lost.
 | Headlines, paragraphs, button and menu text | `content/pages.json`    |
 | Film credits, posters, clip links           | `content/credits.json`  |
 | Client quotes                               | `content/quotes.json`   |
-| Music samples, singing reel, "from" prices  | `content/music.json`    |
+| Music samples, reels, prices, review count  | `content/music.json`    |
 | Podcast samples, packages, prices, questions| `content/podcasts.json` |
-| Email, links, reels, reply time, review count | `content/site.json`   |
+| Email, links, reels, reply time             | `content/site.json`     |
 
 Then run `python3 build.py`, look at the result, commit and push. The push
 publishes it (see "Publishing").
@@ -32,7 +32,7 @@ In `pages.json`:
 
 - `*asterisks*` around words colour them orange (headlines).
 - `{reply_days}`, `{turnaround_days}`, `{revision_rounds}` and `{review_count}` are
-  filled in from `site.json` and `podcasts.json`.
+  filled in from `site.json`, `music.json` and `podcasts.json`.
 - A part in `[square brackets]` is left out of the page while the number it needs
   is still empty (once placeholders are switched off).
 - If an edit breaks the file, the build stops and names the line.

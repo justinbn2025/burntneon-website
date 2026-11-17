@@ -339,7 +339,7 @@ def hero(page, eyebrow, h1, lead, buttons, side, bg_alt, bg_label):
 
 def numbers():
     """The values that {placeholders} in pages.json can use."""
-    return {"reply_days": SITE.get("reply_days"), "review_count": SITE.get("review_count"),
+    return {"reply_days": SITE.get("reply_days"), "review_count": MUSIC.get("review_count"),
             "turnaround_days": PODCASTS.get("turnaround_days"), "revision_rounds": PODCASTS.get("revision_rounds")}
 
 

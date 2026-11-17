@@ -2,6 +2,8 @@
   "reel": "musical-theater-reel.mp3",
   "show_banner_reel": false,
 
+  "review_count": "58",
+
   "styles": [
     { "name": "Session singing", "tracks": [
       { "title": "Musical Theater Singing - Reel", "artist": "", "role": "Singing and VO", "src": "musical-theater-reel.mp3" },

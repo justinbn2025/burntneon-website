@@ -2,7 +2,7 @@
   "_how_to_edit": [
     "Every word on the site that is not a credit, quote, sample, price or link lives here.",
     "Put *asterisks* around words to colour them orange (headlines only).",
-    "{reply_days}, {turnaround_days}, {revision_rounds} and {review_count} are filled in from site.json and podcasts.json.",
+    "{reply_days}, {turnaround_days}, {revision_rounds} and {review_count} are filled in from site.json, music.json and podcasts.json.",
     "Text inside [square brackets] is dropped from the page when the number it needs has not been filled in yet (once placeholders are switched off).",
     "Keep the quotation marks and commas around each line as they are. If the build fails after an edit, it names the line."
   ],
