@@ -1,0 +1,184 @@
+{
+  "_how_to_edit": [
+    "Every word on the site that is not a credit, quote, sample, price or link lives here.",
+    "Put *asterisks* around words to colour them orange (headlines only).",
+    "{reply_days}, {turnaround_days}, {revision_rounds} and {review_count} are filled in from site.json and podcasts.json.",
+    "Text inside [square brackets] is dropped from the page when the number it needs has not been filled in yet (once placeholders are switched off).",
+    "Keep the quotation marks and commas around each line as they are. If the build fails after an edit, it names the line."
+  ],
+
+  "shared": {
+    "menu": { "film": "Film & Games", "music": "Music", "podcasts": "Podcasts", "about": "About" },
+    "menu_button": "Get in touch",
+    "skip_link": "Skip to content",
+    "reviews_line": "5.0 average across {review_count} client reviews on Fiverr and SoundBetter.",
+    "sample_hint": "Press play, then switch between Before and After while it plays. Headphones show it best."
+  },
+
+  "home": {
+    "browser_title": "Burnt Neon Productions: sound for film, music and podcasts",
+    "search_description": "Sound editing and mixing, session vocals, and podcast post-production in Los Angeles.",
+    "banner": {
+      "label": "Los Angeles audio studio",
+      "headline": "Sound for *film*, *music* and *podcasts*.",
+      "text": "Sound editing and mixing, session vocals, and podcast post-production. One engineer, start to finish.",
+      "button": "Hear the work",
+      "second_button": "Get in touch",
+      "video_label": "Featured reel"
+    },
+    "paths": {
+      "label": "What do you need?",
+      "heading": "Pick your path.",
+      "film": { "name": "Film & games", "text": "Sound design, dialogue editing, and stereo and 5.1 mixing that serve the story.", "link": "See film credits" },
+      "music": { "name": "Music", "text": "Session vocals, production, mixing and mastering, from musical theater to modern pop.", "link": "Hear the music" },
+      "podcasts": { "name": "Podcasts", "text": "Every episode edited, mixed and mastered, so you sound clear, even and close.", "link": "Hear a before and after" }
+    },
+    "credits": { "label": "Selected credits", "heading": "Recent film work.", "link": "All credits and reel" },
+    "quotes_label": "What clients say",
+    "about": {
+      "label": "About",
+      "heading": "Hi, I’m Justin.",
+      "paragraphs": [
+        "I’m a sound editor, mixer and session singer in Los Angeles. I started Burnt Neon in 2025 to do the work I care about most: making stories and songs sound the way their makers hear them.",
+        "On screen, I’ve been supervising sound editor and re-recording mixer on independent films. On stage, I’ve played Melchior in Spring Awakening and Jamie in The Last Five Years. In the studio, I sing, produce and mix across pop, rock, R&B and musical theater."
+      ],
+      "button": "Tell me about your project"
+    },
+    "contact": {
+      "heading": "Have a project in mind?",
+      "text": "Tell me what you’re making and when you need it.[ I reply within {reply_days} business days.]",
+      "button": "Get in touch"
+    }
+  },
+
+  "film": {
+    "browser_title": "Film and game sound: Burnt Neon Productions",
+    "search_description": "Sound design, dialogue editing and mixing for independent films, animation and game trailers.",
+    "banner": {
+      "label": "Post-production sound for film, animation and games",
+      "headline": "Sound that *serves the story*.",
+      "text": "Sound design, dialogue editing and mixing for independent films, animation and game trailers. One person on your sound from first spot to final delivery.",
+      "button": "Watch the work",
+      "second_button": "Tell me about your film",
+      "video_label": "Sound reel"
+    },
+    "credits": { "label": "Credits", "heading": "Recent work.", "link": "Full credits on IMDb" },
+    "services": {
+      "label": "Services",
+      "heading": "What I do on a film.",
+      "items": [
+        { "title": "Sound design and foley", "text": "I build the sound world your picture needs, from library effects to custom foley recorded for the scene." },
+        { "title": "Dialogue editing", "text": "The best takes from every microphone, blended so the cuts disappear. Room tone smoothed, levels evened, space added where the scene calls for it." },
+        { "title": "Stereo and 5.1 mixing", "text": "Dialogue, music and effects balanced so nothing fights. Delivered at the loudness your festival or platform specifies, without losing impact." }
+      ]
+    },
+    "steps": {
+      "label": "How it works",
+      "heading": "From picture lock to delivery.",
+      "items": [
+        { "title": "Spotting", "text": "We watch the cut together and agree what each scene needs." },
+        { "title": "Edit and design", "text": "Dialogue cleaned and cut. Effects, ambiences and foley built." },
+        { "title": "Mix", "text": "Everything balanced to picture. You review and send notes." },
+        { "title": "Deliver", "text": "Final mixes in the formats on your delivery list." }
+      ]
+    },
+    "quotes_label": "What filmmakers say",
+    "contact": {
+      "heading": "Have a cut that needs sound?",
+      "text": "Send me the film, your delivery list and your deadline.[ I’ll reply with a quote and a schedule within {reply_days} business days.]",
+      "button": "Tell me about your film",
+      "email_subject": "Film sound"
+    }
+  },
+
+  "music": {
+    "browser_title": "Session vocals, production and mixing: Burnt Neon Productions",
+    "search_description": "Session singing, music production, mixing and mastering, from musical theater to modern pop.",
+    "banner": {
+      "label": "Session vocals, production, mixing and mastering",
+      "headline": "The voice and the mix that *finish the song*.",
+      "text": "A tenor for musical theater, pop and rock who also produces and mixes. Hire me for one part of your track or all of it.",
+      "button": "Hear the work",
+      "second_button": "Send me your song",
+      "email_subject": "Session vocals"
+    },
+    "reel": { "title": "Singing reel", "text": "Ninety seconds across musical theater, pop and rock." },
+    "listen": {
+      "label": "Listen",
+      "heading": "Work by style.",
+      "spotify_line": "My own artist project, JVSTN., is on",
+      "spotify_link": "Spotify"
+    },
+    "services": {
+      "label": "Services",
+      "heading": "Hire one part, or all four.",
+      "note": "Backing vocals are quoted by arrangement. Bundle rates for 3 or more songs booked together."
+    },
+    "steps": {
+      "label": "How a vocal session works",
+      "heading": "Three steps, from anywhere.",
+      "items": [
+        { "title": "Send your song", "text": "The instrumental, a guide vocal, lyrics or sheet music, and the tempo." },
+        { "title": "I record", "text": "First pass within 5 days. Join live over Zoom if you’d like to direct." },
+        { "title": "Revise and deliver", "text": "Two rounds of revisions included. WAV files at the sample rate and bit depth you ask for." }
+      ]
+    },
+    "theater": {
+      "label": "For musical theater writers",
+      "heading": "Demos and workshop albums, start to finish.",
+      "text": "Writing a musical? I sing, bring in the rest of the cast, and record, edit and mix the whole set, so your score sounds like a show when you send it out.",
+      "button": "Ask about your score",
+      "email_subject": "Musical theater demo"
+    },
+    "quotes_label": "What clients say",
+    "contact": {
+      "heading": "Have a song that needs a voice?",
+      "text": "Send me the track and what you’re hearing for it.[ I’ll reply with a price and a delivery date within {reply_days} business days.]",
+      "button": "Send me your song",
+      "email_subject": "Session vocals"
+    }
+  },
+
+  "podcasts": {
+    "browser_title": "Podcast editing, mixing and mastering: Burnt Neon Productions",
+    "search_description": "Podcast editing, mixing and mastering. Hear a before and after, then get a free sample of your own show.",
+    "banner": {
+      "label": "Podcast editing, mixing and mastering",
+      "headline": "Sound *as good* as what you’re saying.",
+      "text": "Send me your recording. It comes back clear, even and close-sounding, ready to publish.",
+      "button": "See packages",
+      "second_button": "Get a free sample",
+      "email_subject": "Free podcast sample"
+    },
+    "more_samples": { "label": "More examples", "heading": "Different problems, same result." },
+    "steps": {
+      "label": "How it works",
+      "heading": "Three steps, every episode.",
+      "items": [
+        { "title": "Send your recording", "text": "Upload the raw file, or your own edit, to a shared folder. Audio or video shows both work." },
+        { "title": "I edit, mix and master", "text": "Room echo and noise reduced, levels evened out, harsh “s” sounds tamed, intro and outro added." },
+        { "title": "Publish", "text": "A finished file comes back[ within {turnaround_days} days], ready to upload. For video shows it’s the same length as your original, so it drops straight into your editor." }
+      ]
+    },
+    "packages": {
+      "label": "Packages",
+      "heading": "Simple monthly pricing.",
+      "note": "Longer or more frequent shows are quoted on request.",
+      "button": "Ask about"
+    },
+    "questions": { "label": "Questions", "heading": "Before you ask." },
+    "contact": {
+      "heading": "Hear your own show, mixed.",
+      "text": "Send me a recent episode and I’ll mix a free 30-second sample, so you can hear the difference on your own voice before deciding anything.",
+      "button": "Get a free sample",
+      "email_subject": "Free podcast sample"
+    }
+  },
+
+  "not_found": {
+    "browser_title": "Page not found: Burnt Neon Productions",
+    "heading": "That page isn’t here.",
+    "text": "It may have moved when the site was rebuilt.",
+    "button": "Go to the home page"
+  }
+}

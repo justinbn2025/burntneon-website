@@ -6,8 +6,8 @@
 Reads content/*.json and static/, writes the finished site to _site/.
 Standard library only: nothing to install.
 
-What changes often lives in content/*.json. Page wording that rarely
-changes lives in the page functions below.
+Everything you read on the site lives in content/*.json. Page wording is in
+content/pages.json; credits, quotes, samples, prices and links are in the others.
 """
 import html
 import json
@@ -24,8 +24,14 @@ STATIC = ROOT / "static"
 
 
 def load(name):
-    with open(ROOT / "content" / (name + ".json"), encoding="utf-8") as f:
-        return json.load(f)
+    path = ROOT / "content" / (name + ".json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except json.JSONDecodeError as err:
+        sys.exit("Could not read content/%s.json: %s at line %d, column %d.\n"
+                 "Usually a missing comma or quotation mark on that line or the one above."
+                 % (name, err.msg, err.lineno, err.colno))
 
 
 SITE = load("site")
@@ -33,6 +39,7 @@ CREDITS = load("credits")
 QUOTES = load("quotes")
 MUSIC = load("music")
 PODCASTS = load("podcasts")
+PAGES = load("pages")
 
 def _version():
     """Changes whenever the stylesheet or script changes, so browsers never show a stale copy."""
@@ -110,13 +117,12 @@ def wave_defs():
 
 WAVE_USE = '<svg viewBox="0 0 1280 40" preserveAspectRatio="none"><use href="#wv"/></svg>'
 
-NAV = [("film.html", "Film &amp; Games", "film"), ("music.html", "Music", "music"),
-       ("podcasts.html", "Podcasts", "podcasts"), ("index.html#about", "About", "about")]
+NAV = [("film.html", "film"), ("music.html", "music"), ("podcasts.html", "podcasts"), ("index.html#about", "about")]
 
 
 def layout(page, title, description, body):
-    nav = "".join('<li><a href="%s"%s>%s</a></li>' % (href, ' aria-current="page"' if key == page else "", label)
-                  for href, label, key in NAV)
+    nav = "".join('<li><a href="%s"%s>%s</a></li>' % (href, ' aria-current="page"' if key == page else "", e(PAGES["shared"]["menu"][key]))
+                  for href, key in NAV)
     links = SITE["links"]
     foot = "".join('<li><a href="%s" rel="noopener">%s</a></li>' % (e(links[k]), label)
                    for k, label in (("instagram", "Instagram"), ("imdb", "IMDb"), ("linkedin", "LinkedIn"))
@@ -152,12 +158,12 @@ def layout(page, title, description, body):
 <script src="js/site.js?v={ver}" defer></script>
 </head>
 <body class="page-{page}">
-<a class="skip" href="#main">Skip to content</a>
+<a class="skip" href="#main">{skip}</a>
 {defs}
 <header class="site-header">
 <div class="wrap nav-row">
 <a class="logo" href="index.html"><span class="logo-a">BURNT NEON</span> <span class="logo-b">PRODUCTIONS</span></a>
-<nav aria-label="Main"><ul class="nav-list" role="list">{nav}<li><a class="btn btn-small" href="{mail}">Get in touch</a></li></ul></nav>
+<nav aria-label="Main"><ul class="nav-list" role="list">{nav}<li><a class="btn btn-small" href="{mail}">{menu_button}</a></li></ul></nav>
 </div>
 <div class="wave" aria-hidden="true"><div class="wave-base">{wave}</div><div class="wave-fill">{wave}</div><i class="wave-head"></i></div>
 </header>
@@ -173,7 +179,8 @@ def layout(page, title, description, body):
 </body>
 </html>
 """.format(csp=csp, title=e(title), desc=e(description), url=SITE["url"], path=path, page=page,
-           defs=wave_defs(), ver=VERSION, nav=nav, mail=mailto(), wave=WAVE_USE, body=body,
+           defs=wave_defs(), ver=VERSION, nav=nav, skip=e(PAGES["shared"]["skip_link"]),
+           menu_button=e(PAGES["shared"]["menu_button"]), mail=mailto(), wave=WAVE_USE, body=body,
            legal=e(SITE["legal_name"]), loc=e(SITE["location"]), foot=foot)
 
 
@@ -251,15 +258,15 @@ def quotes(page, eyebrow):
         % (e(q["quote"]) if q.get("quote") else '<span class="todo">[client quote]</span>',
            e(", ".join(x for x in (q.get("name"), q.get("role")) if x)) or '<span class="todo">[name, role or project]</span>')
         for q in show)
-    count = val(SITE.get("review_count"), "number of reviews")
-    line = ('<p class="reviews">5.0 average across %s client reviews on Fiverr and SoundBetter.</p>' % count
-            if count and page != "film" else "")
+    line = ""
+    if page != "film" and (SITE.get("review_count") or SHOW):
+        line = '<p class="reviews">%s</p>' % t(PAGES["shared"]["reviews_line"])
+    elif page != "film":
+        missing("number of reviews")
     return section(heading(eyebrow) + '<div class="grid quotes">%s</div>%s' % (figs, line), "band-dots")
 
 
 def contact_band(h2, text, button, subject=""):
-    days = val(SITE.get("reply_days"), "reply time")
-    text = text.replace("{days}", days) if days else re.sub(r"\s*[^.]*\{days\}[^.]*\.", "", text)
     return ('<section class="band band-cta"><div class="wrap cta-row"><div><h2>%s</h2><p>%s</p></div>'
             '<a class="btn" href="%s">%s</a></div></section>' % (h2, text, mailto(subject), button))
 
@@ -307,19 +314,70 @@ def hero(page, eyebrow, h1, lead, buttons, side, bg_alt, bg_label):
             '%s</div></section>' % (bg, pause, "" if side else " solo", eyebrow, h1, lead, btns, side_html))
 
 
+# ---------- wording ----------
+
+def numbers():
+    """The values that {placeholders} in pages.json can use."""
+    return {"reply_days": SITE.get("reply_days"), "review_count": SITE.get("review_count"),
+            "turnaround_days": PODCASTS.get("turnaround_days"), "revision_rounds": PODCASTS.get("revision_rounds")}
+
+
+LABELS = {"reply_days": "reply time", "review_count": "number of reviews",
+          "turnaround_days": "turnaround", "revision_rounds": "number of"}
+
+
+def t(text):
+    """Wording from pages.json, made safe for the page.
+
+    *word* becomes orange, {name} is filled in from the content files, and a
+    [bracketed part] is dropped when a number it needs is still missing and
+    placeholders are switched off.
+    """
+    vals = numbers()
+
+    def optional(m):
+        inner = m.group(1)
+        for name in re.findall(r"\{(\w+)\}", inner):
+            if not vals.get(name):
+                missing(LABELS.get(name, name))
+                if not SHOW:
+                    return ""
+        return inner
+
+    def fill(m):
+        name = m.group(1)
+        if name not in vals:
+            return m.group(0)
+        if vals[name]:
+            return e(vals[name])
+        missing(LABELS.get(name, name))
+        return '<span class="todo">[' + e(LABELS.get(name, name)) + "]</span>" if SHOW else ""
+
+    text = re.sub(r"\[([^\]]*)\]", optional, str(text))
+    text = e(text)
+    text = re.sub(r"\{(\w+)\}", fill, text)
+    return re.sub(r"\*(.+?)\*", r'<span class="hi">\1</span>', text)
+
+
+def banner_buttons(b, first_href, subject=""):
+    return [(first_href, t(b["button"])), (mailto(b.get("email_subject", subject)), t(b["second_button"]))]
+
+
+def contact(c):
+    return contact_band(t(c["heading"]), t(c["text"]), t(c["button"]), c.get("email_subject", ""))
+
+
 # ---------- pages ----------
 
 def home():
-    tiles = [
-        ("film", "Film &amp; games", "Sound design, dialogue editing, and stereo and 5.1 mixing that serve the story.",
-         "film.html", "See film credits", "a still from one of your films, or a mix session on screen"),
-        ("music", "Music", "Session vocals, production, mixing and mastering, from musical theater to modern pop.",
-         "music.html", "Hear the music", "you at the mic, or the vocal booth"),
-        ("podcasts", "Podcasts", "Every episode edited, mixed and mastered, so you sound clear, even and close.",
-         "podcasts.html", "Hear a before and after", "your editing screen with a podcast waveform"),
-    ]
+    p = PAGES["home"]
+    hrefs = {"film": "film.html", "music": "music.html", "podcasts": "podcasts.html"}
+    slots = {"film": "a still from one of your films, or a mix session on screen",
+             "music": "you at the mic, or the vocal booth",
+             "podcasts": "your editing screen with a podcast waveform"}
     tile_html = ""
-    for key, name, text, href, link, slot in tiles:
+    for key in ("film", "music", "podcasts"):
+        tile = p["paths"][key]
         sample = SITE["tile_samples"].get(key)
         if not sample:
             missing("audio: short %s sample for the Home tile" % key)
@@ -327,168 +385,139 @@ def home():
                % (e(media(sample)), key, key, PLAY)) if sample else ""
         tile_html += ('<div class="tile">%s<div class="tile-panel"><div class="tile-head"><h3>%s</h3>%s</div>'
                       '<p>%s</p><a href="%s">%s &rarr;</a></div></div>'
-                      % (image("tile-%s.jpg" % key, "", "tile-img", "Photo: " + slot), name, btn, text, href, link))
-    body = hero("home", "Los Angeles audio studio",
-                'Sound for <span class="hi">film</span>, <span class="hi">music</span> and <span class="hi">podcasts</span>.',
-                "Sound editing and mixing, session vocals, and podcast post-production. One engineer, start to finish.",
-                [("#paths", "Hear the work"), (mailto(), "Get in touch")],
-                reel("home", "Featured reel", SITE["reels"].get("home"), "reel-home.jpg"),
+                      % (image("tile-%s.jpg" % key, "", "tile-img", "Photo: " + slots[key]), t(tile["name"]), btn,
+                         t(tile["text"]), hrefs[key], t(tile["link"])))
+    b = p["banner"]
+    body = hero("home", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#paths"),
+                reel("home", b["video_label"], SITE["reels"].get("home"), "reel-home.jpg"),
                 "", "Background: a muted video loop or photo of the studio")
-    body += section(heading("What do you need?", "Pick your path.") + '<div class="grid tiles">%s</div>' % tile_html,
+    body += section(heading(t(p["paths"]["label"]), t(p["paths"]["heading"])) + '<div class="grid tiles">%s</div>' % tile_html,
                     "glow-tr", "paths")
-    body += section('<div class="split-head"><div>%s</div><a href="film.html">All credits and reel &rarr;</a></div>%s'
-                    % (heading("Selected credits", "Recent film work."),
-                       credit_cards([c for c in CREDITS if c.get("on_home")])), "band-line", "work")
-    body += quotes("home", "What clients say")
-    body += section('<div class="about">%s<div class="about-text">%s<p>I&rsquo;m a sound editor, mixer and session singer in Los Angeles. '
-                    'I started Burnt Neon in 2025 to do the work I care about most: making stories and songs sound the '
-                    'way their makers hear them.</p><p>On screen, I&rsquo;ve been supervising sound editor and re-recording '
-                    'mixer on independent films. On stage, I&rsquo;ve played Melchior in Spring Awakening and Jamie in The '
-                    'Last Five Years. In the studio, I sing, produce and mix across pop, rock, R&amp;B and musical theater.</p>'
-                    '<a class="btn btn-ghost" href="%s">Tell me about your project</a></div></div>'
+    c = p["credits"]
+    body += section('<div class="split-head"><div>%s</div><a href="film.html">%s &rarr;</a></div>%s'
+                    % (heading(t(c["label"]), t(c["heading"])), t(c["link"]),
+                       credit_cards([x for x in CREDITS if x.get("on_home")])), "band-line", "work")
+    body += quotes("home", t(p["quotes_label"]))
+    a = p["about"]
+    body += section('<div class="about">%s<div class="about-text">%s%s<a class="btn btn-ghost" href="%s">%s</a></div></div>'
                     % (image("portrait.jpg", "Justin at the studio desk", "portrait", "Portrait: Justin at the desk or the mic"),
-                       heading("About", "Hi, I&rsquo;m Justin."), mailto()), "glow-tr band-line", "about")
-    body += contact_band("Have a project in mind?",
-                         "Tell me what you&rsquo;re making and when you need it. I reply within {days} business days.",
-                         "Get in touch")
-    return layout("home", "Burnt Neon Productions: sound for film, music and podcasts",
-                  "Sound editing and mixing, session vocals, and podcast post-production in Los Angeles.", body)
+                       heading(t(a["label"]), t(a["heading"])), "".join("<p>%s</p>" % t(x) for x in a["paragraphs"]),
+                       mailto(), t(a["button"])), "glow-tr band-line", "about")
+    body += contact(p["contact"])
+    return layout("home", p["browser_title"], p["search_description"], body)
 
 
 def film():
+    p = PAGES["film"]
     imdb = SITE["links"].get("imdb")
-    body = hero("film", "Post-production sound for film, animation and games",
-                'Sound that <span class="hi">serves the story</span>.',
-                "Sound design, dialogue editing and mixing for independent films, animation and game trailers. "
-                "One person on your sound from first spot to final delivery.",
-                [("#credits", "Watch the work"), (mailto("Film sound"), "Tell me about your film")],
-                reel("film", "Sound reel", SITE["reels"].get("film"), "reel-film.jpg"),
+    b = p["banner"]
+    body = hero("film", t(b["label"]), t(b["headline"]), t(b["text"]),
+                banner_buttons(b, "#credits", p["contact"].get("email_subject", "")),
+                reel("film", b["video_label"], SITE["reels"].get("film"), "reel-film.jpg"),
                 "", "Background: a darkened film still, or the mix session on screen")
+    c = p["credits"]
     body += section('<div class="split-head"><div>%s</div>%s</div>%s' % (
-        heading("Credits", "Recent work."),
-        '<a href="%s" rel="noopener">Full credits on IMDb &rarr;</a>' % e(imdb) if imdb else "",
+        heading(t(c["label"]), t(c["heading"])),
+        '<a href="%s" rel="noopener">%s &rarr;</a>' % (e(imdb), t(c["link"])) if imdb else "",
         credit_cards(CREDITS)), "glow-tr", "credits")
-    body += section(heading("Services", "What I do on a film.") + cards([
-        ("Sound design and foley", "I build the sound world your picture needs, from library effects to custom foley recorded for the scene.", ""),
-        ("Dialogue editing", "The best takes from every microphone, blended so the cuts disappear. Room tone smoothed, levels evened, space added where the scene calls for it.", ""),
-        ("Stereo and 5.1 mixing", "Dialogue, music and effects balanced so nothing fights. Delivered at the loudness your festival or platform specifies, without losing impact.", ""),
-    ]), "band-dots band-line")
-    body += section(heading("How it works", "From picture lock to delivery.") + steps([
-        ("Spotting", "We watch the cut together and agree what each scene needs."),
-        ("Edit and design", "Dialogue cleaned and cut. Effects, ambiences and foley built."),
-        ("Mix", "Everything balanced to picture. You review and send notes."),
-        ("Deliver", "Final mixes in the formats on your delivery list."),
-    ]), "glow-bl band-line")
-    body += quotes("film", "What filmmakers say")
-    body += contact_band("Have a cut that needs sound?",
-                         "Send me the film, your delivery list and your deadline. I&rsquo;ll reply with a quote and a schedule within {days} business days.",
-                         "Tell me about your film", "Film sound")
-    return layout("film", "Film and game sound: Burnt Neon Productions",
-                  "Sound design, dialogue editing and mixing for independent films, animation and game trailers.", body)
+    s = p["services"]
+    body += section(heading(t(s["label"]), t(s["heading"])) + cards([(t(i["title"]), t(i["text"]), "") for i in s["items"]]),
+                    "band-dots band-line")
+    s = p["steps"]
+    body += section(heading(t(s["label"]), t(s["heading"])) + steps([(t(i["title"]), t(i["text"])) for i in s["items"]]),
+                    "glow-bl band-line")
+    body += quotes("film", t(p["quotes_label"]))
+    body += contact(p["contact"])
+    return layout("film", p["browser_title"], p["search_description"], body)
 
 
 def music():
-    side = '<div class="reel-audio">%s</div>' % player(
-        "Singing reel", "Ninety seconds across musical theater, pop and rock.", MUSIC.get("reel"), "singing reel")
-    body = hero("music", "Session vocals, production, mixing and mastering",
-                'The voice and the mix that <span class="hi">finish the song</span>.',
-                "A tenor for musical theater, pop and rock who also produces and mixes. Hire me for one part of your track or all of it.",
-                [("#listen", "Hear the work"), (mailto("Session vocals"), "Send me your song")],
-                "", "",
-                "Background: you singing at the mic, on the right third")
+    p = PAGES["music"]
+    b = p["banner"]
+    side = '<div class="reel-audio">%s</div>' % player(t(p["reel"]["title"]), t(p["reel"]["text"]), MUSIC.get("reel"), "singing reel")
+    body = hero("music", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#listen"),
+                "", "", "Background: you singing at the mic, on the right third")
     body = body.replace('<div class="btn-row">', side + '<div class="btn-row">', 1) if side else body
     groups = ""
     for style in MUSIC["styles"]:
         rows = "".join(
-            player(val(t.get("title"), "track title"),
-                   " &middot; ".join(x for x in (val(t.get("artist"), "artist"), val(t.get("role"), "your role")) if x),
-                   t.get("src"), "%s sample" % style["name"])
-            for t in style["tracks"])
+            player(val(tr.get("title"), "track title"),
+                   " &middot; ".join(x for x in (val(tr.get("artist"), "artist"), val(tr.get("role"), "your role")) if x),
+                   tr.get("src"), "%s sample" % style["name"])
+            for tr in style["tracks"])
         if rows:
             groups += '<div class="style"><h3>%s</h3>%s</div>' % (e(style["name"]), rows)
     spotify = SITE["links"].get("spotify")
     if not spotify:
         missing("link: spotify")
-    body += section(heading("Listen", "Work by style.") + '<div class="grid styles">%s</div>' % groups
-                    + ('<p class="aside">My own artist project, JVSTN., is on <a href="%s" rel="noopener">Spotify</a>.</p>'
-                       % e(spotify) if spotify else ""), "glow-tr", "listen")
+    li = p["listen"]
+    body += section(heading(t(li["label"]), t(li["heading"])) + '<div class="grid styles">%s</div>' % groups
+                    + ('<p class="aside">%s <a href="%s" rel="noopener">%s</a>.</p>'
+                       % (t(li["spotify_line"]), e(spotify), t(li["spotify_link"])) if spotify else ""), "glow-tr", "listen")
     svc = []
     for s in MUSIC["services"]:
         if s.get("price") == "quote":
             price = "Quoted " + e(s["unit"])
         else:
-            p = val(s.get("price"), "price: " + s["name"].lower())
-            price = "From %s %s" % (p, e(s["unit"])) if p else ""
+            pr = val(s.get("price"), "price: " + s["name"].lower())
+            price = "From %s %s" % (pr, e(s["unit"])) if pr else ""
         svc.append((e(s["name"]), e(s["text"]), '<div class="price">%s</div>' % price if price else ""))
-    body += section(heading("Services", "Hire one part, or all four.") + cards(svc)
-                    + '<p class="aside">Backing vocals are quoted by arrangement. Bundle rates for 3 or more songs booked together.</p>',
+    sv = p["services"]
+    body += section(heading(t(sv["label"]), t(sv["heading"])) + cards(svc) + '<p class="aside">%s</p>' % t(sv["note"]),
                     "band-dots band-line")
-    body += section(heading("How a vocal session works", "Three steps, from anywhere.") + steps([
-        ("Send your song", "The instrumental, a guide vocal, lyrics or sheet music, and the tempo."),
-        ("I record", "First pass within 5 days. Join live over Zoom if you&rsquo;d like to direct."),
-        ("Revise and deliver", "Two rounds of revisions included. WAV files at the sample rate and bit depth you ask for."),
-    ]), "glow-bl band-line")
-    body += section('<div class="about"><div class="about-text">%s<p>Writing a musical? I sing, bring in the rest of the cast, and '
-                    'record, edit and mix the whole set, so your score sounds like a show when you send it out.</p>'
-                    '<a class="btn" href="%s">Ask about your score</a></div>%s</div>'
-                    % (heading("For musical theater writers", "Demos and workshop albums, start to finish."),
-                       mailto("Musical theater demo"),
+    st = p["steps"]
+    body += section(heading(t(st["label"]), t(st["heading"])) + steps([(t(i["title"]), t(i["text"])) for i in st["items"]]),
+                    "glow-bl band-line")
+    th = p["theater"]
+    body += section('<div class="about"><div class="about-text">%s<p>%s</p><a class="btn" href="%s">%s</a></div>%s</div>'
+                    % (heading(t(th["label"]), t(th["heading"])), t(th["text"]), mailto(th.get("email_subject", "")), t(th["button"]),
                        image("theater.jpg", "A score on the music stand", "wide-img", "Photo: a score on the stand, or recording a cast number")),
                     "band-line")
-    body += quotes("music", "What clients say")
-    body += contact_band("Have a song that needs a voice?",
-                         "Send me the track and what you&rsquo;re hearing for it. I&rsquo;ll reply with a price and a delivery date within {days} business days.",
-                         "Send me your song", "Session vocals")
-    return layout("music", "Session vocals, production and mixing: Burnt Neon Productions",
-                  "Session singing, music production, mixing and mastering, from musical theater to modern pop.", body)
+    body += quotes("music", t(p["quotes_label"]))
+    body += contact(p["contact"])
+    return layout("music", p["browser_title"], p["search_description"], body)
 
 
 def podcasts():
+    p = PAGES["podcasts"]
+    b = p["banner"]
     samples = PODCASTS["samples"]
     first = ab_player(samples[0], 1) if samples else ""
-    body = hero("podcasts", "Podcast editing, mixing and mastering",
-                'Sound <span class="hi">as good</span> as what you&rsquo;re saying.',
-                "Send me your recording. It comes back clear, even and close-sounding, ready to publish.",
-                [("#packages", "See packages"), (mailto("Free podcast sample"), "Get a free sample")],
-                first + '<p class="hint">Press play, then switch between Before and After while it plays. Headphones show it best.</p>',
+    body = hero("podcasts", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#packages"),
+                first + '<p class="hint">%s</p>' % t(PAGES["shared"]["sample_hint"]),
                 "", "Background: your editing screen with a podcast waveform, headphones in frame")
     more = "".join(ab_player(s, i) for i, s in enumerate(samples[1:], 2))
     if more:
-        body += section(heading("More examples", "Different problems, same result.") + '<div class="grid ab-grid">%s</div>' % more,
-                        "glow-tr")
-    days = val(PODCASTS.get("turnaround_days"), "turnaround")
-    body += section(heading("How it works", "Three steps, every episode.") + steps([
-        ("Send your recording", "Upload the raw file, or your own edit, to a shared folder. Audio or video shows both work."),
-        ("I edit, mix and master", "Room echo and noise reduced, levels evened out, harsh &ldquo;s&rdquo; sounds tamed, intro and outro added."),
-        ("Publish", "A finished file comes back%s, ready to upload. For video shows it&rsquo;s the same length as your original, so it drops straight into your editor."
-         % (" within %s days" % days if days else "")),
-    ]), "band-dots band-line")
-    rounds = val(PODCASTS.get("revision_rounds"), "number of")
+        m = p["more_samples"]
+        body += section(heading(t(m["label"]), t(m["heading"])) + '<div class="grid ab-grid">%s</div>' % more, "glow-tr")
+    st = p["steps"]
+    body += section(heading(t(st["label"]), t(st["heading"])) + steps([(t(i["title"]), t(i["text"])) for i in st["items"]]),
+                    "band-dots band-line")
+    pk = p["packages"]
     packs = ""
-    for p in PODCASTS["packages"]:
-        price = val(p.get("price"), "price: " + p["name"])
-        items = "".join("<li>%s</li>" % e(i).replace("{revision_rounds}", rounds)
-                        for i in p["includes"] if "{revision_rounds}" not in i or rounds)
+    for pack in PODCASTS["packages"]:
+        price = val(pack.get("price"), "price: " + pack["name"])
+        items = "".join("<li>%s</li>" % x for x in (t(i) for i in pack["includes"]) if x.strip())
         packs += ('<div class="pack%s"><div class="pack-kind">%s</div><h3>%s</h3>%s<ul>%s</ul>'
-                  '<a class="btn%s" href="%s">Ask about %s</a></div>'
-                  % (" pack-hi" if p.get("highlight") else "", e(p["kind"]), e(p["name"]),
-                     '<div class="pack-price">%s%s</div>' % (price, " <span>/ %s</span>" % e(p["per"]) if p.get("per") else "") if price else "",
-                     items, "" if p.get("highlight") else " btn-ghost", mailto("Podcast: " + p["name"]), e(p["name"])))
-    body += section(heading("Packages", "Simple monthly pricing.") + '<div class="grid packs">%s</div>' % packs
-                    + '<p class="aside">Longer or more frequent shows are quoted on request.</p>', "glow-bl band-line", "packages")
-    body += section(heading("Questions", "Before you ask.") + '<div class="grid faq">%s</div>' % "".join(
-        "<div><h3>%s</h3><p>%s</p></div>" % (e(q["q"]), e(q["a"])) for q in PODCASTS["questions"]), "band-line")
-    body += contact_band("Hear your own show, mixed.",
-                         "Send me a recent episode and I&rsquo;ll mix a free 30-second sample, so you can hear the difference on your own voice before deciding anything.",
-                         "Get a free sample", "Free podcast sample")
-    return layout("podcasts", "Podcast editing, mixing and mastering: Burnt Neon Productions",
-                  "Podcast editing, mixing and mastering. Hear a before and after, then get a free sample of your own show.", body)
+                  '<a class="btn%s" href="%s">%s %s</a></div>'
+                  % (" pack-hi" if pack.get("highlight") else "", e(pack["kind"]), e(pack["name"]),
+                     '<div class="pack-price">%s%s</div>' % (price, " <span>/ %s</span>" % e(pack["per"]) if pack.get("per") else "") if price else "",
+                     items, "" if pack.get("highlight") else " btn-ghost", mailto("Podcast: " + pack["name"]),
+                     t(pk["button"]), e(pack["name"])))
+    body += section(heading(t(pk["label"]), t(pk["heading"])) + '<div class="grid packs">%s</div>' % packs
+                    + '<p class="aside">%s</p>' % t(pk["note"]), "glow-bl band-line", "packages")
+    q = p["questions"]
+    body += section(heading(t(q["label"]), t(q["heading"])) + '<div class="grid faq">%s</div>' % "".join(
+        "<div><h3>%s</h3><p>%s</p></div>" % (e(x["q"]), e(x["a"])) for x in PODCASTS["questions"]), "band-line")
+    body += contact(p["contact"])
+    return layout("podcasts", p["browser_title"], p["search_description"], body)
 
 
 def not_found():
-    return layout("404", "Page not found: Burnt Neon Productions", "Page not found.",
-                  section('<h1>That page isn&rsquo;t here.</h1><p class="lead">It may have moved when the site was rebuilt.</p>'
-                          '<div class="btn-row"><a class="btn" href="index.html">Go to the home page</a></div>', "glow-tr"))
+    p = PAGES["not_found"]
+    return layout("404", p["browser_title"], p["text"],
+                  section('<h1>%s</h1><p class="lead">%s</p><div class="btn-row"><a class="btn" href="index.html">%s</a></div>'
+                          % (t(p["heading"]), t(p["text"]), t(p["button"])), "glow-tr"))
 
 
 def main():

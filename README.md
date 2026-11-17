@@ -13,10 +13,12 @@ to fill in.
 
 ## Update the site
 
-Everything that changes often is in `content/`:
+Every word on the site is in `content/`. Never edit `_site/`: it is rebuilt from
+scratch each time and your changes there are lost.
 
 | To change                                   | Edit                    |
 |---------------------------------------------|-------------------------|
+| Headlines, paragraphs, button and menu text | `content/pages.json`    |
 | Film credits, posters, clip links           | `content/credits.json`  |
 | Client quotes                               | `content/quotes.json`   |
 | Music samples, singing reel, "from" prices  | `content/music.json`    |
@@ -25,6 +27,15 @@ Everything that changes often is in `content/`:
 
 Then run `python3 build.py`, look at the result, commit and push. The push
 publishes it (see "Publishing").
+
+In `pages.json`:
+
+- `*asterisks*` around words colour them orange (headlines).
+- `{reply_days}`, `{turnaround_days}`, `{revision_rounds}` and `{review_count}` are
+  filled in from `site.json` and `podcasts.json`.
+- A part in `[square brackets]` is left out of the page while the number it needs
+  is still empty (once placeholders are switched off).
+- If an edit breaks the file, the build stops and names the line.
 
 Examples:
 
@@ -65,8 +76,8 @@ seconds, under 4 MB).
 
 ## Where things are
 
-    build.py            builds the site; page wording that rarely changes is in here
-    content/            the parts that change often
+    build.py            builds the site (layout only; no wording)
+    content/            every word, credit, sample, price and link
     static/css/site.css colours, type and layout (colours are set once at the top)
     static/js/site.js   scroll waveform, audio players, video cards
     static/img/         photos and posters
@@ -74,8 +85,7 @@ seconds, under 4 MB).
 
 ## Publishing
 
-The site publishes from GitHub Pages using the workflow in `pages-workflow.yml`.
-One-time step: move that file to `.github/workflows/deploy.yml` (`mkdir -p .github/workflows && git mv pages-workflow.yml .github/workflows/deploy.yml`, or plain `mv` before the first commit).
+The site publishes from GitHub Pages using `.github/workflows/deploy.yml`.
 
 1. Create a repo on GitHub and push this folder to its `main` branch.
 2. In the repo: Settings > Pages > Source: **GitHub Actions**.
