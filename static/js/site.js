@@ -1,0 +1,267 @@
+/* Burnt Neon Productions: scroll waveform, audio players, video cards.
+   No libraries, no tracking, nothing stored on the visitor's device. */
+(function () {
+  'use strict';
+  document.documentElement.classList.add('js');
+
+  var PLAY = '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>';
+  var PAUSE = '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+  var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var stoppers = [];                       // one "stop" function per player, so only one plays at a time
+
+  function fmt(t) {
+    t = Math.max(0, Math.floor(t || 0));
+    return Math.floor(t / 60) + ':' + ('0' + (t % 60)).slice(-2);
+  }
+  function stopOthers(me) {
+    stoppers.forEach(function (stop) { if (stop !== me) stop(); });
+  }
+  function each(sel, fn) {
+    Array.prototype.forEach.call(document.querySelectorAll(sel), fn);
+  }
+
+  /* 1. The waveform under the menu fills from the left as the page scrolls. */
+  var wave = document.querySelector('.wave');
+  if (wave) {
+    var ticking = false;
+    var paintWave = function () {
+      ticking = false;
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      wave.style.setProperty('--p', (p * 100).toFixed(2) + '%');
+    };
+    var queue = function () { if (!ticking) { ticking = true; requestAnimationFrame(paintWave); } };
+    window.addEventListener('scroll', queue, { passive: true });
+    window.addEventListener('resize', queue);
+    paintWave();
+  }
+
+  /* 2. Sections fade up as they arrive. */
+  if (!calm && 'IntersectionObserver' in window) {
+    var seen = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('in'); seen.unobserve(en.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    each('.band > .wrap', function (el) { el.classList.add('reveal'); seen.observe(el); });
+  }
+  /* The dot texture pulses once when a dotted section comes into view. */
+  if (!calm && 'IntersectionObserver' in window) {
+    var pulse = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) { en.target.classList.add('pulse'); pulse.unobserve(en.target); }
+      });
+    }, { threshold: 0.35 });
+    each('.hero, .band-dots', function (el) { pulse.observe(el); });
+  }
+  /* Background video: a visible pause button, and it starts paused for visitors who ask for less motion. */
+  each('.hero-pause', function (b) {
+    var v = b.parentNode.querySelector('video.hero-bg');
+    function set(paused) {
+      if (paused) v.pause(); else v.play();
+      b.setAttribute('aria-pressed', String(paused));
+      b.textContent = paused ? 'Play background video' : 'Pause background video';
+    }
+    if (calm) { v.removeAttribute('autoplay'); set(true); }
+    b.addEventListener('click', function () { set(!v.paused); });
+  });
+
+  /* Keep in-page links from landing under the sticky header, whatever its height. */
+  var header = document.querySelector('.site-header');
+  if (header) {
+    var setH = function () { document.documentElement.style.setProperty('--header-h', header.offsetHeight + 'px'); };
+    setH();
+    if ('ResizeObserver' in window) new ResizeObserver(setH).observe(header); else window.addEventListener('resize', setH);
+  }
+
+  /* 3. Single audio samples: <div class="player" data-src="..."> and the Home tile buttons. */
+  function simplePlayer(button, src, name, timeEl, seek) {
+    var audio = null, seeking = false;
+    function paint() {
+      var on = audio && !audio.paused;
+      button.innerHTML = on ? PAUSE : PLAY;
+      button.setAttribute('aria-label', (on ? 'Pause ' : 'Play ') + name);
+      if (timeEl && audio) timeEl.textContent = fmt(audio.currentTime) + (audio.duration ? ' / ' + fmt(audio.duration) : '');
+      if (seek && audio && audio.duration && !seeking) {
+        seek.value = Math.round(audio.currentTime / audio.duration * 1000);
+        seek.setAttribute('aria-valuetext', fmt(audio.currentTime) + ' of ' + fmt(audio.duration));
+      }
+    }
+    function stop() { if (audio && !audio.paused) audio.pause(); }
+    function ready() {
+      if (audio) return;
+      audio = new Audio(src);
+      audio.preload = 'auto';
+      ['play', 'pause', 'timeupdate', 'loadedmetadata', 'ended'].forEach(function (ev) { audio.addEventListener(ev, paint); });
+    }
+    stoppers.push(stop);
+    button.addEventListener('click', function () {
+      ready();
+      if (audio.paused) { stopOthers(stop); audio.play(); } else { audio.pause(); }
+    });
+    if (seek) {
+      seek.addEventListener('input', function () { seeking = true; });
+      seek.addEventListener('change', function () {
+        ready(); seeking = false;
+        var go = function () { audio.currentTime = seek.value / 1000 * audio.duration; };
+        if (audio.duration) go(); else audio.addEventListener('loadedmetadata', go, { once: true });
+      });
+    }
+  }
+  each('.player[data-src]', function (el) {
+    var src = el.getAttribute('data-src');
+    if (src) simplePlayer(el.querySelector('.play'), src, el.getAttribute('data-label'), el.querySelector('.player-time'), el.querySelector('.player-seek'));
+  });
+  each('.tile-play[data-src]', function (b) { simplePlayer(b, b.getAttribute('data-src'), b.getAttribute('data-label')); });
+
+  /* 4. Before/after samples. Both files play in step; the switch crossfades between them. */
+  var ctx = null;
+  function getCtx() {
+    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') ctx.resume();
+    return ctx;
+  }
+  function loadBuffer(c, url) {
+    return fetch(url).then(function (r) {
+      if (!r.ok) throw new Error('load');
+      return r.arrayBuffer();
+    }).then(function (data) {
+      return new Promise(function (ok, fail) { c.decodeAudioData(data, ok, fail); });
+    });
+  }
+  each('.ab[data-before]', function (el) {
+    var urls = { before: el.getAttribute('data-before'), after: el.getAttribute('data-after') };
+    var playBtn = el.querySelector('.play'), seek = el.querySelector('.ab-seek'), time = el.querySelector('.ab-time');
+    var err = el.querySelector('.ab-error'), name = (el.querySelector('.ab-title') || {}).textContent || 'sample';
+    var btn = { before: el.querySelector('.ab-before'), after: el.querySelector('.ab-after') };
+    var s = { active: 'before', playing: false, buffers: null, loading: null, duration: 0, offset: 0, startedAt: 0, nodes: null, seeking: false, raf: 0, want: null };
+
+    function pos() { return s.playing ? Math.min(s.duration, Math.max(0, ctx.currentTime - s.startedAt)) : s.offset; }
+    function paint() {
+      btn.before.setAttribute('aria-pressed', String(s.active === 'before'));
+      btn.after.setAttribute('aria-pressed', String(s.active === 'after'));
+      playBtn.innerHTML = s.playing ? PAUSE : PLAY;
+      playBtn.setAttribute('aria-label', (s.playing ? 'Pause ' : 'Play ') + name);
+    }
+    function paintTime() {
+      var t = pos();
+      if (!s.seeking) seek.value = s.duration ? Math.round(t / s.duration * 1000) : 0;
+      if (s.duration) seek.setAttribute('aria-valuetext', fmt(t) + ' of ' + fmt(s.duration));
+      time.textContent = s.duration ? fmt(t) + ' / ' + fmt(s.duration) : (s.loading ? 'Loading' : '0:00');
+    }
+    function tick() { paintTime(); if (s.playing) s.raf = requestAnimationFrame(tick); }
+    function stopNodes() {
+      if (!s.nodes) return;
+      var n = s.nodes; s.nodes = null;
+      ['before', 'after'].forEach(function (k) {
+        n[k].src.onended = null;
+        try { n[k].src.stop(); } catch (e) { /* already stopped */ }
+        n[k].src.disconnect(); n[k].gain.disconnect();
+      });
+    }
+    function startNodes(from) {
+      var c = getCtx(), when = c.currentTime + 0.06, n = {};
+      ['before', 'after'].forEach(function (k) {
+        var src = c.createBufferSource(), gain = c.createGain();
+        src.buffer = s.buffers[k];
+        gain.gain.value = k === s.active ? 1 : 0;
+        src.connect(gain); gain.connect(c.destination);
+        n[k] = { src: src, gain: gain };
+      });
+      n.before.src.onended = function () {
+        if (s.nodes !== n) return;
+        stopNodes(); s.playing = false; s.offset = 0; cancelAnimationFrame(s.raf); paint(); paintTime();
+      };
+      n.before.src.start(when, from); n.after.src.start(when, from);
+      s.nodes = n; s.startedAt = when - from;
+    }
+    function pause() {
+      s.want = null;
+      if (!s.playing) return;
+      s.offset = pos(); s.playing = false; stopNodes(); cancelAnimationFrame(s.raf); paint(); paintTime();
+    }
+    stoppers.push(pause);
+    function load() {
+      if (s.buffers) return Promise.resolve();
+      if (!s.loading) {
+        var c = getCtx();
+        s.loading = Promise.all([loadBuffer(c, urls.before), loadBuffer(c, urls.after)]).then(function (b) {
+          s.buffers = { before: b[0], after: b[1] };
+          s.duration = Math.min(b[0].duration, b[1].duration);
+        });
+        s.loading.catch(function () { s.loading = null; });
+        paintTime();
+      }
+      return s.loading;
+    }
+    function play() {
+      getCtx();
+      err.hidden = true;
+      stopOthers(pause);
+      var want = s.want = {};
+      load().then(function () {
+        if (s.want !== want || s.playing) return;
+        if (s.offset >= s.duration - 0.05) s.offset = 0;
+        s.want = null; startNodes(s.offset); s.playing = true; paint(); tick();
+      }).catch(function () {
+        s.want = null; err.textContent = 'Could not load this sample.'; err.hidden = false; paint(); paintTime();
+      });
+    }
+    function setActive(which) {
+      if (s.active === which) return;
+      s.active = which;
+      if (s.nodes) {
+        var t = ctx.currentTime;
+        ['before', 'after'].forEach(function (k) {
+          var g = s.nodes[k].gain.gain;
+          g.cancelScheduledValues(t); g.setValueAtTime(g.value, t);
+          g.linearRampToValueAtTime(k === which ? 1 : 0, t + 0.03);
+        });
+      }
+      paint();
+    }
+    playBtn.addEventListener('click', function () { if (s.playing || s.want) pause(); else play(); });
+    btn.before.addEventListener('click', function () { setActive('before'); });
+    btn.after.addEventListener('click', function () { setActive('after'); });
+    seek.addEventListener('input', function () { s.seeking = true; });
+    seek.addEventListener('change', function () {
+      var t = seek.value / 1000 * s.duration;
+      s.seeking = false;
+      if (s.playing) { stopNodes(); startNodes(t); } else { s.offset = t; }
+      paintTime();
+    });
+    paint(); paintTime();
+  });
+
+  /* 5. Video cards and film clips: nothing loads from YouTube or Vimeo until the visitor presses play. */
+  function embedFor(url) {
+    var m = url.match(/(?:youtube\.com\/watch\?(?:.*&)?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{6,})/);
+    if (m) return 'https://www.youtube-nocookie.com/embed/' + m[1] + '?autoplay=1&rel=0';
+    m = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+    if (m) return 'https://player.vimeo.com/video/' + m[1] + '?autoplay=1';
+    return null;
+  }
+  function showVideo(box, url, title) {
+    var src = embedFor(url), node;
+    stopOthers(null);
+    if (src) {
+      node = document.createElement('iframe');
+      node.src = src; node.allow = 'autoplay; fullscreen; picture-in-picture'; node.allowFullscreen = true;
+      node.title = title || 'Video';
+    } else {
+      node = document.createElement('video');
+      node.src = url; node.controls = true; node.setAttribute('aria-label', title || 'Video'); node.autoplay = true; node.playsInline = true;
+    }
+    box.classList.add('playing');
+    box.appendChild(node);
+  }
+  each('.reel[data-video]', function (box) {
+    var url = box.getAttribute('data-video'), node;
+    if (url) box.querySelector('.play').addEventListener('click', function () { showVideo(box, url, box.getAttribute('data-title')); node = box.lastElementChild; if (node) { node.tabIndex = 0; node.focus(); } });
+  });
+  each('.poster-play[data-video]', function (b) {
+    b.addEventListener('click', function () {
+      window.open(b.getAttribute('data-video'), '_blank', 'noopener');
+    });
+  });
+})();

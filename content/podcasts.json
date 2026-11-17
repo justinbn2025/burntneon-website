@@ -1,0 +1,47 @@
+{
+  "turnaround_days": "",
+  "revision_rounds": "",
+
+  "samples": [
+    {
+      "title": "Interview cleanup",
+      "note": "Room echo, noise and mic bleed reduced. Harsh sounds tamed. Volume evened out.",
+      "before": "https://justinbn2025.github.io/burntneon-website-assets/audio/natebiltz-ep152-before.mp3",
+      "after": "https://justinbn2025.github.io/burntneon-website-assets/audio/natebiltz-ep152-after.mp3"
+    },
+    { "title": "", "note": "", "before": "", "after": "" },
+    { "title": "", "note": "", "before": "", "after": "" }
+  ],
+
+  "packages": [
+    { "name": "Polish", "kind": "Mix and master", "price": "", "per": "month", "highlight": true,
+      "includes": [
+        "Up to 4 episodes a month",
+        "Echo, noise and level cleanup",
+        "Loudness set for Apple and Spotify",
+        "{revision_rounds} revision rounds per episode"
+      ]},
+    { "name": "Produced", "kind": "Edit, mix and master", "price": "", "per": "month", "highlight": false,
+      "includes": [
+        "Everything in Polish",
+        "Mistakes and long pauses cut",
+        "Music and sound effects placed",
+        "A cut list for video shows"
+      ]},
+    { "name": "Show sound", "kind": "One-off setup", "price": "", "per": "", "highlight": false,
+      "includes": [
+        "Intro and outro built",
+        "Music beds and transitions",
+        "A consistent sound for the series"
+      ]}
+  ],
+
+  "questions": [
+    { "q": "Do you work with video podcasts?",
+      "a": "Yes. You get back a mix that is exactly the same length as your recording, plus one cleaned track per speaker, so automatic camera switching and clip tools keep working." },
+    { "q": "What should I send?",
+      "a": "The recording before any enhancement or automatic leveling, with each speaker on a separate track if your software allows it." },
+    { "q": "I already edit my own episodes. Can you just mix them?",
+      "a": "Yes. Send your edited file and I'll mix and master it without changing your cuts." }
+  ]
+}

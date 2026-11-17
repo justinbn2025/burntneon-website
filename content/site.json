@@ -1,0 +1,30 @@
+{
+  "name": "Burnt Neon Productions",
+  "legal_name": "BURNT NEON Productions LLC",
+  "url": "https://www.burntneonproductions.com",
+  "email": "info@burntneonproductions.com",
+  "location": "Los Angeles, CA",
+
+  "show_placeholders": true,
+
+  "reply_days": "",
+  "review_count": "",
+
+  "links": {
+    "instagram": "https://www.instagram.com/burntneonproductions",
+    "imdb": "https://imdb.me/justin-maldonado",
+    "linkedin": "https://www.linkedin.com/in/justin-maldonado-a42a89a3",
+    "spotify": "https://open.spotify.com/artist/0jUfJKAuILWgDDsPJS0lp0"
+  },
+
+  "reels": {
+    "home": "",
+    "film": ""
+  },
+
+  "tile_samples": {
+    "film": "",
+    "music": "",
+    "podcasts": ""
+  }
+}

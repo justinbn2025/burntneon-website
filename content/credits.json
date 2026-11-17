@@ -1,0 +1,50 @@
+[
+  {
+    "title": "The Devils of Peabody County",
+    "year": "2025",
+    "role": "Supervising Sound Editor, Re-recording Mixer",
+    "poster": "",
+    "clip": "",
+    "on_home": true
+  },
+  {
+    "title": "Til' Death Do Us Part",
+    "year": "2025",
+    "role": "Re-recording Mixer, Sound Editor",
+    "poster": "til-death-do-us-part.jpg",
+    "clip": "",
+    "on_home": true
+  },
+  {
+    "title": "Pussycat Pussycat",
+    "year": "2026",
+    "role": "Assistant Sound Editor",
+    "poster": "pussycat-pussycat.jpg",
+    "clip": "",
+    "on_home": true
+  },
+  {
+    "title": "Eclipse Chasers",
+    "year": "2024",
+    "role": "Sound Editor",
+    "poster": "eclipse-chasers.jpg",
+    "clip": "",
+    "on_home": true
+  },
+  {
+    "title": "Big Take",
+    "year": "2024",
+    "role": "Sound Effects Editor and Mixer (audio redesign)",
+    "poster": "",
+    "clip": "",
+    "on_home": false
+  },
+  {
+    "title": "Disaster Island",
+    "year": "Animated launch trailer",
+    "role": "Supervising Sound Editor, Re-recording Mixer",
+    "poster": "",
+    "clip": "",
+    "on_home": false
+  }
+]

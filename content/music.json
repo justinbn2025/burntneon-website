@@ -1,0 +1,37 @@
+{
+  "reel": "",
+
+  "styles": [
+    { "name": "Musical theater", "tracks": [
+      { "title": "", "artist": "", "role": "lead vocal", "src": "" },
+      { "title": "", "artist": "", "role": "", "src": "" }
+    ]},
+    { "name": "Pop and R&B", "tracks": [
+      { "title": "", "artist": "", "role": "lead vocal", "src": "" },
+      { "title": "", "artist": "", "role": "", "src": "" }
+    ]},
+    { "name": "Rock", "tracks": [
+      { "title": "", "artist": "", "role": "lead vocal", "src": "" },
+      { "title": "", "artist": "", "role": "", "src": "" }
+    ]},
+    { "name": "Electronic", "tracks": [
+      { "title": "", "artist": "", "role": "lead vocal", "src": "" },
+      { "title": "", "artist": "", "role": "", "src": "" }
+    ]}
+  ],
+
+  "services": [
+    { "name": "Session singing",
+      "text": "Lead vocals, doubles, harmonies and ad-libs. Pop, R&B, rock and musical theater.",
+      "price": "", "unit": "per song" },
+    { "name": "Production",
+      "text": "Sample-based, synth-forward alternative pop, hip-hop and electronic. I help shape the idea and bring in players when the song needs them.",
+      "price": "quote", "unit": "per song" },
+    { "name": "Mixing",
+      "text": "Any genre. Guitars re-amped, drums reinforced, and your mix matched against the records you love.",
+      "price": "", "unit": "per song" },
+    { "name": "Mastering",
+      "text": "A master that holds up on every speaker, done by ear, with your intent kept intact.",
+      "price": "", "unit": "per song" }
+  ]
+}

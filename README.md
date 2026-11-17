@@ -1,0 +1,101 @@
+# Burnt Neon Productions website
+
+A static site: plain HTML, CSS and one small script. No server, database, login or
+third-party builder, so there is very little to attack and nothing to pay for.
+
+## See it on your computer
+
+    python3 build.py
+    open _site/index.html
+
+`build.py` uses only what ships with Python. It prints a list of everything still
+to fill in.
+
+## Update the site
+
+Everything that changes often is in `content/`:
+
+| To change                                   | Edit                    |
+|---------------------------------------------|-------------------------|
+| Film credits, posters, clip links           | `content/credits.json`  |
+| Client quotes                               | `content/quotes.json`   |
+| Music samples, singing reel, "from" prices  | `content/music.json`    |
+| Podcast samples, packages, prices, questions| `content/podcasts.json` |
+| Email, links, reels, reply time, review count | `content/site.json`   |
+
+Then run `python3 build.py`, look at the result, commit and push. The push
+publishes it (see "Publishing").
+
+Examples:
+
+- **Add a film credit:** copy one `{ ... }` block in `credits.json`, change the
+  text, and put the poster in `static/img/posters/` (vertical, 2:3, about 800 px
+  wide). `"on_home": true` also shows it on the Home page.
+- **Add a clip to a credit:** paste the YouTube or Vimeo link into `"clip"`.
+- **Add a music sample:** put the MP3 in `static/audio/` and write its file name
+  in `"src"`, or paste a full `https://` link to a file hosted elsewhere.
+- **Add a podcast before/after:** fill in `title`, `note`, `before` and `after`.
+  The two files must be the same length and start at the same moment.
+
+### Placeholders
+
+While `"show_placeholders": true` in `site.json`, anything not filled in shows as
+an orange `[placeholder]` or a dashed box. Set it to `false` before going live:
+unfilled items are then left out of the pages instead.
+
+### Photos and video
+
+Drop files into `static/img/` with these exact names and they appear on the next
+build. Sizes are a guide; JPG at about 80% quality.
+
+| File                 | Where it shows                 | Shape                  |
+|----------------------|--------------------------------|------------------------|
+| `hero-home.jpg`      | Home banner (and phone fallback) | landscape, 2400 px wide |
+| `hero-film.jpg`      | Film & Games banner            | landscape, 2400 px wide |
+| `hero-music.jpg`     | Music banner                   | landscape, 2400 px wide |
+| `hero-podcasts.jpg`  | Podcasts banner                | landscape, 2400 px wide |
+| `tile-film.jpg`, `tile-music.jpg`, `tile-podcasts.jpg` | Home tiles | portrait, 800 px wide |
+| `portrait.jpg`       | About                          | portrait 4:5, 900 px wide |
+| `theater.jpg`        | Music, theater writers section | landscape 4:3          |
+| `reel-home.jpg`, `reel-film.jpg` | Still shown on the video cards before play | 16:9 |
+| `posters/<name>.jpg` | Film credits                   | portrait 2:3, 800 px wide |
+
+The Home banner video loop goes in `static/video/hero-home.mp4` (muted, 8 to 10
+seconds, under 4 MB).
+
+## Where things are
+
+    build.py            builds the site; page wording that rarely changes is in here
+    content/            the parts that change often
+    static/css/site.css colours, type and layout (colours are set once at the top)
+    static/js/site.js   scroll waveform, audio players, video cards
+    static/img/         photos and posters
+    _site/              the built site (not committed)
+
+## Publishing
+
+The site publishes from GitHub Pages using the workflow in `pages-workflow.yml`.
+One-time step: move that file to `.github/workflows/deploy.yml` (`mkdir -p .github/workflows && git mv pages-workflow.yml .github/workflows/deploy.yml`, or plain `mv` before the first commit).
+
+1. Create a repo on GitHub and push this folder to its `main` branch.
+2. In the repo: Settings > Pages > Source: **GitHub Actions**.
+3. Every push to `main` rebuilds and publishes. Until the domain is switched, the
+   preview address is `https://<your-user>.github.io/<repo-name>/`.
+
+Going live on burntneonproductions.com (do this last):
+
+1. Settings > Pages > Custom domain: `www.burntneonproductions.com`.
+2. At the domain registrar, point the `www` CNAME record at
+   `<your-user>.github.io`. Leave the MX (email) records alone.
+3. Back in Settings > Pages, tick **Enforce HTTPS** once it is offered.
+4. Unpublish the Google Sites version.
+
+## Security notes
+
+- Turn on two-factor sign-in for GitHub and for the domain registrar. Those two
+  accounts are the only way anyone could change the site.
+- Each page carries a Content-Security-Policy that only allows this site's own
+  script and styles, Google Fonts, the audio hosts named in `content/`, and
+  YouTube/Vimeo players. If you host media somewhere new, the build adds that host
+  for audio automatically.
+- No cookies, analytics or forms. Contact is by email link.
