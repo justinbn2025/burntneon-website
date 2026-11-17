@@ -26,9 +26,9 @@
       "price": "quote", "unit": "per song" },
     { "name": "Mixing",
       "text": "Any genre. Guitars re-amped, drums reinforced, and your mix matched against the records you love.",
-      "price": "300", "unit": "per song" },
+      "price": "$300", "unit": "per song" },
     { "name": "Mastering",
       "text": "A master that holds up on every speaker, done by ear, with your intent kept intact.",
-      "price": "50", "unit": "per song" }
+      "price": "$50", "unit": "per song" }
   ]
 }
