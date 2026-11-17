@@ -265,7 +265,7 @@ def ab_player(sample, n):
             % ("" if ready else " slot", name, data, title, note, name, off, PLAY, off, off, name, off))
 
 
-def quotes(page, eyebrow):
+def quotes(page, eyebrow, look="band-dots"):
     items = [q for q in QUOTES if page in q.get("pages", [])]
     filled = [q for q in items if q.get("quote")]
     if len(filled) < len(items):
@@ -283,7 +283,7 @@ def quotes(page, eyebrow):
         line = '<p class="reviews">%s</p>' % t(PAGES["shared"]["reviews_line"])
     elif page != "film":
         missing("number of reviews")
-    return section(heading(eyebrow) + '<div class="grid quotes">%s</div>%s' % (figs, line), "band-dots")
+    return section(heading(eyebrow) + '<div class="grid quotes">%s</div>%s' % (figs, line), look)
 
 
 def contact_band(h2, text, button, subject=""):
@@ -446,7 +446,9 @@ def film():
     s = p["steps"]
     body += section(heading(t(s["label"]), t(s["heading"])) + steps([(t(i["title"]), t(i["text"])) for i in s["items"]]),
                     "glow-bl band-line")
-    body += quotes("film", t(p["quotes_label"]))
+    # Only two sections per page are dotted (the banner and one more), because dotted sections
+    # ripple and a page gets at most two ripples. Here that is Services, so quotes stay plain.
+    body += quotes("film", t(p["quotes_label"]), "band-line")
     body += contact(p["contact"])
     return layout("film", p["browser_title"], p["search_description"], body)
 
@@ -493,7 +495,7 @@ def music():
                     % (heading(t(th["label"]), t(th["heading"])), t(th["text"]), mailto(th.get("email_subject", "")), t(th["button"]),
                        image("theater.jpg", "A score on the music stand", "wide-img", "Photo: a score on the stand, or recording a cast number")),
                     "band-line")
-    body += quotes("music", t(p["quotes_label"]))
+    body += quotes("music", t(p["quotes_label"]), "glow-tr band-line")   # see the note in film()
     body += contact(p["contact"])
     return layout("music", p["browser_title"], p["search_description"], body)
 
