@@ -53,7 +53,7 @@
       entries.forEach(function (en) {
         if (en.isIntersecting) { en.target.classList.add('pulse'); pulse.unobserve(en.target); }
       });
-    }, { threshold: 0.35 });
+    }, { rootMargin: '0px 0px -35% 0px' });   /* fires once the section's top is about a third of the way up the screen, however tall the section is */
     Array.prototype.slice.call(document.querySelectorAll('.hero, .band-dots'), 0, 2)
       .forEach(function (el) { pulse.observe(el); });
   }
