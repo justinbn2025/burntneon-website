@@ -103,10 +103,10 @@
       "second_button": "Send me your song",
       "email_subject": "Session vocals"
     },
-    "reel": { "title": "Singing reel", "text": "Ninety seconds across musical theater, pop and rock." },
+    "reel": { "title": "Musical theater reel", "text": "Three minutes of singing and speaking." },
     "listen": {
       "label": "Listen",
-      "heading": "Work by style.",
+      "heading": "Hear the work.",
       "spotify_line": "My own artist project, JVSTN., is on",
       "spotify_link": "Spotify"
     },

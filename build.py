@@ -79,6 +79,8 @@ def media(src):
         u = urlparse(src)
         MEDIA_HOSTS.add(u.scheme + "://" + u.netloc)
         return src
+    if not (STATIC / "audio" / src).exists():
+        missing("audio file not found: static/audio/" + src)
     return "audio/" + src
 
 
@@ -466,7 +468,8 @@ def music():
     for style in MUSIC["styles"]:
         rows = "".join(
             player(val(tr.get("title"), "track title"),
-                   " &middot; ".join(x for x in (val(tr.get("artist"), "artist"), val(tr.get("role"), "your role")) if x),
+                   " &middot; ".join(x for x in (e(tr["artist"]) if tr.get("artist") else ("" if tr.get("src") else val("", "artist")),
+                                                val(tr.get("role"), "your role")) if x),
                    tr.get("src"), "%s sample" % style["name"])
             for tr in style["tracks"])
         if rows:
