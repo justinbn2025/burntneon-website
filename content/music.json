@@ -4,9 +4,9 @@
 
   "styles": [
     { "name": "Session singing", "tracks": [
-      { "title": "Musical Theater - Reel", "artist": "", "role": "Singing and VO", "src": "musical-theater-reel.mp3" },
-      { "title": "Pop Singing - Reel", "artist": "", "role": "Singing", "src": "pop-reel.mp3" },
-      { "title": "Rebecca (Country Pop Sample)", "artist": "J-Tenshi", "role": "Lead and Backing Vocals", "src": "rebecca-country-pop.mp3" }
+      { "title": "Musical Theater Singing - Reel", "artist": "", "role": "Singing and VO", "src": "musical-theater-reel.mp3" },
+      { "title": "Pop Singing - Reel", "artist": "", "role": "Lead and Backing Vocals", "src": "pop-reel.mp3" },
+      { "title": "Rebecca (Country Pop Singing Sample)", "artist": "J-Tenshi", "role": "Lead and Backing Vocals", "src": "rebecca-country-pop.mp3" }
     ]},
     { "name": "Production and mixing", "tracks": [
       { "title": "feels like dancing", "artist": "Slan", "role": "Mixing and Mastering", "src": "feels-like-dancing.mp3" },
