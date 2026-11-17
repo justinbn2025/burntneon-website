@@ -120,6 +120,16 @@ WAVE_USE = '<svg viewBox="0 0 1280 40" preserveAspectRatio="none"><use href="#wv
 NAV = [("film.html", "film"), ("music.html", "music"), ("podcasts.html", "podcasts"), ("index.html#about", "about")]
 
 
+def logo():
+    """The wordmark in the menu bar: the logo image, or plain text if the image files are missing."""
+    if (STATIC / "img" / "logo.png").exists() and (STATIC / "img" / "logo-compact.png").exists():
+        mark = ('<picture><source media="(max-width: 40em)" srcset="img/logo-compact.png" width="617" height="132">'
+                '<img src="img/logo.png" alt="%s, home" width="1104" height="132"></picture>' % e(SITE["name"]))
+    else:
+        mark = '<span class="logo-a">BURNT NEON</span> <span class="logo-b">PRODUCTIONS</span>'
+    return '<a class="logo" href="index.html">%s</a>' % mark
+
+
 def layout(page, title, description, body):
     nav = "".join('<li><a href="%s"%s>%s</a></li>' % (href, ' aria-current="page"' if key == page else "", e(PAGES["shared"]["menu"][key]))
                   for href, key in NAV)
@@ -162,7 +172,7 @@ def layout(page, title, description, body):
 {defs}
 <header class="site-header">
 <div class="wrap nav-row">
-<a class="logo" href="index.html"><span class="logo-a">BURNT NEON</span> <span class="logo-b">PRODUCTIONS</span></a>
+{logo}
 <nav aria-label="Main"><ul class="nav-list" role="list">{nav}<li><a class="btn btn-small" href="{mail}">{menu_button}</a></li></ul></nav>
 </div>
 <div class="wave" aria-hidden="true"><div class="wave-base">{wave}</div><div class="wave-fill">{wave}</div><i class="wave-head"></i></div>
@@ -179,7 +189,7 @@ def layout(page, title, description, body):
 </body>
 </html>
 """.format(csp=csp, title=e(title), desc=e(description), url=SITE["url"], path=path, page=page,
-           defs=wave_defs(), ver=VERSION, nav=nav, skip=e(PAGES["shared"]["skip_link"]),
+           defs=wave_defs(), ver=VERSION, nav=nav, logo=logo(), skip=e(PAGES["shared"]["skip_link"]),
            menu_button=e(PAGES["shared"]["menu_button"]), mail=mailto(), wave=WAVE_USE, body=body,
            legal=e(SITE["legal_name"]), loc=e(SITE["location"]), foot=foot)
 
