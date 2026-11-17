@@ -4,14 +4,14 @@
 
   "styles": [
     { "name": "Session singing", "tracks": [
-      { "title": "Musical theater reel", "artist": "", "role": "singing and speaking", "src": "musical-theater-reel.mp3" },
-      { "title": "Pop singing reel", "artist": "", "role": "lead vocal", "src": "pop-reel.mp3" },
-      { "title": "Rebecca (country pop sample)", "artist": "", "role": "lead vocal", "src": "rebecca-country-pop.mp3" }
+      { "title": "Musical Theater - Reel", "artist": "", "role": "Singing and VO", "src": "musical-theater-reel.mp3" },
+      { "title": "Pop Singing - Reel", "artist": "", "role": "Singing", "src": "pop-reel.mp3" },
+      { "title": "Rebecca (Country Pop Sample)", "artist": "J-Tenshi", "role": "Lead and Backing Vocals", "src": "rebecca-country-pop.mp3" }
     ]},
     { "name": "Production and mixing", "tracks": [
-      { "title": "Sleepwalking", "artist": "", "role": "", "src": "sleepwalking.mp3" },
-      { "title": "Shifted (remix)", "artist": "", "role": "", "src": "shifted-remix.mp3" },
-      { "title": "Turn Up the Music (instrumental)", "artist": "", "role": "", "src": "turn-up-the-music-instrumental.mp3" }
+      { "title": "feels like dancing", "artist": "Slan", "role": "Mixing and Mastering", "src": "feels-like-dancing.mp3" },
+      { "title": "Sleepwalking (Bodies In The Basement)", "artist": "JVSTN.", "role": "Re-mixing/Production, Mixing, and Mastering", "src": "sleepwalking.mp3" },
+      { "title": "Shifted (remix)", "artist": "JVSTN.", "role": "Re-mixing/Production, Mixing, and Mastering", "src": "shifted-remix.mp3" }
     ]}
   ],
 
