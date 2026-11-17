@@ -260,7 +260,7 @@ img.hero-bg, video.hero-bg { opacity: 0.55; }
 }
 /* Phones: compact logo, shorter labels, links spread across the full width. */
 @media (max-width: 40em) {
-  .nav-row { padding-block: 0.5rem 0.2rem; row-gap: 0.45rem; }
+  .nav-row { padding-block: 0.9rem 0.2rem; row-gap: 0.45rem; }
   .site-header nav { justify-self: stretch; }
   .logo-b, .nav-wide { display: none; }
   .nav-narrow { display: inline; }
