@@ -16,7 +16,7 @@
   },
 
   "home": {
-    "browser_title": "Burnt Neon Productions: sound for film, music and podcasts",
+    "browser_title": "BURNT NEON Productions: sound for film, music and podcasts",
     "search_description": "Sound editing and mixing, session vocals, and podcast post-production in Los Angeles.",
     "banner": {
       "label": "Los Angeles audio studio",
@@ -39,7 +39,7 @@
       "label": "About",
       "heading": "Hi, I’m Justin.",
       "paragraphs": [
-        "I’m a sound editor, mixer and session singer in Los Angeles. I started Burnt Neon in 2025 to do the work I care about most: making stories and songs sound the way their makers hear them.",
+        "I’m a sound editor, mixer and session singer in Los Angeles. I started BURNT NEON Productions in 2025 to do the work I care about most: making stories and songs sound the way their makers hear them.",
         "On screen, I’ve been supervising sound editor and re-recording mixer on independent films. On stage, I’ve played Melchior in Spring Awakening and Jamie in The Last Five Years. In the studio, I sing, produce and mix across pop, rock, R&B and musical theater."
       ],
       "button": "Tell me about your project"
@@ -52,7 +52,7 @@
   },
 
   "film": {
-    "browser_title": "Film and game sound: Burnt Neon Productions",
+    "browser_title": "Film and game sound: BURNT NEON Productions",
     "search_description": "Sound design, dialogue editing and mixing for independent films, animation and game trailers.",
     "banner": {
       "label": "Post-production sound for film, animation and games",
@@ -92,7 +92,7 @@
   },
 
   "music": {
-    "browser_title": "Session vocals, production and mixing: Burnt Neon Productions",
+    "browser_title": "Session vocals, production and mixing: BURNT NEON Productions",
     "search_description": "Session singing, music production, mixing and mastering, from musical theater to modern pop.",
     "banner": {
       "label": "Session vocals, production, mixing and mastering",
@@ -140,7 +140,7 @@
   },
 
   "podcasts": {
-    "browser_title": "Podcast editing, mixing and mastering: Burnt Neon Productions",
+    "browser_title": "Podcast editing, mixing and mastering: BURNT NEON Productions",
     "search_description": "Podcast editing, mixing and mastering. Hear a before and after, then get a free sample of your own show.",
     "banner": {
       "label": "Podcast editing, mixing and mastering",
@@ -176,7 +176,7 @@
   },
 
   "not_found": {
-    "browser_title": "Page not found: Burnt Neon Productions",
+    "browser_title": "Page not found: BURNT NEON Productions",
     "heading": "That page isn’t here.",
     "text": "It may have moved when the site was rebuilt.",
     "button": "Go to the home page"
