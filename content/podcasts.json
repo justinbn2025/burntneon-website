@@ -1,6 +1,6 @@
 {
-  "turnaround_days": "",
-  "revision_rounds": "",
+  "turnaround_days": "7",
+  "revision_rounds": "2",
 
   "show_more_samples": false,
 
