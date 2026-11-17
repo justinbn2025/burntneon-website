@@ -14,21 +14,21 @@
   ],
 
   "packages": [
-    { "name": "Polish", "kind": "Mix and master", "price": "", "per": "month", "highlight": true,
+    { "name": "Polish", "kind": "Mix and master", "price": "$400", "per": "month", "highlight": true,
       "includes": [
         "Up to 4 episodes a month",
         "Echo, noise and level cleanup",
         "Loudness set for Apple and Spotify",
         "{revision_rounds} revision rounds per episode"
       ]},
-    { "name": "Produced", "kind": "Edit, mix and master", "price": "", "per": "month", "highlight": false,
+    { "name": "Produced", "kind": "Edit, mix and master", "price": "$800", "per": "month", "highlight": false,
       "includes": [
         "Everything in Polish",
         "Mistakes and long pauses cut",
         "Music and sound effects placed",
         "A cut list for video shows"
       ]},
-    { "name": "Show sound", "kind": "One-off setup", "price": "", "per": "", "highlight": false,
+    { "name": "Show sound", "kind": "One-off setup", "price": "$1500", "per": "show", "highlight": false,
       "includes": [
         "Intro and outro built",
         "Music beds and transitions",
