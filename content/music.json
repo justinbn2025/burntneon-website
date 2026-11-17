@@ -1,8 +1,10 @@
 {
   "reel": "musical-theater-reel.mp3",
+  "show_banner_reel": false,
 
   "styles": [
     { "name": "Session singing", "tracks": [
+      { "title": "Musical theater reel", "artist": "", "role": "singing and speaking", "src": "musical-theater-reel.mp3" },
       { "title": "Pop singing reel", "artist": "", "role": "lead vocal", "src": "pop-reel.mp3" },
       { "title": "Rebecca (country pop sample)", "artist": "", "role": "lead vocal", "src": "rebecca-country-pop.mp3" }
     ]},
