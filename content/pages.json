@@ -115,12 +115,12 @@
       "note": "Backing vocals are quoted by arrangement. Bundle rates for 3 or more songs booked together."
     },
     "steps": {
-      "label": "How a vocal session works",
+      "label": "How it works",
       "heading": "Three steps, from anywhere.",
       "items": [
-        { "title": "Send your song", "text": "The instrumental, a guide vocal, lyrics or sheet music, and the tempo." },
-        { "title": "I record", "text": "First pass within 5 days. Join live over Zoom if you’d like to direct." },
-        { "title": "Revise and deliver", "text": "Two rounds of revisions included. WAV files at the sample rate and bit depth you ask for." }
+        { "title": "Send what you have", "text": "For vocals: the instrumental, a guide vocal and lyrics or sheet music. For a mix or master: your tracks and a song you’d like it to sit beside. For production: a demo, even a voice memo." },
+        { "title": "I send a first pass", "text": "You hear it and tell me what to change. Vocals arrive within 5 days, and you can join live over Zoom to direct the session." },
+        { "title": "Revise and deliver", "text": "Two rounds of revisions included. Final WAV files at the sample rate and bit depth you ask for." }
       ]
     },
     "theater": {
