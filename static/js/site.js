@@ -262,6 +262,25 @@
     var url = box.getAttribute('data-video'), node;
     if (url) box.querySelector('.play').addEventListener('click', function () { showVideo(box, url, box.getAttribute('data-title')); node = box.lastElementChild; if (node) { node.tabIndex = 0; node.focus(); } });
   });
+  // Film strip: when it is narrow enough to scroll sideways, show which frame is centred
+  // and let the keyboard reach it (a scrolling area has to be focusable).
+  each('.filmstrip', function (strip) {
+    var frames = strip.querySelectorAll('.frame'), dots = [], i;
+    var holder = strip.parentNode.querySelector('.film-dots');
+    if (holder) for (i = 0; i < frames.length; i++) dots.push(holder.appendChild(document.createElement('i')));
+    function mark() {
+      var room = strip.scrollWidth - strip.clientWidth;
+      var best = room > 0 ? Math.round(strip.scrollLeft / room * (frames.length - 1)) : 0;
+      for (var k = 0; k < dots.length; k++) dots[k].classList.toggle('on', k === best);
+    }
+    function fit() {
+      if (strip.scrollWidth > strip.clientWidth + 1) strip.tabIndex = 0; else strip.removeAttribute('tabindex');
+      mark();
+    }
+    strip.addEventListener('scroll', mark, { passive: true });
+    window.addEventListener('resize', fit);
+    fit();
+  });
   each('.poster-play[data-video]', function (b) {
     b.addEventListener('click', function () {
       window.open(b.getAttribute('data-video'), '_blank', 'noopener');

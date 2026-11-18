@@ -234,7 +234,30 @@ img.hero-bg, video.hero-bg { opacity: 0.55; }
 .frame-mark { display: flex; justify-content: space-between; font: 0.75rem var(--mono); color: #8a8782; margin-bottom: 0.4rem; }
 .frame h3 { font-weight: 600; font-size: 1.5rem; }
 .frame p { color: var(--muted); font-size: 0.9375rem; }
+.film-hint { display: none; }
 @media (min-width: 62em) { .filmstrip { transform: rotate(-0.6deg); } }
+/* Narrower screens: the strip stays one frame high and runs sideways. Swipe, or use the arrow keys. */
+@media (max-width: 61.99em) {
+  .filmstrip { --hole: linear-gradient(90deg, transparent 0 29%, #0a0a0b 29% 71%, transparent 71%);
+    margin-inline: calc(-1 * var(--gutter)); padding: 0 0 2rem; border-radius: 0; background: none; box-shadow: none;
+    overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.3), #000 12%, #000 88%, rgba(0, 0, 0, 0.3));
+    mask-image: linear-gradient(90deg, rgba(0, 0, 0, 0.3), #000 12%, #000 88%, rgba(0, 0, 0, 0.3)); }
+  .filmstrip::-webkit-scrollbar { display: none; }
+  .filmstrip::before, .filmstrip::after { display: none; }
+  .filmstrip:focus-visible { outline-offset: -3px; }
+  .frames { display: flex; gap: 0.625rem; inline-size: max-content; margin: 0; padding: 2rem max(var(--gutter), 1.75rem);
+    background: var(--hole) 0 0.625rem / 2.125rem 0.75rem space no-repeat,
+                var(--hole) 0 calc(100% - 0.625rem) / 2.125rem 0.75rem space no-repeat,
+                repeating-linear-gradient(104deg, transparent 0 4rem, rgba(255, 214, 170, 0.2) 6.5rem, rgba(255, 214, 170, 0.05) 9rem, transparent 12rem 19rem, rgba(255, 214, 170, 0.12) 22rem, transparent 25rem 30rem),
+                linear-gradient(180deg, #7a3a14 0%, #5a290d 42%, #4a2009 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 220, 185, 0.28), inset 0 -0.5rem 0.75rem rgba(0, 0, 0, 0.28), 0 0.75rem 1.75rem rgba(0, 0, 0, 0.45); }
+  .frame { flex: 0 0 auto; inline-size: min(17rem, 74vw); scroll-snap-align: center; }
+  .film-hint { display: flex; justify-content: center; align-items: center; gap: 0.75rem; margin-top: -0.75rem; font-size: 0.8125rem; color: var(--muted); }
+  .film-dots { display: flex; align-items: center; gap: 0.5rem; }
+  .film-dots i { inline-size: 0.4375rem; block-size: 0.4375rem; border-radius: 50%; background: #3a3a3f; transition: inline-size 0.2s, background 0.2s; }
+  .film-dots i.on { inline-size: 1.125rem; border-radius: 0.25rem; background: var(--accent); }
+}
 
 /* Music: services as channel strips. The fader rises and the meter lights when you point at a strip. */
 .strips { --min: 13rem; }
@@ -372,7 +395,7 @@ img.hero-bg, video.hero-bg { opacity: 0.55; }
   html { scroll-behavior: auto; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
   .btn, .play, .tile { transition: none; }
-  .fader-cap, .meter i, .strip { transition: none; }
+  .fader-cap, .meter i, .strip, .film-dots i { transition: none; }
   .pulse::before { animation: none; }
   .btn:hover, .play:hover, .tile:hover { transform: none; }
 }

@@ -322,7 +322,10 @@ def filmstrip(items):
     frames = "".join(
         '<li class="frame"><div class="frame-mark" aria-hidden="true"><span>REEL 1</span><span>FRAME %02d</span></div>'
         '<h3>%s</h3><p>%s</p></li>' % (i, h, p) for i, (h, p) in enumerate(items, 1))
-    return '<div class="filmstrip"><ol class="frames" role="list">%s</ol></div>' % frames
+    # On narrower screens the strip scrolls sideways; site.js adds the dots and makes it reachable by keyboard.
+    hint = e(PAGES["shared"].get("swipe_hint", "Swipe"))
+    return ('<div class="filmstrip" role="group" aria-label="%s"><ol class="frames" role="list">%s</ol></div>'
+            '<p class="film-hint" aria-hidden="true"><span class="film-dots"></span><span>%s</span></p>' % (hint, frames, hint))
 
 
 def knob(i, n):
