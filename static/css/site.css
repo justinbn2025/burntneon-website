@@ -288,15 +288,22 @@ img.hero-bg-music { opacity: 1; }
 .strip .price { margin-top: auto; padding-top: 0.4rem; font-family: var(--body); font-weight: 600; font-size: 1rem; color: var(--text); }
 .strip:hover { border-color: var(--accent); box-shadow: 0 0 2.5rem rgba(210, 105, 30, 0.16); }
 .strip:hover .led, .strip:hover .fader-cap::after { background: var(--accent); }
-.strip:hover .fader-cap { transform: translateY(-3.875rem); }
+.strip { --travel: 3.875rem; }   /* how far a fader rises */
+.strip:hover .fader-cap { transform: translateY(calc(-1 * var(--travel))); }
 .strip:hover .meter i:nth-child(n+4) { background: var(--accent); }
 .strip:hover .meter i:nth-child(4) { background: var(--accent-hi); }
-/* Touch screens have no pointer to hover with, so every channel is shown switched on. */
-@media (hover: none) {
+/* Where the faders cannot move on hover (touch screens, or Reduce Motion is on), every channel is shown
+   switched on, each fader set a step higher than the last, the way the knobs are. */
+@media (hover: none), (prefers-reduced-motion: reduce) {
   .led, .fader-cap::after { background: var(--accent); }
-  .fader-cap { transform: translateY(-3.875rem); }
-  .meter i:nth-child(n+4) { background: var(--accent); }
-  .meter i:nth-child(4) { background: var(--accent-hi); }
+  .strip:nth-child(4n+1) .fader-cap { transform: translateY(calc(-0.25 * var(--travel))); }
+  .strip:nth-child(4n+2) .fader-cap { transform: translateY(calc(-0.5 * var(--travel))); }
+  .strip:nth-child(4n+3) .fader-cap { transform: translateY(calc(-0.75 * var(--travel))); }
+  .strip:nth-child(4n) .fader-cap { transform: translateY(calc(-1 * var(--travel))); }
+  .strip:nth-child(4n+1) .meter i:nth-child(n+9), .strip:nth-child(4n+2) .meter i:nth-child(n+7),
+  .strip:nth-child(4n+3) .meter i:nth-child(n+5), .strip:nth-child(4n) .meter i:nth-child(n+3) { background: var(--accent); }
+  .strip:nth-child(4n+1) .meter i:nth-child(9), .strip:nth-child(4n+2) .meter i:nth-child(7),
+  .strip:nth-child(4n+3) .meter i:nth-child(5), .strip:nth-child(4n) .meter i:nth-child(3) { background: var(--accent-hi); }
 }
 
 /* Music: one knob per step, each turned further than the last */
@@ -338,11 +345,15 @@ img.hero-bg-music { opacity: 1; }
   /* Shorter faders, so four stacked channel strips do not make the page endless. */
   .fader { block-size: 7.5rem; }
   .fader-cap { top: 3.9rem; block-size: 2.6rem; }
-  .strip:hover .fader-cap { transform: translateY(-2.9rem); }
+  /* The fader and meter sit beside the text, so a channel strip is about half as tall. */
+  .strip { --travel: 2.9rem; display: grid; grid-template-columns: auto 1fr; column-gap: 1.125rem; row-gap: 0.625rem; align-items: start; padding: 1.125rem 1.125rem 1.25rem; }
+  .strip-fader { grid-column: 1; grid-row: 1 / span 4; align-self: center; gap: 0.75rem; padding: 0; }
+  .strip-top, .strip-name, .strip p { grid-column: 2; }
+  .strip-name { text-align: left; }
+  .strip .price { margin-top: 0; padding-top: 0.125rem; }
   .meter { gap: 0.1875rem; padding-top: 0.25rem; }
   .meter i { block-size: 0.4rem; }
 }
-@media (max-width: 40em) and (hover: none) { .fader-cap { transform: translateY(-2.9rem); } }
 
 /* Podcast packages and questions */
 .packs { --min: 16rem; }
