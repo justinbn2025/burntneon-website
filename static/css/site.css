@@ -286,7 +286,8 @@ img.hero-bg, video.hero-bg { opacity: 0.55; }
 .bubble { flex: 0 1 auto; max-inline-size: 26rem; padding: 0.875rem 1.125rem 1rem; border-radius: 1rem 1rem 1rem 0.25rem; background: #232326; color: var(--text); font-size: 1rem; line-height: 1.45; }
 .msg-me .bubble { border-radius: 1rem 1rem 0.25rem 1rem; background: var(--accent); color: var(--ink); }
 .bubble-who { display: block; font-size: 0.75rem; font-weight: 600; opacity: 0.8; margin-bottom: 0.25rem; }
-.file { display: block; inline-size: fit-content; margin-top: 0.625rem; padding: 0.4rem 0.75rem; border-radius: 0.25rem; background: rgba(0, 0, 0, 0.28); font: 0.75rem var(--mono); }
+.files { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.625rem; }
+.file { display: block; inline-size: fit-content; padding: 0.4rem 0.75rem; border-radius: 0.25rem; background: rgba(0, 0, 0, 0.28); font: 0.75rem var(--mono); }
 .msg-step { flex: 1 1 15rem; max-inline-size: 24rem; }
 .msg-me .msg-step { text-align: right; }
 .msg-title { display: flex; align-items: baseline; gap: 0.6rem; }

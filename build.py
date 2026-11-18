@@ -364,7 +364,8 @@ def thread(items, names):
     out = ""
     for i, it in enumerate(items, 1):
         mine = it.get("from") == "me"
-        file = '<span class="file">%s</span>' % e(it["file"]) if it.get("file") else ""
+        names_ = it.get("files") or ([it["file"]] if it.get("file") else [])
+        file = ('<span class="files">%s</span>' % "".join('<span class="file">%s</span>' % e(f) for f in names_)) if names_ else ""
         out += ('<li class="msg %s"><div class="bubble"><span class="bubble-who">%s</span>%s%s</div>'
                 '<div class="msg-step"><div class="msg-title"><span class="msg-n" aria-hidden="true">%d</span><h3>%s</h3></div><p>%s</p></div></li>'
                 % ("msg-me" if mine else "msg-them", e(names["me" if mine else "host"]), t(it.get("says", "")), file,
