@@ -15,6 +15,7 @@
   --ink: #140c05;
   --head: Oswald, "Helvetica Neue", Arial, sans-serif;
   --body: Inter, "Helvetica Neue", Arial, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   /* The contact band that closes every page. Change these to restyle it. */
   --cta-bg: linear-gradient(90deg, #0e0e0f 0%, #1c0f07 45%, #5e2c0e 100%);   /* "ember fade"; the footer shares it */
@@ -218,6 +219,95 @@ img.hero-bg, video.hero-bg { opacity: 0.55; }
 .ab.slot { display: block; text-align: left; }
 .ab-grid { --min: 22rem; }
 
+/* ---- Each page's own "How it works", and the Music channel strips ---- */
+
+/* Film & Games: stages as frames on a strip of film */
+.filmstrip { margin-top: 2.5rem; background: #1c1c1f; border-radius: 0.375rem; padding: 0.625rem 0.75rem; }
+.filmstrip::before, .filmstrip::after { content: ""; display: block; block-size: 0.75rem;
+  background-image: repeating-linear-gradient(90deg, transparent 0 0.625rem, #0a0a0b 0.625rem 1.5rem, transparent 1.5rem 2.125rem); }
+.frames { display: grid; gap: 0.625rem; grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr)); margin: 0.625rem 0; padding: 0; list-style: none; }
+.frame { background: var(--bg); border-radius: 3px; padding: 1.25rem 1.25rem 1.4rem; display: grid; gap: 0.5rem; align-content: start; min-block-size: 11.5rem; }
+.frame-mark { display: flex; justify-content: space-between; font: 0.75rem var(--mono); color: #8a8782; margin-bottom: 0.4rem; }
+.frame h3 { font-weight: 600; font-size: 1.5rem; }
+.frame p { color: var(--muted); font-size: 0.9375rem; }
+@media (min-width: 62em) { .filmstrip { transform: rotate(-0.6deg); } }
+
+/* Music: services as channel strips. The fader rises and the meter lights when you point at a strip. */
+.strips { --min: 13rem; }
+.strip { background: var(--panel); border: 1px solid var(--line); border-radius: 0.375rem; padding: 1.375rem 1.375rem 1.5rem;
+  display: flex; flex-direction: column; gap: 0.875rem; transition: border-color 0.25s, box-shadow 0.25s; }
+.strip-top { display: flex; align-items: center; justify-content: space-between; font-family: var(--head); font-size: 0.75rem; letter-spacing: 0.16em; color: var(--muted); }
+.led { inline-size: 0.5rem; block-size: 0.5rem; border-radius: 50%; background: #3a3a3f; transition: background 0.25s; }
+.strip-fader { display: flex; justify-content: center; gap: 1.375rem; padding: 0.375rem 0 0.125rem; }
+.fader { position: relative; inline-size: 2.75rem; block-size: 11.25rem; }
+.fader::before { content: ""; position: absolute; left: calc(50% - 2px); inset-block: 0; inline-size: 4px; border-radius: 2px; background: #0a0a0b; border: 1px solid var(--line); }
+.fader::after { content: ""; position: absolute; inset: 0; background-image: repeating-linear-gradient(180deg, #4a4a50 0, #4a4a50 1px, transparent 1px, transparent 1.125rem);
+  -webkit-mask-image: linear-gradient(90deg, #000 0 22%, transparent 22% 78%, #000 78%); mask-image: linear-gradient(90deg, #000 0 22%, transparent 22% 78%, #000 78%); }
+.fader-cap { position: absolute; z-index: 1; left: 0.25rem; top: 6rem; inline-size: 2.25rem; block-size: 3.125rem; border-radius: 0.25rem; border: 1px solid #55534f;
+  background: linear-gradient(180deg, #3a3a3f, #1d1d20 46%, #111112 54%, #2c2c30); transition: transform 0.35s cubic-bezier(0.2, 0.7, 0.3, 1); }
+.fader-cap::after { content: ""; position: absolute; inset-inline: 0.25rem; top: calc(50% - 1.5px); block-size: 3px; background: #8a8782; transition: background 0.25s; }
+.meter { display: grid; gap: 0.25rem; inline-size: 0.625rem; align-content: start; padding-top: 0.375rem; }
+.meter i { block-size: 0.625rem; border-radius: 1px; background: #26262a; transition: background 0.2s; }
+.strip-name { background: #0a0a0b; border: 1px solid var(--line); border-radius: 3px; padding: 0.5rem 0.625rem; text-align: center; font-size: 1.25rem; }
+.strip p { color: var(--muted); font-size: 0.9375rem; line-height: 1.5; }
+.strip .price { margin-top: auto; padding-top: 0.4rem; font-family: var(--body); font-weight: 600; font-size: 1rem; color: var(--text); }
+.strip:hover { border-color: var(--accent); box-shadow: 0 0 2.5rem rgba(210, 105, 30, 0.16); }
+.strip:hover .led, .strip:hover .fader-cap::after { background: var(--accent); }
+.strip:hover .fader-cap { transform: translateY(-3.875rem); }
+.strip:hover .meter i:nth-child(n+4) { background: var(--accent); }
+.strip:hover .meter i:nth-child(4) { background: var(--accent-hi); }
+/* Touch screens have no pointer to hover with, so every channel is shown switched on. */
+@media (hover: none) {
+  .led, .fader-cap::after { background: var(--accent); }
+  .fader-cap { transform: translateY(-3.875rem); }
+  .meter i:nth-child(n+4) { background: var(--accent); }
+  .meter i:nth-child(4) { background: var(--accent-hi); }
+}
+
+/* Music: one knob per step, each turned further than the last */
+.knobs { --min: 17rem; padding: 0; list-style: none; }
+.knob-card { background: var(--panel); border: 1px solid var(--line); border-radius: 0.375rem; padding: 1.625rem 1.5rem 1.75rem; display: grid; gap: 0.75rem; align-content: start; }
+.knob-head { display: flex; align-items: center; gap: 1.125rem; }
+.knob { flex: 0 0 auto; inline-size: 6.5rem; block-size: 6.5rem; }
+.knob line { stroke-width: 3; stroke-linecap: round; }
+.knob .on { stroke: var(--accent); }
+.knob .off { stroke: #4a4a50; }
+.knob-body { fill: #1d1d20; stroke: #55534f; stroke-width: 1.5; }
+.knob-face { fill: #141416; stroke: var(--line); }
+.knob .knob-pointer { stroke: var(--accent); stroke-width: 4; }
+.knob-stage { font: 0.75rem var(--mono); letter-spacing: 0.08em; color: #8a8782; }
+.knob-card h3 { font-size: 1.4375rem; line-height: 1.2; margin-top: 0.25rem; }
+.knob-card p { color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
+
+/* Podcasts: the job as a message thread */
+.thread { display: grid; gap: 1.25rem; margin: 2.125rem 0 0; padding: 0; list-style: none; max-inline-size: 52rem; }
+.msg { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; }
+.msg-me { flex-direction: row-reverse; }
+.bubble { flex: 0 1 auto; max-inline-size: 26rem; padding: 0.875rem 1.125rem 1rem; border-radius: 1rem 1rem 1rem 0.25rem; background: #232326; color: var(--text); font-size: 1rem; line-height: 1.45; }
+.msg-me .bubble { border-radius: 1rem 1rem 0.25rem 1rem; background: var(--accent); color: var(--ink); }
+.bubble-who { display: block; font-size: 0.75rem; font-weight: 600; opacity: 0.8; margin-bottom: 0.25rem; }
+.file { display: block; inline-size: fit-content; margin-top: 0.625rem; padding: 0.4rem 0.75rem; border-radius: 0.25rem; background: rgba(0, 0, 0, 0.28); font: 0.75rem var(--mono); }
+.msg-step { flex: 1 1 15rem; max-inline-size: 24rem; }
+.msg-me .msg-step { text-align: right; }
+.msg-title { display: flex; align-items: baseline; gap: 0.6rem; }
+.msg-me .msg-title { justify-content: flex-end; }
+.msg-n { font-family: var(--head); font-weight: 700; font-size: 1.375rem; color: var(--accent); }
+.msg-step h3 { font-size: 1.25rem; }
+.msg-step p { color: var(--muted); font-size: 0.9375rem; margin-top: 0.25rem; }
+@media (max-width: 40em) {
+  .msg { flex-direction: column; align-items: flex-start; }
+  .msg-me { align-items: flex-end; }
+  .msg-step, .msg-me .msg-step { flex: 0 0 auto; align-self: stretch; max-inline-size: none; text-align: left; }
+  .msg-me .msg-title { justify-content: flex-start; }
+  /* Shorter faders, so four stacked channel strips do not make the page endless. */
+  .fader { block-size: 7.5rem; }
+  .fader-cap { top: 3.9rem; block-size: 2.6rem; }
+  .strip:hover .fader-cap { transform: translateY(-2.9rem); }
+  .meter { gap: 0.1875rem; padding-top: 0.25rem; }
+  .meter i { block-size: 0.4rem; }
+}
+@media (max-width: 40em) and (hover: none) { .fader-cap { transform: translateY(-2.9rem); } }
+
 /* Podcast packages and questions */
 .packs { --min: 16rem; }
 .pack { background: var(--panel); border: 1px solid var(--line); border-radius: 0.375rem; padding: 1.75rem; display: flex; flex-direction: column; gap: 0.6rem; }
@@ -277,6 +367,7 @@ img.hero-bg, video.hero-bg { opacity: 0.55; }
   html { scroll-behavior: auto; }
   .js .reveal { opacity: 1; transform: none; transition: none; }
   .btn, .play, .tile { transition: none; }
+  .fader-cap, .meter i, .strip { transition: none; }
   .pulse::before { animation: none; }
   .btn:hover, .play:hover, .tile:hover { transform: none; }
 }

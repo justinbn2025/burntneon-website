@@ -11,6 +11,7 @@ content/pages.json; credits, quotes, samples, prices and links are in the others
 """
 import html
 import json
+import math
 import random
 import re
 import shutil
@@ -316,6 +317,61 @@ def cards(items):
         '<div class="card"><h3>%s</h3><p>%s</p>%s</div>' % (h, p, extra) for h, p, extra in items)
 
 
+def filmstrip(items):
+    """Film & Games 'How it works': each stage is a frame on a strip of film."""
+    frames = "".join(
+        '<li class="frame"><div class="frame-mark" aria-hidden="true"><span>REEL 1</span><span>FRAME %02d</span></div>'
+        '<h3>%s</h3><p>%s</p></li>' % (i, h, p) for i, (h, p) in enumerate(items, 1))
+    return '<div class="filmstrip"><ol class="frames" role="list">%s</ol></div>' % frames
+
+
+def knob(i, n):
+    """A rotary knob drawn as SVG, turned further for each later step."""
+    angle = 135 if i == n else -135 + 270 * (2 * i - 1) / (2 * n)     # 0 = straight up
+    ticks = ""
+    for k in range(11):
+        a = -135 + 27 * k
+        r = math.radians(a)
+        ticks += '<line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" class="%s"/>' % (
+            60 + 46 * math.sin(r), 60 - 46 * math.cos(r), 60 + 53 * math.sin(r), 60 - 53 * math.cos(r),
+            "on" if a <= angle + 0.1 else "off")
+    r = math.radians(angle)
+    return ('<svg class="knob" aria-hidden="true" viewBox="0 0 120 120">%s<circle cx="60" cy="60" r="38" class="knob-body"/>'
+            '<circle cx="60" cy="60" r="30" class="knob-face"/><line x1="%.1f" y1="%.1f" x2="%.1f" y2="%.1f" class="knob-pointer"/></svg>'
+            % (ticks, 60 + 12 * math.sin(r), 60 - 12 * math.cos(r), 60 + 30 * math.sin(r), 60 - 30 * math.cos(r)))
+
+
+def knobs(items):
+    """Music 'How it works': one knob per step."""
+    n = len(items)
+    return '<ol class="grid knobs" role="list">%s</ol>' % "".join(
+        '<li class="knob-card"><div class="knob-head">%s<div><div class="knob-stage" aria-hidden="true">STAGE %d</div><h3>%s</h3></div></div><p>%s</p></li>'
+        % (knob(i, n), i, h, p) for i, (h, p) in enumerate(items, 1))
+
+
+def strips(items):
+    """Music services as channel strips on a mixing board. The fader and meter are decoration."""
+    meter = "<i></i>" * 12
+    return '<div class="grid strips">%s</div>' % "".join(
+        '<div class="strip"><div class="strip-top" aria-hidden="true"><span>CH %d</span><i class="led"></i></div>'
+        '<div class="strip-fader" aria-hidden="true"><div class="fader"><i class="fader-cap"></i></div><div class="meter">%s</div></div>'
+        '<h3 class="strip-name">%s</h3><p>%s</p>%s</div>' % (i, meter, h, p, extra)
+        for i, (h, p, extra) in enumerate(items, 1))
+
+
+def thread(items, names):
+    """Podcasts 'How it works': the job as a short message thread."""
+    out = ""
+    for i, it in enumerate(items, 1):
+        mine = it.get("from") == "me"
+        file = '<span class="file">%s</span>' % e(it["file"]) if it.get("file") else ""
+        out += ('<li class="msg %s"><div class="bubble"><span class="bubble-who">%s</span>%s%s</div>'
+                '<div class="msg-step"><div class="msg-title"><span class="msg-n" aria-hidden="true">%d</span><h3>%s</h3></div><p>%s</p></div></li>'
+                % ("msg-me" if mine else "msg-them", e(names["me" if mine else "host"]), t(it.get("says", "")), file,
+                   i, t(it["title"]), t(it["text"])))
+    return '<ol class="thread" role="list">%s</ol>' % out
+
+
 def hero(page, eyebrow, h1, lead, buttons, side, bg_alt, bg_label):
     bg = image("hero-%s.jpg" % page, "", "hero-bg", bg_label)   # decorative: empty alt
     if page == "home" and (STATIC / "video" / "hero-home.mp4").exists():
@@ -445,7 +501,7 @@ def film():
     body += section(heading(t(s["label"]), t(s["heading"])) + cards([(t(i["title"]), t(i["text"]), "") for i in s["items"]]),
                     "band-dots band-line")
     s = p["steps"]
-    body += section(heading(t(s["label"]), t(s["heading"])) + steps([(t(i["title"]), t(i["text"])) for i in s["items"]]),
+    body += section(heading(t(s["label"]), t(s["heading"])) + filmstrip([(t(i["title"]), t(i["text"])) for i in s["items"]]),
                     "glow-bl band-line")
     # Only two sections per page are dotted (the banner and one more), because dotted sections
     # ripple and a page gets at most two ripples. Here that is Services, so quotes stay plain.
@@ -490,10 +546,10 @@ def music():
             price = "From %s %s" % (pr, e(s["unit"])) if pr else ""
         svc.append((e(s["name"]), e(s["text"]), '<div class="price">%s</div>' % price if price else ""))
     sv = p["services"]
-    body += section(heading(t(sv["label"]), t(sv["heading"])) + cards(svc) + '<p class="aside">%s</p>' % t(sv["note"]),
+    body += section(heading(t(sv["label"]), t(sv["heading"])) + strips(svc) + '<p class="aside">%s</p>' % t(sv["note"]),
                     "band-dots band-line")
     st = p["steps"]
-    body += section(heading(t(st["label"]), t(st["heading"])) + steps([(t(i["title"]), t(i["text"])) for i in st["items"]]),
+    body += section(heading(t(st["label"]), t(st["heading"])) + knobs([(t(i["title"]), t(i["text"])) for i in st["items"]]),
                     "glow-bl band-line")
     th = p["theater"]
     body += section('<div class="about"><div class="about-text">%s<p>%s</p><a class="btn" href="%s">%s</a></div>%s</div>'
@@ -526,7 +582,7 @@ def podcasts():
     look_steps, look_packages = (("band-dots band-line", "glow-bl band-line") if more
                                  else ("glow-tr", "band-dots band-line"))
     st = p["steps"]
-    body += section(heading(t(st["label"]), t(st["heading"])) + steps([(t(i["title"]), t(i["text"])) for i in st["items"]]),
+    body += section(heading(t(st["label"]), t(st["heading"])) + thread(st["items"], st.get("names", {"host": "You", "me": "Me"})),
                     look_steps)
     pk = p["packages"]
     packs = ""

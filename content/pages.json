@@ -155,10 +155,11 @@
     "steps": {
       "label": "How it works",
       "heading": "Three steps, every episode.",
+      "names": { "host": "You, the host", "me": "Justin" },
       "items": [
-        { "title": "Send your recording", "text": "Upload the raw file, or your own edit, to a shared folder. Audio or video shows both work." },
-        { "title": "I edit, mix and master", "text": "Room echo and noise reduced, levels evened out, harsh “s” sounds tamed, intro and outro added." },
-        { "title": "Publish", "text": "A finished file comes back[ within {turnaround_days} days], ready to upload. For video shows it’s the same length as your original, so it drops straight into your editor." }
+        { "from": "host", "says": "Here’s this week’s recording.", "file": "episode-raw.wav", "title": "Send your recording", "text": "Upload the raw file, or your own edit, to a shared folder. Audio or video shows both work." },
+        { "from": "me", "says": "Mixed and mastered. Have a listen.", "file": "episode-final.wav", "title": "I edit, mix and master", "text": "Room echo and noise reduced, levels evened out, harsh “s” sounds tamed, intro and outro added." },
+        { "from": "host", "says": "Sounds great. Publishing now.", "file": "", "title": "Publish", "text": "A finished file comes back[ within {turnaround_days} days], ready to upload. For video shows it’s the same length as your original, so it drops straight into your editor." }
       ]
     },
     "packages": {
