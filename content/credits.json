@@ -1,5 +1,21 @@
 [
   {
+    "title": "First Aid",
+    "year": "2026",
+    "role": "Supervising Sound Editor, Re-recording Mixer",
+    "poster": "",
+    "clip": "",
+    "on_home": true
+  },
+  {
+    "title": "Pussycat Pussycat",
+    "year": "2026",
+    "role": "Assistant Sound Editor",
+    "poster": "pussycat-pussycat.jpg",
+    "clip": "",
+    "on_home": true
+  },
+  {
     "title": "The Devils of Peabody County",
     "year": "2025",
     "role": "Supervising Sound Editor, Re-recording Mixer",
@@ -16,12 +32,12 @@
     "on_home": true
   },
   {
-    "title": "Pussycat Pussycat",
-    "year": "2026",
-    "role": "Assistant Sound Editor",
-    "poster": "pussycat-pussycat.jpg",
+    "title": "Disaster Island",
+    "year": "2025",
+    "role": "Supervising Sound Editor, Re-recording Mixer",
+    "poster": "",
     "clip": "",
-    "on_home": true
+    "on_home": false
   },
   {
     "title": "Eclipse Chasers",
@@ -30,21 +46,5 @@
     "poster": "eclipse-chasers.jpg",
     "clip": "",
     "on_home": true
-  },
-  {
-    "title": "Big Take",
-    "year": "2024",
-    "role": "Sound Effects Editor and Mixer (audio redesign)",
-    "poster": "",
-    "clip": "",
-    "on_home": false
-  },
-  {
-    "title": "Disaster Island",
-    "year": "Animated launch trailer",
-    "role": "Supervising Sound Editor, Re-recording Mixer",
-    "poster": "",
-    "clip": "",
-    "on_home": false
   }
 ]

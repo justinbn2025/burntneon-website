@@ -55,9 +55,9 @@
     "browser_title": "Film and game sound: BURNT NEON Productions",
     "search_description": "Sound design, dialogue editing and mixing for independent films, animation and game trailers.",
     "banner": {
-      "label": "Post-production sound for film, animation and games",
+      "label": "Post-production sound for film, animation, and games",
       "headline": "Sound that *serves the story*.",
-      "text": "Sound design, dialogue editing and mixing for independent films, animation and game trailers. One person on your sound from first spot to final delivery.",
+      "text": "Sound design, dialogue editing and mixing for independent films, animation and game trailers. One person working on your sound from first spot to final delivery.",
       "button": "Watch the work",
       "second_button": "Tell me about your film",
       "video_label": "Sound reel"
@@ -67,16 +67,16 @@
       "label": "Services",
       "heading": "What I do on a film.",
       "items": [
-        { "title": "Sound design and foley", "text": "I build the sound world your picture needs, from library effects to custom foley recorded for the scene." },
-        { "title": "Dialogue editing", "text": "The best takes from every microphone, blended so the cuts disappear. Room tone smoothed, levels evened, space added where the scene calls for it." },
-        { "title": "Stereo and 5.1 mixing", "text": "Dialogue, music and effects balanced so nothing fights. Delivered at the loudness your festival or platform specifies, without losing impact." }
+        { "title": "Sound editing and design", "text": "I build the sound world your picture needs, from library effects to designed elements to custom foley recorded to picture." },
+        { "title": "Dialogue editing", "text": "The best takes from each microphone, repaired and blended so the cuts disappear. Room tone smoothed, levels evened, space added where the scene calls for it." },
+        { "title": "Stereo and 5.1 mixing", "text": "Dialogue, music, and effects balanced so nothing fights. Delivered at the loudness your festival or platform specifies." }
       ]
     },
     "steps": {
       "label": "How it works",
       "heading": "From picture lock to delivery.",
       "items": [
-        { "title": "Spotting", "text": "We watch the cut together and agree what each scene needs." },
+        { "title": "Spotting", "text": "You send me your initial notes on what each scene needs." },
         { "title": "Edit and design", "text": "Dialogue cleaned and cut. Effects, ambiences and foley built." },
         { "title": "Mix", "text": "Everything balanced to picture. You review and send notes." },
         { "title": "Deliver", "text": "Final mixes in the formats on your delivery list." }
