@@ -377,7 +377,7 @@ def thread(items, names):
 
 
 def hero(page, eyebrow, h1, lead, buttons, side, bg_alt, bg_label):
-    bg = image("hero-%s.jpg" % page, "", "hero-bg", bg_label)   # decorative: empty alt
+    bg = image("hero-%s.jpg" % page, "", "hero-bg hero-bg-%s" % page, bg_label)   # decorative: empty alt
     if page == "home" and (STATIC / "video" / "hero-home.mp4").exists():
         bg = ('<video class="hero-bg" autoplay muted loop playsinline aria-hidden="true" tabindex="-1" poster="img/hero-home.jpg">'
               '<source src="video/hero-home.mp4" type="video/mp4"></video>'
@@ -540,7 +540,7 @@ def music():
     li = p["listen"]
     body += section(heading(t(li["label"]), t(li["heading"])) + '<div class="grid styles">%s</div>' % groups
                     + ('<p class="aside">%s <a href="%s" rel="noopener">%s</a>.</p>'
-                       % (t(li["spotify_line"]), e(spotify), t(li["spotify_link"])) if spotify else ""), "glow-tr", "listen")
+                       % (t(li["spotify_line"]), e(spotify), t(li["spotify_link"])) if spotify else ""), "band-dots", "listen")
     svc = []
     for s in MUSIC["services"]:
         if s.get("price") == "quote":
@@ -551,7 +551,7 @@ def music():
         svc.append((e(s["name"]), e(s["text"]), '<div class="price">%s</div>' % price if price else ""))
     sv = p["services"]
     body += section(heading(t(sv["label"]), t(sv["heading"])) + strips(svc) + '<p class="aside">%s</p>' % t(sv["note"]),
-                    "band-dots band-line")
+                    "glow-tr band-line")
     st = p["steps"]
     body += section(heading(t(st["label"]), t(st["heading"])) + knobs([(t(i["title"]), t(i["text"])) for i in st["items"]]),
                     "glow-bl band-line")

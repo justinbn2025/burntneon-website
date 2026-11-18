@@ -115,6 +115,14 @@ input[type="range"]:disabled { opacity: 0.45; cursor: default; }
 .hero { position: relative; overflow: hidden; border-bottom: 1px solid var(--line); background-color: #101011; background-image: var(--dots); background-size: 14px 14px; }
 .hero-bg { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; }
 img.hero-bg, video.hero-bg { opacity: 0.55; }
+/* Per banner photo: which part to keep on narrow screens, and how strongly it shows. */
+.hero-bg-music { object-position: 86% 40%; }
+img.hero-bg-music { opacity: 1; }
+/* Full brightness on the right where he stands, fading to dark under the headline. */
+.hero-bg-music + .hero-shade { background: linear-gradient(90deg, rgba(14, 14, 15, 0.95) 0%, rgba(14, 14, 15, 0.85) 34%, rgba(14, 14, 15, 0.3) 58%, rgba(14, 14, 15, 0) 76%); }
+@media (max-width: 40em) {
+  .hero-bg-music + .hero-shade { background: linear-gradient(90deg, rgba(14, 14, 15, 0.9) 0%, rgba(14, 14, 15, 0.72) 55%, rgba(14, 14, 15, 0.35) 100%); }
+}
 .hero-bg.slot { inset: 0.875rem; inline-size: auto; block-size: auto; background: none; place-items: end; text-align: right; font-size: 0.75rem; border-radius: 0.375rem; }
 .hero-shade { position: absolute; inset: 0; background: linear-gradient(90deg, rgba(14, 14, 15, 0.94) 0%, rgba(14, 14, 15, 0.78) 50%, rgba(14, 14, 15, 0.3) 100%); }
 .hero-bg.slot + .hero-shade { display: none; }
