@@ -262,6 +262,32 @@
     var url = box.getAttribute('data-video'), node;
     if (url) box.querySelector('.play').addEventListener('click', function () { showVideo(box, url, box.getAttribute('data-title')); node = box.lastElementChild; if (node) { node.tabIndex = 0; node.focus(); } });
   });
+  /* 5b. Touch screens have no hover, so the service card that fills most of the screen lights up instead.
+         Only when the cards are stacked in one column; side by side, none is singled out. */
+  (function () {
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.pack-hover'));
+    if (cards.length < 2 || !window.matchMedia('(hover: none)').matches) return;
+    var queued = false;
+    function pick() {
+      queued = false;
+      var head = document.querySelector('.site-header');
+      var top = head ? Math.max(0, head.getBoundingClientRect().bottom) : 0, bottom = window.innerHeight;
+      var stacked = cards[1].getBoundingClientRect().top >= cards[0].getBoundingClientRect().bottom - 1;
+      var best = null, most = 0;
+      if (stacked) cards.forEach(function (card) {
+        var r = card.getBoundingClientRect();
+        var seen = Math.min(r.bottom, bottom) - Math.max(r.top, top);
+        if (seen > most) { most = seen; best = card; }
+      });
+      if (best && most < Math.min(best.offsetHeight, bottom - top) * 0.5) best = null;   // at least half in view
+      cards.forEach(function (card) { card.classList.toggle('lit', card === best); });
+    }
+    function ask() { if (!queued) { queued = true; window.requestAnimationFrame(pick); } }
+    window.addEventListener('scroll', ask, { passive: true });
+    window.addEventListener('resize', ask);
+    pick();
+  })();
+
   /* 6. The sound reel: plays in place, one marker per film, optional full screen. */
   each('.rs', function (box) {
     var v = box.querySelector('video'), playBtn = box.querySelector('.rs-play'), full = box.querySelector('.rs-full');
