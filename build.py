@@ -290,10 +290,10 @@ def quotes(page, eyebrow, look="band-dots", reviews_line=""):
 
 
 def contact_band(h2, text, button, subject="", blend=False):
-    """The contact band. blend=True drops its top line and fades it in from black, for a page
-    whose last section fades out into it."""
+    """The contact band. blend=True drops its top line, for a page whose last section
+    fades into the band's own colours (fade-ember)."""
     return ('<section class="band band-cta%s"><div class="wrap cta-row"><div><h2>%s</h2><p>%s</p></div>'
-            '<a class="btn" href="%s">%s</a></div></section>' % (" fade-in" if blend else "", h2, text, mailto(subject), button))
+            '<a class="btn" href="%s">%s</a></div></section>' % (" seamless" if blend else "", h2, text, mailto(subject), button))
 
 
 def credit_cards(items):
@@ -584,7 +584,7 @@ def music():
                     % (heading(t(th["label"]), t(th["heading"])), t(th["text"]), mailto(th.get("email_subject", "")), t(th["button"]),
                        image("theater.jpg", "A score on the music stand", "wide-img", "Photo: a score on the stand, or recording a cast number")),
                     "band-notes")
-    music_quotes = quotes("music", t(p["quotes_label"]), "band-foam foam-fade band-line fade-out", p.get("reviews_line", ""))
+    music_quotes = quotes("music", t(p["quotes_label"]), "band-foam foam-fade band-line fade-ember", p.get("reviews_line", ""))
     body += music_quotes
     body += contact(p["contact"], blend=bool(music_quotes))      # the quotes fade out into the contact band
     return layout("music", p["browser_title"], p["search_description"], body)
