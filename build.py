@@ -496,16 +496,12 @@ def home():
                 "", "Background: a muted video loop or photo of the studio")
     body += section(heading(t(p["paths"]["label"]), t(p["paths"]["heading"])) + '<div class="grid tiles">%s</div>' % tile_html,
                     "band-rings rings-side fade-in", "paths")
-    c = p["credits"]
-    body += section('<div class="split-head"><div>%s</div><a href="film.html">%s &rarr;</a></div>%s'
-                    % (heading(t(c["label"]), t(c["heading"])), t(c["link"]),
-                       credit_cards([x for x in CREDITS if x.get("on_home")])), "band-line", "work")
-    body += quotes("home", t(p["quotes_label"]), "band-foam foam-fade fade-in")      # runs on from the credits: both are proof
+    body += quotes("home", t(p["quotes_label"]), "band-foam foam-fade band-line")
     a = p["about"]
     body += section('<div class="about">%s<div class="about-text">%s%s<a class="btn btn-ghost" href="%s">%s</a></div></div>'
                     % (image("portrait.jpg", "Justin at the studio desk", "portrait", "Portrait: Justin at the desk or the mic"),
                        heading(t(a["label"]), t(a["heading"])), "".join("<p>%s</p>" % t(x) for x in a["paragraphs"]),
-                       mailto(), t(a["button"])), "band-rings rings-bl band-line", "about")
+                       mailto(), t(a["button"])), "glow-tr band-line", "about")
     body += contact(p["contact"])
     return layout("home", p["browser_title"], p["search_description"], body)
 
