@@ -19,15 +19,19 @@
   "services": [
     { "name": "Session Singing",
       "text": "Lead vocals, doubles, harmonies and ad-libs. Pop, R&B, Rock and Musical Theater.",
+      "send": "The instrumental, the lyrics, and a guide vocal or sheet music.",
       "price": "$120", "unit": "per song" },
     { "name": "Production",
       "text": "Alternative Pop, Hip-Hop, Electronic, Rock. I help shape the idea and bring in players when the song needs them.",
+      "send": "A demo, even a voice memo, and what you’re picturing.",
       "price": "quote", "unit": "per song" },
     { "name": "Mixing",
       "text": "Any genre. Guitars re-amped, drums reinforced, and your mix matched against the records you love.",
+      "send": "Your tracks and a reference song.",
       "price": "$300", "unit": "per song" },
     { "name": "Mastering",
       "text": "A master that holds up on every speaker, done by ear, with your intent kept intact.",
+      "send": "Your mix and a reference song.",
       "price": "$50", "unit": "per song" }
   ]
 }

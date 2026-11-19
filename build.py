@@ -574,8 +574,9 @@ def music():
         else:
             pr = val(s.get("price"), "price: " + s["name"].lower())
             price = "From %s <span>/ %s</span>" % (pr, e(s["unit"])) if pr else ""
-        svc += ('<div class="pack pack-hover"><h3>%s</h3>%s<p>%s</p>%s</div>'
-                % (e(s["name"]), '<div class="pack-price">%s</div>' % price if price else "", e(s["text"]),
+        send = ('<p class="pack-send"><b>%s</b> %s</p>' % (t(sv["send_label"]), e(s["send"]))) if s.get("send") else ""
+        svc += ('<div class="pack pack-hover"><h3>%s</h3>%s<p>%s</p>%s%s</div>'
+                % (e(s["name"]), '<div class="pack-price">%s</div>' % price if price else "", e(s["text"]), send,
                    ask_button(t(sv["button"]), s["name"], "Music: " + s["name"])))
     body += section(heading(t(sv["label"]), t(sv["heading"])) + '<div class="grid packs">%s</div>' % svc
                     + '<p class="aside">%s</p>' % t(sv["note"]), "band-dots", "services")
