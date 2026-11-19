@@ -86,6 +86,19 @@ seconds, under 4 MB).
     static/img/         photos and posters
     _site/              the built site (not committed)
 
+## The sound reel (Film & Games)
+
+The reel plays under the Film & Games banner. It stays hidden until a file is named.
+
+1. Put the video in `static/video/` (an `.mp4`, H.264 with AAC sound, under 100 MB) and a still
+   for it in `static/img/` (the picture shown, dimmed, until play is pressed).
+2. In `content/site.json`, under `"reels"` > `"film"`, fill in `"video"` and `"poster"` with the
+   two file names, and one line per film under `"chapters"`: its `"title"`, your `"role"` on it,
+   and the time it `"start"`s in the reel (`"0:22"`). Leave `"chapters"` empty for one plain line.
+
+The frame is cinema-wide (2.39:1), so a 16:9 reel is cropped a little top and bottom on the
+page and shown whole in full screen.
+
 ## Publishing
 
 The site publishes from GitHub Pages using `.github/workflows/deploy.yml`.

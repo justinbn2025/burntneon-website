@@ -262,6 +262,91 @@
     var url = box.getAttribute('data-video'), node;
     if (url) box.querySelector('.play').addEventListener('click', function () { showVideo(box, url, box.getAttribute('data-title')); node = box.lastElementChild; if (node) { node.tabIndex = 0; node.focus(); } });
   });
+  /* 6. The sound reel: plays in place, one marker per film, optional full screen. */
+  each('.rs', function (box) {
+    var v = box.querySelector('video'), playBtn = box.querySelector('.rs-play'), full = box.querySelector('.rs-full');
+    var time = box.querySelector('.rs-time'), title = box.querySelector('.rs-title'), role = box.querySelector('.rs-role');
+    var rail = box.querySelector('.rs-chapters'), err = box.querySelector('.rs-error');
+    var segs = Array.prototype.slice.call(box.querySelectorAll('.rs-seg'));
+    var starts = segs.map(function (s) { return parseFloat(s.getAttribute('data-start')) || 0; });
+    var name = playBtn.getAttribute('aria-label').replace(/^Play /, '');
+    v.controls = false;                                   // the page's own controls take over from the browser's
+    function dur() { return isFinite(v.duration) ? v.duration : 0; }
+    function end(k) { return k + 1 < starts.length ? starts[k + 1] : dur(); }
+    function stop() { v.pause(); }
+    stoppers.push(stop);
+    function layout() {                                   // each marker is as wide as its film's share of the reel
+      if (!dur() || segs.length < 2) return;
+      rail.style.gridAutoFlow = 'row';
+      rail.style.gridTemplateColumns = starts.map(function (s, k) {
+        return 'minmax(0, ' + Math.max(end(k) - s, dur() * 0.08).toFixed(2) + 'fr)';
+      }).join(' ');
+    }
+    function paint() {
+      var t = v.currentTime || 0, cur = 0, k, len;
+      for (k = 0; k < starts.length; k++) if (t >= starts[k]) cur = k;
+      for (k = 0; k < segs.length; k++) {
+        len = end(k) - starts[k];
+        segs[k].style.setProperty('--f', len > 0 ? Math.min(1, Math.max(0, (t - starts[k]) / len)).toFixed(4) : 0);
+        segs[k].classList.toggle('on', k === cur && segs.length > 1);
+        if (k === cur) segs[k].setAttribute('aria-current', 'true'); else segs[k].removeAttribute('aria-current');
+      }
+      if (segs[cur].getAttribute('data-title')) {
+        title.textContent = segs[cur].getAttribute('data-title');
+        role.textContent = segs[cur].getAttribute('data-role') || '';
+      }
+      time.textContent = dur() ? fmt(t) + ' / ' + fmt(dur()) : fmt(t);
+    }
+    function toggle() {
+      if (v.paused) { stopOthers(stop); v.play(); } else v.pause();
+    }
+    function inFull() { return (document.fullscreenElement || document.webkitFullscreenElement) === box; }
+    function toggleFull() {
+      if (inFull()) (document.exitFullscreen || document.webkitExitFullscreen).call(document);
+      else if (box.requestFullscreen) box.requestFullscreen();
+      else if (box.webkitRequestFullscreen) box.webkitRequestFullscreen();
+      else if (v.webkitEnterFullscreen) v.webkitEnterFullscreen();      // iPhone: only the video itself can go full screen
+    }
+    function fullChanged() {
+      full.setAttribute('aria-pressed', inFull() ? 'true' : 'false');
+      full.setAttribute('aria-label', inFull() ? 'Leave full screen' : 'Full screen');
+    }
+    playBtn.addEventListener('click', toggle);
+    v.addEventListener('click', toggle);
+    full.addEventListener('click', toggleFull);
+    document.addEventListener('fullscreenchange', fullChanged);
+    document.addEventListener('webkitfullscreenchange', fullChanged);
+    v.addEventListener('play', function () {
+      box.classList.add('started'); box.classList.add('playing');
+      playBtn.innerHTML = PAUSE; playBtn.setAttribute('aria-label', 'Pause ' + name);
+    });
+    v.addEventListener('pause', function () {
+      box.classList.remove('playing');
+      playBtn.innerHTML = PLAY; playBtn.setAttribute('aria-label', 'Play ' + name);
+    });
+    v.addEventListener('loadedmetadata', function () { layout(); paint(); });
+    v.addEventListener('durationchange', function () { layout(); paint(); });
+    v.addEventListener('timeupdate', paint);
+    v.addEventListener('seeked', paint);
+    v.addEventListener('error', function () { err.hidden = false; });
+    segs.forEach(function (seg, k) {
+      seg.addEventListener('click', function (ev) {
+        var box2 = seg.getBoundingClientRect(), to = starts[k];
+        if (segs.length < 2 && dur() && ev.clientX) to = dur() * Math.min(1, Math.max(0, (ev.clientX - box2.left) / box2.width));
+        v.currentTime = to;
+        if (v.paused) { stopOthers(stop); v.play(); }
+        paint();
+      });
+    });
+    box.addEventListener('keydown', function (ev) {
+      if (ev.key === 'ArrowRight' || ev.key === 'ArrowLeft') {
+        v.currentTime = Math.min(dur() || 0, Math.max(0, v.currentTime + (ev.key === 'ArrowRight' ? 5 : -5)));
+        ev.preventDefault();
+      } else if (ev.key === 'f' || ev.key === 'F') toggleFull();
+    });
+    if (v.readyState >= 1) layout();
+    paint();
+  });
   // Film strip: when it is narrow enough to scroll sideways, show which frame is centred
   // and let the keyboard reach it (a scrolling area has to be focusable).
   each('.filmstrip', function (strip) {

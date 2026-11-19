@@ -232,6 +232,58 @@ def reel(key, label, src, poster):
                "" if src else " disabled", PLAY, note))
 
 
+def clock(value):
+    """"1:05" or 65 -> seconds."""
+    parts = [float(x) for x in str(value or 0).split(":")]
+    return sum(x * 60 ** i for i, x in enumerate(reversed(parts)))
+
+
+FULL = ('<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" '
+        'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
+
+
+def film_reel():
+    """The sound reel under the Film & Games banner: edge to edge, cinema-wide, one marker per film.
+    Left out entirely until "reels" > "film" > "video" in site.json names a file in static/video
+    (or a full address). "chapters" is optional: without it there is one plain progress line."""
+    r = SITE["reels"].get("film") or {}
+    if isinstance(r, str):
+        r = {"video": r}
+    src = r.get("video")
+    if not src:
+        missing("video: sound reel")
+        return ""
+    if src.startswith("http"):
+        u = urlparse(src)
+        MEDIA_HOSTS.add(u.scheme + "://" + u.netloc)
+    else:
+        if not (STATIC / "video" / src).exists():
+            missing("video file not found: static/video/" + src)
+        src = "video/" + src
+    label = r.get("label") or "Sound reel"
+    poster = r.get("poster") or "reel-film.jpg"
+    poster = ' poster="img/%s"' % e(poster) if (STATIC / "img" / poster).exists() else ""
+    chapters = [c for c in r.get("chapters", []) if c.get("title")]
+    if chapters:
+        segs = "".join(
+            '<button class="rs-seg" type="button" data-start="%g" data-title="%s" data-role="%s" aria-label="Jump to %s">'
+            '<i></i><span><em>%02d</em>%s</span></button>'
+            % (clock(c.get("start")), e(c["title"]), e(c.get("role", "")), e(c["title"]), n, e(c["title"]))
+            for n, c in enumerate(chapters, 1))
+    else:
+        segs = '<button class="rs-seg rs-seek" type="button" data-start="0" aria-label="Skip to this point in the reel"><i></i></button>'
+    return ('<section class="reelband" id="reel" aria-label="%s"><div class="rs">'
+            '<div class="rs-pic"><video class="rs-video" src="%s"%s preload="metadata" playsinline controls></video>'
+            '<button class="play rs-play" type="button" aria-label="Play the %s">%s</button></div>'
+            '<div class="rs-ui"><div class="rs-row"><span class="rs-kicker">%s</span><span class="rs-title">%s</span>'
+            '<span class="rs-role">%s</span><span class="rs-time">0:00</span>'
+            '<button class="rs-full" type="button" aria-label="Full screen" aria-pressed="false">%s</button></div>'
+            '<div class="rs-chapters">%s</div><p class="rs-error" role="alert" hidden>This video didn’t load. Try again in a moment.</p>'
+            '</div></div></section>'
+            % (e(label), e(src), poster, e(label.lower()), PLAY, e(label),
+               e(chapters[0]["title"]) if chapters else "", e(chapters[0].get("role", "")) if chapters else "", FULL, segs))
+
+
 def player(title, sub, src, label):
     """One audio sample: play button, title, time."""
     if not src:
@@ -512,10 +564,11 @@ def film():
     p = PAGES["film"]
     imdb = SITE["links"].get("imdb")
     b = p["banner"]
+    sound_reel = film_reel()
     body = hero("film", t(b["label"]), t(b["headline"]), t(b["text"]),
-                banner_buttons(b, "#credits", p["contact"].get("email_subject", "")),
-                reel("film", b["video_label"], SITE["reels"].get("film"), "reel-film.jpg"),
-                "", "Background: a darkened film still, or the mix session on screen")
+                banner_buttons(b, "#reel" if sound_reel else "#credits", p["contact"].get("email_subject", "")),
+                "", "", "Background: a darkened film still, or the mix session on screen")
+    body += sound_reel
     c = p["credits"]
     body += section('<div class="split-head"><div>%s</div>%s</div>%s' % (
         heading(t(c["label"]), t(c["heading"])),

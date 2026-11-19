@@ -18,7 +18,13 @@
 
   "reels": {
     "home": "",
-    "film": ""
+    "film": {
+      "video": "",
+      "poster": "reel-film.jpg",
+      "chapters": [
+        { "title": "", "role": "", "start": "0:00" }
+      ]
+    }
   },
 
   "tile_samples": {

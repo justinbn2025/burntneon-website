@@ -558,3 +558,68 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
   .wave-fill { fill: Highlight; }
   .hero-shade { display: none; }
 }
+
+/* ---------- Film & Games: the sound reel, edge to edge under the banner ---------- */
+.reelband { position: relative; background: var(--bg); padding: 0.5rem 0 1.5rem; scroll-margin-top: var(--header-h); }
+.rs { position: relative; aspect-ratio: 2.39 / 1; max-block-size: 84vh; inline-size: 100%; overflow: hidden; background: var(--bg);
+  --pad: max(var(--gutter), calc(50% - 35rem)); }
+.rs-pic { position: absolute; inset: 0; }
+.rs-video { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; cursor: pointer; background: var(--bg);
+  transition: filter 0.5s ease;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16%, #000 84%, transparent 100%), linear-gradient(180deg, transparent 0, #000 10%, #000 86%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0, #000 16%, #000 84%, transparent 100%), linear-gradient(180deg, transparent 0, #000 10%, #000 86%, transparent 100%);
+  mask-composite: intersect; }
+.js .rs:not(.started) .rs-video { filter: brightness(0.55) saturate(0.85); }      /* the still is dimmed until play is pressed */
+.rs-pic::after { content: ""; position: absolute; inset: 0; pointer-events: none;   /* keeps the title and markers readable over a bright frame */
+  background: linear-gradient(0deg, rgba(14, 14, 15, 0.82) 0, rgba(14, 14, 15, 0.35) 22%, transparent 42%); }
+.rs-play, .rs-ui { display: none; }
+.js .rs-play { display: grid; position: absolute; left: 50%; top: 50%; z-index: 2; inline-size: 5.75rem; block-size: 5.75rem; margin: -2.875rem 0 0 -2.875rem;
+  box-shadow: 0 0 0 0.625rem rgba(210, 105, 30, 0.18), 0 0 3.75rem rgba(210, 105, 30, 0.45); transition: opacity 0.25s ease, transform 0.15s ease, background 0.15s ease; }
+.rs-play svg { inline-size: 2.5rem; block-size: 2.5rem; }
+.rs.playing .rs-play:not(:focus-visible) { opacity: 0; pointer-events: none; }
+.js .rs-ui { display: block; position: absolute; inset: auto var(--pad) 1.5rem; z-index: 2; }
+.rs-row { display: flex; align-items: baseline; gap: 0.875rem; margin-bottom: 0.5rem; min-inline-size: 0; }
+.rs-kicker { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
+.rs-title { font-family: var(--head); font-size: 1.375rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rs-role { font-size: 0.875rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rs-time { margin-left: auto; font-size: 0.8125rem; color: var(--soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.rs-full { align-self: center; display: grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; padding: 0; border: 1px solid transparent; border-radius: 0.25rem;
+  background: none; color: var(--soft); cursor: pointer; }
+.rs-full:hover { color: var(--text); border-color: var(--line); }
+.rs-full svg { inline-size: 1.25rem; block-size: 1.25rem; }
+.rs-chapters { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 0.375rem; }
+.rs-seg { display: grid; gap: 0.5rem; align-content: start; min-inline-size: 0; padding: 0.5rem 0 0; border: 0; background: none; color: var(--muted);
+  font: inherit; font-size: 0.875rem; text-align: left; cursor: pointer; }
+.rs-seg i { display: block; position: relative; block-size: 3px; border-radius: 2px; overflow: hidden; background: rgba(255, 250, 240, 0.18); }
+.rs-seg i::after { content: ""; position: absolute; inset: 0; background: var(--accent); transform-origin: left center; transform: scaleX(var(--f, 0)); }
+.rs-seg span { display: flex; gap: 0.5rem; align-items: baseline; white-space: nowrap; overflow: hidden; }
+.rs-seg em { font-style: normal; font-size: 0.6875rem; letter-spacing: 0.1em; color: #6f6c67; font-variant-numeric: tabular-nums; }
+.rs-seg:hover, .rs-seg.on { color: var(--text); }
+.rs-seg:hover i { background: rgba(255, 250, 240, 0.32); }
+.rs-seg.on i { background: rgba(210, 105, 30, 0.42); }
+.rs-seg.on em { color: var(--accent); }
+.rs-error { margin: 0.75rem 0 0; font-size: 0.875rem; color: var(--accent-hi); }
+/* Full screen: the whole picture, no fades, same controls. */
+.rs:fullscreen { aspect-ratio: auto; max-block-size: none; inline-size: 100vw; block-size: 100vh; background: #000; }
+.rs:fullscreen .rs-pic { position: absolute; inset: 0; aspect-ratio: auto; }
+.rs:fullscreen .rs-video { -webkit-mask-image: none; mask-image: none; object-fit: contain; background: #000; }
+.rs:fullscreen .rs-ui { position: absolute; inset: auto var(--pad) 1.5rem; padding: 0; }
+.rs:fullscreen .rs-pic::after { background: none; }
+.rs:-webkit-full-screen { aspect-ratio: auto; max-block-size: none; inline-size: 100vw; block-size: 100vh; background: #000; }
+.rs:-webkit-full-screen .rs-video { -webkit-mask-image: none; mask-image: none; object-fit: contain; background: #000; }
+@media (max-width: 48em) {   /* narrow screens: a taller picture with the title and markers underneath it, names hidden */
+  .rs { aspect-ratio: auto; max-block-size: none; overflow: visible; }
+  .rs-pic { position: relative; aspect-ratio: 16 / 9; }
+  .rs-pic::after { background: none; }
+  .rs-video { -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 90%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 90%, transparent 100%); }
+  .js .rs-ui { position: static; padding: 0.5rem var(--gutter) 0; }
+  .js .rs-play { inline-size: 4.25rem; block-size: 4.25rem; margin: -2.125rem 0 0 -2.125rem; }
+  .rs-play svg { inline-size: 1.875rem; block-size: 1.875rem; }
+  .rs-row { flex-wrap: wrap; row-gap: 0.125rem; }
+  .rs-kicker { flex-basis: 100%; }
+  .rs-title { font-size: 1.125rem; }
+  .rs-role { display: none; }
+  .rs-seg span { display: none; }
+  .rs-seg { padding-bottom: 0.5rem; }
+}
