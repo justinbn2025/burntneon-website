@@ -116,6 +116,8 @@ Going live on burntneonproductions.com (do this last):
 3. Back in Settings > Pages, tick **Enforce HTTPS** once it is offered.
 4. Unpublish the Google Sites version.
 
+If the site ever has to leave GitHub Pages, the plan is in `MIGRATING-TO-CLOUDFLARE.md`.
+
 ## Security notes
 
 - Turn on two-factor sign-in for GitHub and for the domain registrar. Those two
