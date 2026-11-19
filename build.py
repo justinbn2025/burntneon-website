@@ -395,7 +395,7 @@ def thread(items, names):
 
 
 # Banners whose side card sits under the text instead of beside it, leaving the photo clear.
-STACKED_HEROES = {"podcasts"}
+STACKED_HEROES = set()
 
 
 def hero(page, eyebrow, h1, lead, buttons, side, bg_alt, bg_label):
@@ -596,8 +596,14 @@ def podcasts():
     samples = PODCASTS["samples"]
     first = ab_player(samples[0], 1) if samples else ""
     body = hero("podcasts", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#packages"),
-                first + '<p class="hint">%s</p>' % t(PAGES["shared"]["sample_hint"]),
-                "", "Background: your editing screen with a podcast waveform, headphones in frame")
+                "", "", "Background: your editing screen with a podcast waveform, headphones in frame")
+    # The first before-and-after sample has its own section under the banner: words on the left,
+    # the player on the right, set in the dark rack panel like a piece of outboard gear.
+    if first:
+        sm = p["sample"]
+        body += section('<div class="sample"><div>%s<p class="sample-lead">%s</p></div><div class="sample-player">%s</div></div>'
+                        % (heading(t(sm["label"]), t(sm["heading"])), t(PAGES["shared"]["sample_hint"]), first),
+                        "band-rack rack-dark", "sample")
     # "show_more_samples": false in podcasts.json hides the "More examples" section
     # (and stops the build asking for those samples) until it is switched back on.
     more = ""

@@ -154,6 +154,10 @@
       "second_button": "Get a free sample",
       "email_subject": "Free podcast sample"
     },
+    "sample": {
+      "label": "Before and after",
+      "heading": "Hear the difference."
+    },
     "more_samples": { "label": "More examples", "heading": "Different problems, same result." },
     "steps": {
       "label": "How it works",
