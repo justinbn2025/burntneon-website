@@ -581,7 +581,7 @@ def music():
     body += section('<div class="about"><div class="about-text">%s<p>%s</p><a class="btn" href="%s">%s</a></div>%s</div>'
                     % (heading(t(th["label"]), t(th["heading"])), t(th["text"]), mailto(th.get("email_subject", "")), t(th["button"]),
                        image("theater.jpg", "A score on the music stand", "wide-img", "Photo: a score on the stand, or recording a cast number")),
-                    "glow-bl band-line")
+                    "glow-tr band-line")
     body += quotes("music", t(p["quotes_label"]), "band-foam foam-fade band-line", p.get("reviews_line", ""))
     body += contact(p["contact"])
     return layout("music", p["browser_title"], p["search_description"], body)
