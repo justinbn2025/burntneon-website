@@ -414,9 +414,9 @@ def hero(page, eyebrow, h1, lead, buttons, side, bg_alt, bg_label):
     else:
         pause = ""
     side_html = '<div class="hero-side">%s</div>' % side if side else ""
-    return ('<section class="hero">%s<div class="hero-shade"></div>%s<div class="wrap hero-row%s"><div class="hero-text">'
+    return ('<section class="hero hero-%s">%s<div class="hero-shade"></div>%s<div class="wrap hero-row%s"><div class="hero-text">'
             '<p class="eyebrow">%s</p><h1>%s</h1><p class="lead">%s</p><div class="btn-row">%s</div></div>'
-            '%s</div></section>' % (bg, pause, (" stack" if page in STACKED_HEROES else "") if side else " solo", eyebrow, h1, lead, btns, side_html))
+            '%s</div></section>' % (page, bg, pause, (" stack" if page in STACKED_HEROES else "") if side else " solo", eyebrow, h1, lead, btns, side_html))
 
 
 # ---------- wording ----------
@@ -558,7 +558,7 @@ def music():
     li = p["listen"]
     body += section(heading(t(li["label"]), t(li["heading"])) + '<div class="grid styles">%s</div>' % groups
                     + ('<p class="aside">%s <a href="%s" rel="noopener">%s</a>.</p>'
-                       % (t(li["spotify_line"]), e(spotify), t(li["spotify_link"])) if spotify else ""), "band-spectro", "listen")
+                       % (t(li["spotify_line"]), e(spotify), t(li["spotify_link"])) if spotify else ""), "band-spectro spectro-join", "listen")
     # Services is the page's pricing section, so it takes the dots (kept for pricing) and plain cards
     # like the podcast packages, with the same "Before you ask" questions under it.
     sv = p["services"]

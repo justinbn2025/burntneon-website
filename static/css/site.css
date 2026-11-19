@@ -113,6 +113,7 @@ input[type="range"]:disabled { opacity: 0.45; cursor: default; }
 /* A section that runs into the contact band takes on the band's own black-to-orange colours at its
    bottom edge, so the two join without a line or a dark gap. */
 .band-cta.seamless { border-top: 0; }
+.fade-ember { padding-bottom: calc(var(--band) + var(--blend) * 1.6); }   /* room for the colour change below the content */
 .fade-ember::after { content: ""; position: absolute; inset: auto 0 0 0; block-size: calc(var(--blend) * 2); pointer-events: none;
   background: var(--cta-bg); -webkit-mask-image: linear-gradient(0deg, #000 0, transparent 100%); mask-image: linear-gradient(0deg, #000 0, transparent 100%); }
 .fade-out { --fade-bottom: linear-gradient(0deg, var(--bg) 0, transparent var(--blend)); }
@@ -181,6 +182,14 @@ input[type="range"]:disabled { opacity: 0.45; cursor: default; }
   background:
     linear-gradient(90deg, rgba(14, 14, 15, 0.94) 0, rgba(14, 14, 15, 0.8) 22%, rgba(14, 14, 15, 0.4) 46%, transparent 68%),
     linear-gradient(180deg, #0e0e0f 0, rgba(14, 14, 15, 0.72) 9%, rgba(14, 14, 15, 0.42) 22%, rgba(14, 14, 15, 0.62) 48%, rgba(14, 14, 15, 0.9) 80%, #0e0e0f 100%) left top / 100% var(--spectro-h) no-repeat,
+    url("../img/spectrogram.jpg") center top / auto var(--spectro-h) no-repeat, var(--bg); }
+/* On Music the banner runs straight into the spectrogram: the photo fades into the spectrogram's own
+   dark orange instead of black, and the spectrogram starts at that tone, so there is no dark gap between them. */
+.hero-music::after { background: linear-gradient(0deg, rgb(132, 76, 28) 0, rgba(132, 76, 28, 0.5) 40%, rgba(132, 76, 28, 0) 100%); block-size: 6.5rem; }
+.band-spectro.spectro-join { background:
+    linear-gradient(180deg, rgb(132, 76, 28) 0, rgba(132, 76, 28, 0.45) 1.25rem, rgba(132, 76, 28, 0) 3.25rem) left top / 100% 3.25rem no-repeat,   /* picks up exactly where the banner left off */
+    radial-gradient(ellipse 66% 82% at 0% 68%, rgba(14, 14, 15, 0.94) 0, rgba(14, 14, 15, 0.82) 35%, rgba(14, 14, 15, 0.42) 68%, transparent 100%) left top / 100% var(--spectro-h) no-repeat,   /* dark behind the heading, easing in from the top */
+    linear-gradient(180deg, rgba(14, 14, 15, 0.35) 0, rgba(14, 14, 15, 0.42) 22%, rgba(14, 14, 15, 0.62) 48%, rgba(14, 14, 15, 0.9) 80%, #0e0e0f 100%) left top / 100% var(--spectro-h) no-repeat,
     url("../img/spectrogram.jpg") center top / auto var(--spectro-h) no-repeat, var(--bg); }
 .band-spectro h2, .band-spectro h3, .band-spectro .eyebrow { text-shadow: 0 1px 8px #0e0e0f, 0 0 2px #0e0e0f; }
 /* Edit timeline (Film services): track lanes, clips and a playhead at a fixed scale, like the spectrogram.
