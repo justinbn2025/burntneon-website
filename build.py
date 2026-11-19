@@ -557,11 +557,8 @@ def music():
     body += section(heading(t(li["label"]), t(li["heading"])) + '<div class="grid styles">%s</div>' % groups
                     + ('<p class="aside">%s <a href="%s" rel="noopener">%s</a>.</p>'
                        % (t(li["spotify_line"]), e(spotify), t(li["spotify_link"])) if spotify else ""), "band-spectro", "listen")
-    # How it works comes first, as channel strips in the rack panel; Services is the page's pricing
-    # section, so it takes the dots (kept for pricing) and plain cards like the podcast packages.
-    st = p["steps"]
-    body += section(heading(t(st["label"]), t(st["heading"]))
-                    + strips([(t(i["title"]), t(i["text"]), step_list(i.get("list"))) for i in st["items"]], "STAGE", ordered=True), "band-rack")
+    # Services is the page's pricing section, so it takes the dots (kept for pricing) and plain cards
+    # like the podcast packages, with the same "Before you ask" questions under it.
     sv = p["services"]
     svc = ""
     for s in MUSIC["services"]:
@@ -575,7 +572,11 @@ def music():
                 % (e(s["name"]), '<div class="pack-price">%s</div>' % price if price else "", e(s["text"]), send,
                    ask_button(t(sv["button"]), s["name"], "Music: " + s["name"])))
     body += section(heading(t(sv["label"]), t(sv["heading"])) + '<div class="grid packs">%s</div>' % svc
-                    + '<p class="aside">%s</p>' % t(sv["note"]), "band-dots", "services")
+                    + '<p class="aside">%s</p>' % t(sv["note"]), "band-dots fade-out", "services")
+    if MUSIC.get("questions"):
+        q = p["questions"]
+        body += section(heading(t(q["label"]), t(q["heading"])) + '<div class="grid faq">%s</div>' % "".join(
+            "<div><h3>%s</h3><p>%s</p></div>" % (e(x["q"]), e(x["a"])) for x in MUSIC["questions"]), "band-rings rings-br fade-in")
     th = p["theater"]
     body += section('<div class="about"><div class="about-text">%s<p>%s</p><a class="btn" href="%s">%s</a></div>%s</div>'
                     % (heading(t(th["label"]), t(th["heading"])), t(th["text"]), mailto(th.get("email_subject", "")), t(th["button"]),
@@ -594,12 +595,12 @@ def podcasts():
     body = hero("podcasts", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#packages"),
                 "", "", "Background: your editing screen with a podcast waveform, headphones in frame")
     # The first before-and-after sample has its own section under the banner: words on the left,
-    # the player on the right, set in the dark rack panel like a piece of outboard gear.
+    # the player on the right, over a waveform that runs from rough (before) to clean (after).
     if first:
         sm = p["sample"]
         body += section('<div class="sample"><div>%s<p class="sample-lead">%s</p></div><div class="sample-player">%s</div></div>'
                         % (heading(t(sm["label"]), t(sm["heading"])), t(PAGES["shared"]["sample_hint"]), first),
-                        "band-rack rack-dark", "sample")
+                        "band-ba", "sample")
     # "show_more_samples": false in podcasts.json hides the "More examples" section
     # (and stops the build asking for those samples) until it is switched back on.
     more = ""

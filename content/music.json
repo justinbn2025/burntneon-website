@@ -33,5 +33,11 @@
       "text": "A master that holds up on every speaker, done by ear, with your intent kept intact.",
       "send": "Your mix and a reference song.",
       "price": "$50", "unit": "per song" }
+  ],
+  "questions": [
+    { "q": "How fast will I hear something?", "a": "Vocals arrive within 5 days. For production, mixing and mastering, I give you a delivery date with the quote." },
+    { "q": "Can I direct the vocal session?", "a": "Yes. You can join live over Zoom while I record and steer it as we go." },
+    { "q": "How many revisions do I get?", "a": "Two rounds of revisions are included." },
+    { "q": "What do I get back?", "a": "Final WAV files at the sample rate and bit depth you ask for." }
   ]
 }

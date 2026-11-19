@@ -126,6 +126,7 @@
         { "title": "Revise and deliver", "text": "Two rounds of revisions included. Final WAV files delivered at the sample rate and bit depth you ask for." }
       ]
     },
+    "questions": { "label": "Questions", "heading": "Before you ask." },
     "theater": {
       "label": "For musical theater writers",
       "heading": "Demos and workshop albums, start to finish.",
