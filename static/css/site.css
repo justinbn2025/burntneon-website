@@ -413,7 +413,7 @@ img.hero-bg-home, img.hero-bg-music, img.hero-bg-film, img.hero-bg-podcasts { op
 .knob-card p { color: var(--muted); font-size: 0.9375rem; line-height: 1.55; }
 
 /* Podcasts: the job as a message thread */
-.thread { display: grid; gap: 1.25rem; margin: 2.125rem 0 0; padding: 0; list-style: none; max-inline-size: 52rem; }
+.thread { display: grid; gap: 1.25rem; margin: 2.125rem 0 0; padding: 0; list-style: none; }   /* full width, so my replies sit at the right edge like a chat */
 .msg { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem 1.5rem; }
 .msg-me { flex-direction: row-reverse; }
 .bubble { flex: 0 1 auto; max-inline-size: 26rem; padding: 0.875rem 1.125rem 1rem; border-radius: 1rem 1rem 1rem 0.25rem; background: #232326; color: var(--text); font-size: 1rem; line-height: 1.45; }
