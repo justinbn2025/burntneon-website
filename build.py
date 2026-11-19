@@ -219,11 +219,11 @@ def heading(eyebrow, h2=""):
 
 
 def reel(key, label, src, poster):
-    """A video card. Plays a YouTube or Vimeo link, or an .mp4, when clicked."""
+    """A video card. Plays a YouTube or Vimeo link, or an .mp4, when clicked.
+    Left out entirely (drafts included) until its link is filled in under "reels" in site.json."""
     if not src:
         missing("video: " + label)
-        if not SHOW:
-            return ""
+        return ""
     img = ('<img src="img/%s" alt="" loading="lazy">' % poster) if (STATIC / "img" / poster).exists() else ""
     note = "" if src else '<span class="reel-note">Video to add: %s</span>' % e(label)
     return ('<div class="reel%s" data-video="%s" data-title="%s">%s<span class="reel-label">%s</span>'
@@ -271,14 +271,15 @@ def ab_player(sample, n):
 
 
 def quotes(page, eyebrow, look="band-dots", reviews_line=""):
-    """Client quotes for one page. reviews_line is that page's own line under the quotes, if it has one."""
+    """Client quotes for one page; the section appears once quotes.json has at least one quote for the page.
+    reviews_line is that page's own line under the quotes, if it has one."""
     items = [q for q in QUOTES if page in q.get("pages", [])]
     filled = [q for q in items if q.get("quote")]
     if len(filled) < len(items):
         missing("client quotes for the %s page (%d of %d written)" % (page, len(filled), len(items)))
-    show = items if SHOW else filled
-    if not show:
+    if not filled:      # no quotes written for this page yet: leave the whole section out, drafts included
         return ""
+    show = items if SHOW else filled
     figs = "".join(
         '<figure class="quote"><blockquote>&ldquo;%s&rdquo;</blockquote><figcaption>%s</figcaption></figure>'
         % (e(q["quote"]) if q.get("quote") else '<span class="todo">[client quote]</span>',
@@ -352,14 +353,31 @@ def knobs(items):
         % (knob(i, n), i, h, p) for i, (h, p) in enumerate(items, 1))
 
 
-def strips(items):
-    """Music services as channel strips on a mixing board. The fader and meter are decoration."""
+def step_list(lines):
+    """The short list under a step. "Vocals: the instrumental" shows "Vocals" as the lead-in."""
+    out = ""
+    for line in lines or []:
+        head, sep, rest = line.partition(": ")
+        out += "<li><b>%s</b> %s</li>" % (t(head), t(rest)) if sep else "<li>%s</li>" % t(line)
+    return '<ul class="strip-list">%s</ul>' % out if out else ""
+
+
+def ask_button(label, name, subject, ghost=True):
+    """A card's enquiry button, always on two lines: the label, then the thing asked about."""
+    return ('<a class="btn btn-ask%s" href="%s"><span>%s</span> <span>%s</span></a>'
+            % (" btn-ghost" if ghost else "", mailto(subject), label, e(name)))
+
+
+def strips(items, label="CH", ordered=False):
+    """Channel strips on a mixing board; the fader and meter are decoration.
+    Music's 'How it works' uses them as an ordered list, one strip per stage."""
     meter = "<i></i>" * 12
-    return '<div class="grid strips">%s</div>' % "".join(
-        '<div class="strip"><div class="strip-top" aria-hidden="true"><span>CH %d</span><i class="led"></i></div>'
+    outer, inner = ("ol", "li") if ordered else ("div", "div")
+    return '<%s class="grid strips"%s>%s</%s>' % (outer, ' role="list"' if ordered else "", "".join(
+        '<%s class="strip"><div class="strip-top" aria-hidden="true"><span>%s %d</span><i class="led"></i></div>'
         '<div class="strip-fader" aria-hidden="true"><div class="fader"><i class="fader-cap"></i></div><div class="meter">%s</div></div>'
-        '<h3 class="strip-name">%s</h3><p>%s</p>%s</div>' % (i, meter, h, p, extra)
-        for i, (h, p, extra) in enumerate(items, 1))
+        '<h3 class="strip-name">%s</h3><p>%s</p>%s</%s>' % (inner, label, i, meter, h, p, extra, inner)
+        for i, (h, p, extra) in enumerate(items, 1)), outer)
 
 
 def thread(items, names):
@@ -374,6 +392,10 @@ def thread(items, names):
                 % ("msg-me" if mine else "msg-them", e(names["me" if mine else "host"]), t(it.get("says", "")), file,
                    i, t(it["title"]), t(it["text"])))
     return '<ol class="thread" role="list">%s</ol>' % out
+
+
+# Banners whose side card sits under the text instead of beside it, leaving the photo clear.
+STACKED_HEROES = {"podcasts"}
 
 
 def hero(page, eyebrow, h1, lead, buttons, side, bg_alt, bg_label):
@@ -392,7 +414,7 @@ def hero(page, eyebrow, h1, lead, buttons, side, bg_alt, bg_label):
     side_html = '<div class="hero-side">%s</div>' % side if side else ""
     return ('<section class="hero">%s<div class="hero-shade"></div>%s<div class="wrap hero-row%s"><div class="hero-text">'
             '<p class="eyebrow">%s</p><h1>%s</h1><p class="lead">%s</p><div class="btn-row">%s</div></div>'
-            '%s</div></section>' % (bg, pause, "" if side else " solo", eyebrow, h1, lead, btns, side_html))
+            '%s</div></section>' % (bg, pause, (" stack" if page in STACKED_HEROES else "") if side else " solo", eyebrow, h1, lead, btns, side_html))
 
 
 # ---------- wording ----------
@@ -473,17 +495,17 @@ def home():
                 reel("home", b["video_label"], SITE["reels"].get("home"), "reel-home.jpg"),
                 "", "Background: a muted video loop or photo of the studio")
     body += section(heading(t(p["paths"]["label"]), t(p["paths"]["heading"])) + '<div class="grid tiles">%s</div>' % tile_html,
-                    "glow-tr", "paths")
+                    "band-rings rings-side fade-in", "paths")
     c = p["credits"]
     body += section('<div class="split-head"><div>%s</div><a href="film.html">%s &rarr;</a></div>%s'
                     % (heading(t(c["label"]), t(c["heading"])), t(c["link"]),
                        credit_cards([x for x in CREDITS if x.get("on_home")])), "band-line", "work")
-    body += quotes("home", t(p["quotes_label"]))
+    body += quotes("home", t(p["quotes_label"]), "band-foam foam-fade fade-in")      # runs on from the credits: both are proof
     a = p["about"]
     body += section('<div class="about">%s<div class="about-text">%s%s<a class="btn btn-ghost" href="%s">%s</a></div></div>'
                     % (image("portrait.jpg", "Justin at the studio desk", "portrait", "Portrait: Justin at the desk or the mic"),
                        heading(t(a["label"]), t(a["heading"])), "".join("<p>%s</p>" % t(x) for x in a["paragraphs"]),
-                       mailto(), t(a["button"])), "glow-tr band-line", "about")
+                       mailto(), t(a["button"])), "band-rings rings-bl band-line", "about")
     body += contact(p["contact"])
     return layout("home", p["browser_title"], p["search_description"], body)
 
@@ -500,16 +522,14 @@ def film():
     body += section('<div class="split-head"><div>%s</div>%s</div>%s' % (
         heading(t(c["label"]), t(c["heading"])),
         '<a href="%s" rel="noopener">%s &rarr;</a>' % (e(imdb), t(c["link"])) if imdb else "",
-        credit_cards(CREDITS)), "glow-tr", "credits")
+        credit_cards(CREDITS)), "glow-br", "credits")      # glow kept low: the top stays dark under the banner's fade
     s = p["services"]
     body += section(heading(t(s["label"]), t(s["heading"])) + cards([(t(i["title"]), t(i["text"]), "") for i in s["items"]]),
-                    "band-dots band-line")
+                    "band-timeline band-line")
     s = p["steps"]
     body += section(heading(t(s["label"]), t(s["heading"])) + filmstrip([(t(i["title"]), t(i["text"])) for i in s["items"]]),
-                    "glow-bl band-line")
-    # Only two sections per page are dotted (the banner and one more), because dotted sections
-    # ripple and a page gets at most two ripples. Here that is Services, so quotes stay plain.
-    body += quotes("film", t(p["quotes_label"]), "band-line")
+                    "glow-bl")       # no line: what I do runs straight into how it works
+    body += quotes("film", t(p["quotes_label"]), "band-rings band-line")
     body += contact(p["contact"])
     return layout("film", p["browser_title"], p["search_description"], body)
 
@@ -540,27 +560,31 @@ def music():
     li = p["listen"]
     body += section(heading(t(li["label"]), t(li["heading"])) + '<div class="grid styles">%s</div>' % groups
                     + ('<p class="aside">%s <a href="%s" rel="noopener">%s</a>.</p>'
-                       % (t(li["spotify_line"]), e(spotify), t(li["spotify_link"])) if spotify else ""), "band-dots", "listen")
-    svc = []
+                       % (t(li["spotify_line"]), e(spotify), t(li["spotify_link"])) if spotify else ""), "band-spectro", "listen")
+    # How it works comes first, as channel strips in the rack panel; Services is the page's pricing
+    # section, so it takes the dots (kept for pricing) and plain cards like the podcast packages.
+    st = p["steps"]
+    body += section(heading(t(st["label"]), t(st["heading"]))
+                    + strips([(t(i["title"]), t(i["text"]), step_list(i.get("list"))) for i in st["items"]], "STAGE", ordered=True), "band-rack")
+    sv = p["services"]
+    svc = ""
     for s in MUSIC["services"]:
         if s.get("price") == "quote":
-            price = "Quoted " + e(s["unit"])
+            price = "Quoted <span>/ %s</span>" % e(s["unit"])
         else:
             pr = val(s.get("price"), "price: " + s["name"].lower())
-            price = "From %s %s" % (pr, e(s["unit"])) if pr else ""
-        svc.append((e(s["name"]), e(s["text"]), '<div class="price">%s</div>' % price if price else ""))
-    sv = p["services"]
-    body += section(heading(t(sv["label"]), t(sv["heading"])) + strips(svc) + '<p class="aside">%s</p>' % t(sv["note"]),
-                    "glow-tr band-line")
-    st = p["steps"]
-    body += section(heading(t(st["label"]), t(st["heading"])) + knobs([(t(i["title"]), t(i["text"])) for i in st["items"]]),
-                    "glow-bl band-line")
+            price = "From %s <span>/ %s</span>" % (pr, e(s["unit"])) if pr else ""
+        svc += ('<div class="pack pack-hover"><h3>%s</h3>%s<p>%s</p>%s</div>'
+                % (e(s["name"]), '<div class="pack-price">%s</div>' % price if price else "", e(s["text"]),
+                   ask_button(t(sv["button"]), s["name"], "Music: " + s["name"])))
+    body += section(heading(t(sv["label"]), t(sv["heading"])) + '<div class="grid packs">%s</div>' % svc
+                    + '<p class="aside">%s</p>' % t(sv["note"]), "band-dots", "services")
     th = p["theater"]
     body += section('<div class="about"><div class="about-text">%s<p>%s</p><a class="btn" href="%s">%s</a></div>%s</div>'
                     % (heading(t(th["label"]), t(th["heading"])), t(th["text"]), mailto(th.get("email_subject", "")), t(th["button"]),
                        image("theater.jpg", "A score on the music stand", "wide-img", "Photo: a score on the stand, or recording a cast number")),
-                    "band-line")
-    body += quotes("music", t(p["quotes_label"]), "glow-tr band-line", p.get("reviews_line", ""))   # see the note in film()
+                    "glow-bl band-line")
+    body += quotes("music", t(p["quotes_label"]), "band-foam foam-fade band-line", p.get("reviews_line", ""))
     body += contact(p["contact"])
     return layout("music", p["browser_title"], p["search_description"], body)
 
@@ -580,11 +604,9 @@ def podcasts():
         more = "".join(ab_player(s, i) for i, s in enumerate(samples[1:], 2))
     if more:
         m = p["more_samples"]
-        body += section(heading(t(m["label"]), t(m["heading"])) + '<div class="grid ab-grid">%s</div>' % more, "glow-tr")
-    # Section backgrounds alternate dots / glow. The banner is dotted, so whichever section
-    # follows it takes the glow: "More examples" when it is shown, otherwise the steps.
-    look_steps, look_packages = (("band-dots band-line", "glow-bl band-line") if more
-                                 else ("glow-tr", "band-dots band-line"))
+        body += section(heading(t(m["label"]), t(m["heading"])) + '<div class="grid ab-grid">%s</div>' % more, "band-spectro")
+    # Dots are kept for pricing: the packages are the only dotted section on the site.
+    look_steps, look_packages = ("glow-bl band-line" if more else "glow-bl"), "band-dots band-line fade-out"
     st = p["steps"]
     body += section(heading(t(st["label"]), t(st["heading"])) + thread(st["items"], st.get("names", {"host": "You", "me": "Me"})),
                     look_steps)
@@ -594,16 +616,15 @@ def podcasts():
         price = val(pack.get("price"), "price: " + pack["name"])
         items = "".join("<li>%s</li>" % x for x in (t(i) for i in pack["includes"]) if x.strip())
         packs += ('<div class="pack%s"><div class="pack-kind">%s</div><h3>%s</h3>%s<ul>%s</ul>'
-                  '<a class="btn%s" href="%s">%s %s</a></div>'
+                  '%s</div>'
                   % (" pack-hi" if pack.get("highlight") else "", e(pack["kind"]), e(pack["name"]),
                      '<div class="pack-price">%s%s</div>' % (price, " <span>/ %s</span>" % e(pack["per"]) if pack.get("per") else "") if price else "",
-                     items, "" if pack.get("highlight") else " btn-ghost", mailto("Podcast: " + pack["name"]),
-                     t(pk["button"]), e(pack["name"])))
+                     items, ask_button(t(pk["button"]), pack["name"], "Podcast: " + pack["name"], not pack.get("highlight"))))
     body += section(heading(t(pk["label"]), t(pk["heading"])) + '<div class="grid packs">%s</div>' % packs
                     + '<p class="aside">%s</p>' % t(pk["note"]), look_packages, "packages")
     q = p["questions"]
     body += section(heading(t(q["label"]), t(q["heading"])) + '<div class="grid faq">%s</div>' % "".join(
-        "<div><h3>%s</h3><p>%s</p></div>" % (e(x["q"]), e(x["a"])) for x in PODCASTS["questions"]), "band-line")
+        "<div><h3>%s</h3><p>%s</p></div>" % (e(x["q"]), e(x["a"])) for x in PODCASTS["questions"]), "band-rings rings-br fade-in")      # questions follow on from the prices
     body += contact(p["contact"])
     return layout("podcasts", p["browser_title"], p["search_description"], body)
 

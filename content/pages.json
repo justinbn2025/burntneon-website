@@ -113,13 +113,19 @@
     "services": {
       "label": "Services",
       "heading": "Hire one part, or all four.",
-      "note": "Backing vocals are quoted by arrangement. Bundle rates for 3 or more songs booked together."
+      "note": "Backing vocals are quoted by arrangement. Bundle rates for 3 or more songs booked together.",
+      "button": "Ask about"
     },
     "steps": {
       "label": "How it works",
       "heading": "Three steps, from anywhere.",
       "items": [
-        { "title": "Send what you have", "text": "For vocals: the instrumental, lyrics, and guide vocal and/or sheet music. For a mix or master: your tracks and a reference song you’d like the finished product to sound great beside. For production: a demo (even a voice memo) and your vision." },
+        { "title": "Send what you have", "text": "Whatever you already have is enough to start. I’ll tell you if anything is missing.",
+          "list": [
+            "Vocals: the instrumental, the lyrics, and a guide vocal or sheet music",
+            "Mixing or mastering: your tracks and a reference song",
+            "Production: a demo, even a voice memo, and what you’re picturing"
+          ] },
         { "title": "I send a first pass", "text": "You hear it and tell me what to change. Vocals arrive within 5 days, and you can join live over Zoom to direct the session." },
         { "title": "Revise and deliver", "text": "Two rounds of revisions included. Final WAV files delivered at the sample rate and bit depth you ask for." }
       ]

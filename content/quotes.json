@@ -1,6 +1,6 @@
 [
-  { "quote": "I recorded four songs with Justin, and it was a great experience; his vocal range, precision, and technical mastery during our attended session were truly amazing. He took our directions perfectly while adding his own creative input, resulting in vocals that exceeded our expectations. If you need a truly professional vocalist who is efficient and extremely talented, look no further. Work with Justin.", "name": "Walid Sarrouh", "role": "Composer/Producer", "pages": ["home", "music"] },
-  { "quote": "Truly an incredibly talented musician. Extremely beautiful voice, exceptional musicality and expression. Can't wait to collaborate with Justin again!", "name": "Jim Chou", "role": "Composer", "pages": ["home", "music"] },
+  { "quote": "I recorded four songs with Justin, and it was a great experience; his vocal range, precision, and technical mastery during our attended session were truly amazing. He took our directions perfectly while adding his own creative input, resulting in vocals that exceeded our expectations. If you need a truly professional vocalist who is efficient and extremely talented, look no further. Work with Justin.", "name": "Walid Sarrouh", "role": "Composer/Producer", "pages": ["music"] },
+  { "quote": "Truly an incredibly talented musician. Extremely beautiful voice, exceptional musicality and expression. Can't wait to collaborate with Justin again!", "name": "Jim Chou", "role": "Composer", "pages": ["music"] },
   { "quote": "", "name": "", "role": "", "pages": ["film"] },
   { "quote": "", "name": "", "role": "", "pages": ["film"] }
 ]
