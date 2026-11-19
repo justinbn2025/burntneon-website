@@ -5,11 +5,11 @@
   "review_count": "58",
 
   "styles": [
-    { "name": "Session singing", "tracks": [
+    { "name": "Session Singing", "tracks": [
       { "title": "Musical Theater Singing - Reel", "artist": "Various Artists", "role": "Singing and VO", "src": "musical-theater-reel.mp3" },
       { "title": "Pop Singing - Reel", "artist": "Various Artists", "role": "Lead and Backing Vocals", "src": "pop-reel.mp3" }
     ]},
-    { "name": "Production and mixing", "tracks": [
+    { "name": "Production, Mixing and Mastering", "tracks": [
       { "title": "feels like dancing", "artist": "Slan", "role": "Mixing and Mastering", "src": "feels-like-dancing.mp3" },
       { "title": "KARMA", "artist": "JVSTN.", "role": "Songwriting, Production, Mixing, and Mastering", "src": "karma.mp3" },
       { "title": "Sleepwalking (Bodies In The Basement)", "artist": "JVSTN.", "role": "Re-mixing/Production, Mixing, and Mastering", "src": "sleepwalking.mp3" }
@@ -17,11 +17,11 @@
   ],
 
   "services": [
-    { "name": "Session singing",
-      "text": "Lead vocals, doubles, harmonies and ad-libs. Pop, R&B, rock and musical theater.",
+    { "name": "Session Singing",
+      "text": "Lead vocals, doubles, harmonies and ad-libs. Pop, R&B, Rock and Musical Theater.",
       "price": "$120", "unit": "per song" },
     { "name": "Production",
-      "text": "Sample-based, synth-forward alternative pop, hip-hop and electronic. I help shape the idea and bring in players when the song needs them.",
+      "text": "Alternative Pop, Hip-Hop, Electronic, Rock. I help shape the idea and bring in players when the song needs them.",
       "price": "quote", "unit": "per song" },
     { "name": "Mixing",
       "text": "Any genre. Guitars re-amped, drums reinforced, and your mix matched against the records you love.",
