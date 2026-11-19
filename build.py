@@ -542,7 +542,7 @@ def home():
                % (e(media(sample)), key, key, PLAY)) if sample else ""
         tile_html += ('<div class="tile">%s<div class="tile-panel"><div class="tile-head"><h3>%s</h3>%s</div>'
                       '<p>%s</p><a href="%s">%s &rarr;</a></div></div>'
-                      % (image("tile-%s.jpg" % key, "", "tile-img", "Photo: " + slots[key]), t(tile["name"]), btn,
+                      % (image("tile-%s.jpg" % key, "", "tile-img tile-img-%s" % key, "Photo: " + slots[key]), t(tile["name"]), btn,
                          t(tile["text"]), hrefs[key], t(tile["link"])))
     b = p["banner"]
     body = hero("home", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#paths"),
