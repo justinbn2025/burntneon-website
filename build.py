@@ -576,12 +576,12 @@ def music():
     if MUSIC.get("questions"):
         q = p["questions"]
         body += section(heading(t(q["label"]), t(q["heading"])) + '<div class="grid faq">%s</div>' % "".join(
-            "<div><h3>%s</h3><p>%s</p></div>" % (e(x["q"]), e(x["a"])) for x in MUSIC["questions"]), "band-rings rings-br fade-in")
+            "<div><h3>%s</h3><p>%s</p></div>" % (e(x["q"]), e(x["a"])) for x in MUSIC["questions"]), "")
     th = p["theater"]
     body += section('<div class="about"><div class="about-text">%s<p>%s</p><a class="btn" href="%s">%s</a></div>%s</div>'
                     % (heading(t(th["label"]), t(th["heading"])), t(th["text"]), mailto(th.get("email_subject", "")), t(th["button"]),
                        image("theater.jpg", "A score on the music stand", "wide-img", "Photo: a score on the stand, or recording a cast number")),
-                    "band-rack rack-dark")
+                    "band-notes")
     body += quotes("music", t(p["quotes_label"]), "band-foam foam-fade band-line", p.get("reviews_line", ""))
     body += contact(p["contact"])
     return layout("music", p["browser_title"], p["search_description"], body)
@@ -628,7 +628,7 @@ def podcasts():
                     + '<p class="aside">%s</p>' % t(pk["note"]), look_packages, "packages")
     q = p["questions"]
     body += section(heading(t(q["label"]), t(q["heading"])) + '<div class="grid faq">%s</div>' % "".join(
-        "<div><h3>%s</h3><p>%s</p></div>" % (e(x["q"]), e(x["a"])) for x in PODCASTS["questions"]), "band-rings rings-br fade-in")      # questions follow on from the prices
+        "<div><h3>%s</h3><p>%s</p></div>" % (e(x["q"]), e(x["a"])) for x in PODCASTS["questions"]), "")      # plain black; questions follow on from the prices
     body += contact(p["contact"])
     return layout("podcasts", p["browser_title"], p["search_description"], body)
 
