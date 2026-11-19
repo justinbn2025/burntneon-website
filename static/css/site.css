@@ -164,7 +164,7 @@ input[type="range"]:disabled { opacity: 0.45; cursor: default; }
     linear-gradient(135deg, #1c1c1f 50%, transparent 0) 0 0 / 48px 48px,
     linear-gradient(45deg, #3c3c42 50%, #27272b 0) 0 0 / 48px 48px #27272b; }
 /* black on the right, clearing to foam on the left */
-.band-foam.foam-fade { --foam-shade: linear-gradient(270deg, #0e0e0f 0%, rgba(14, 14, 15, 0.92) 18%, rgba(14, 14, 15, 0.74) 45%, rgba(14, 14, 15, 0.52) 75%, rgba(14, 14, 15, 0.38) 100%); }
+.band-foam.foam-fade { --foam-shade: linear-gradient(270deg, rgba(14, 14, 15, 0.82) 0%, rgba(14, 14, 15, 0.72) 30%, rgba(14, 14, 15, 0.58) 65%, rgba(14, 14, 15, 0.46) 100%); }
 .band-foam .card, .band-foam .player, .band-foam .quote, .band-foam .ab { background-color: rgba(14, 14, 15, 0.88); }
 .band-foam .quote { padding: 1.125rem 1.25rem 1.25rem; border-radius: 0 0 0.375rem 0.375rem; }
 .band-foam .reviews, .band-foam .aside { text-shadow: 0 1px 6px #0e0e0f; }
