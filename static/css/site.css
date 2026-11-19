@@ -114,7 +114,7 @@ input[type="range"]:disabled { opacity: 0.45; cursor: default; }
    bottom edge, so the two join without a line or a dark gap. */
 .band-cta.seamless { border-top: 0; }
 .fade-ember { padding-bottom: calc(var(--band) + var(--blend) * 1.6); }   /* room for the colour change below the content */
-.fade-ember::after { content: ""; position: absolute; inset: auto 0 0 0; block-size: calc(var(--blend) * 1.45); pointer-events: none;
+.fade-ember::after { content: ""; position: absolute; inset: auto 0 0 0; block-size: calc(var(--blend) * 1.15); pointer-events: none;
   background: var(--cta-bg); -webkit-mask-image: linear-gradient(0deg, #000 0, transparent 100%); mask-image: linear-gradient(0deg, #000 0, transparent 100%); }
 .fade-out { --fade-bottom: linear-gradient(0deg, var(--bg) 0, transparent var(--blend)); }
 /* Every banner fades into the first section under it. */
@@ -188,8 +188,8 @@ input[type="range"]:disabled { opacity: 0.45; cursor: default; }
 /* Both sides of the join paint the same strip of colour (near black on the left, dark orange on the right)
    and are fully opaque where they meet, so the two sections cannot differ along that line. Each then
    fades out away from it. */
-.hero-music::after, .spectro-join::before { background: linear-gradient(90deg, #0e0e0f 0, #0e0e0f 8%, rgb(36, 25, 17) 30%, rgb(104, 58, 22) 72%); }
-.hero-music::after { block-size: 4.75rem; -webkit-mask-image: linear-gradient(0deg, #000 0, rgba(0, 0, 0, 0.5) 40%, transparent 100%); mask-image: linear-gradient(0deg, #000 0, rgba(0, 0, 0, 0.5) 40%, transparent 100%); }
+.hero-music::after, .spectro-join::before { background: linear-gradient(90deg, #0e0e0f 0, #0e0e0f 8%, rgb(31, 22, 16) 30%, rgb(82, 46, 19) 72%); }
+.hero-music::after { block-size: 3.75rem; -webkit-mask-image: linear-gradient(0deg, #000 0, rgba(0, 0, 0, 0.5) 40%, transparent 100%); mask-image: linear-gradient(0deg, #000 0, rgba(0, 0, 0, 0.5) 40%, transparent 100%); }
 .spectro-join::before { content: ""; position: absolute; inset: 0 0 auto 0; block-size: 3.25rem; pointer-events: none;
   -webkit-mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, 0.45) 1.25rem, transparent 100%); mask-image: linear-gradient(180deg, #000 0, rgba(0, 0, 0, 0.45) 1.25rem, transparent 100%); }
 .band-spectro.spectro-join { background:
