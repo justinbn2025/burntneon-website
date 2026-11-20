@@ -234,7 +234,9 @@ img.hero-bg-home, img.hero-bg-music, img.hero-bg-film, img.hero-bg-podcasts { op
 @media (max-width: 48em) {
   .hero-bg-film { object-position: 60% 45%; }       /* the monitor, not the back of the head */
   .hero-bg-music { object-position: 71% 40%; }      /* face and microphone at the right edge */
-  .hero-bg-podcasts { object-position: 60% 0%; }    /* the microphone at the right edge */
+  /* just the microphone: the photo is sized by the banner's height and pinned so its right edge
+     falls between the mic and the speaker (71% of the way across the photo), whatever the screen width */
+  .hero-bg-podcasts { inset: 0 0 0 auto; inline-size: auto; max-inline-size: none; block-size: 100%; transform: translateX(29%); }
 }
 /* Full brightness on the right where he stands, fading to dark under the headline. */
 :is(.hero-bg-home, .hero-bg-music, .hero-bg-film, .hero-bg-podcasts) + .hero-shade { background: linear-gradient(90deg, rgba(14, 14, 15, 0.95) 0%, rgba(14, 14, 15, 0.85) 34%, rgba(14, 14, 15, 0.3) 58%, rgba(14, 14, 15, 0) 76%); }
