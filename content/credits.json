@@ -1,12 +1,30 @@
 [
   {
+    "title": "Free Martin",
+    "year": "2027",
+    "role": "Assistant Sound Editor",
+    "poster": "",
+    "clip": "",
+    "on_home": true,
+    "hidden": true
+  },
+  {
+    "title": "Holla James",
+    "year": "2026",
+    "role": "Assistant Sound Editor",
+    "poster": "",
+    "clip": "",
+    "on_home": true,
+    "hidden": true
+  },
+  {
     "title": "First Aid",
     "year": "2026",
     "role": "Supervising Sound Editor, Re-recording Mixer",
     "poster": "",
     "clip": "",
     "on_home": true,
-    "hidden": false
+    "hidden": true
   },
   {
     "title": "Pussycat Pussycat",
