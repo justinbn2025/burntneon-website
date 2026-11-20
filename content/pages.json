@@ -158,7 +158,8 @@
       "text": "Send me your recording. It comes back clear, even and close-sounding, ready to publish.",
       "button": "See packages",
       "second_button": "Get a free sample",
-      "email_subject": "Free podcast sample"
+      "email_subject": "Free podcast sample",
+      "email_to": "podcasts"
     },
     "sample": {
       "label": "Before and after",
@@ -186,7 +187,8 @@
       "heading": "Hear your own show, mixed.",
       "text": "Send me a recent episode and I’ll mix a free 30-second sample, so you can hear the difference on your own voice before deciding anything.",
       "button": "Get a free sample",
-      "email_subject": "Free podcast sample"
+      "email_subject": "Free podcast sample",
+      "email_to": "podcasts"
     }
   },
 

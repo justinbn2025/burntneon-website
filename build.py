@@ -681,7 +681,7 @@ def podcasts():
                   '%s</div>'
                   % (" pack-hi" if pack.get("highlight") else "", e(pack["kind"]), e(pack["name"]),
                      '<div class="pack-price">%s%s</div>' % (price, " <span>/ %s</span>" % e(pack["per"]) if pack.get("per") else "") if price else "",
-                     items, ask_button(t(pk["button"]), pack["name"], "Podcast: " + pack["name"], not pack.get("highlight"))))
+                     items, ask_button(t(pk["button"]), pack["name"], "Podcast: " + pack["name"], not pack.get("highlight"), "podcasts")))
     body += section(heading(t(pk["label"]), t(pk["heading"])) + '<div class="grid packs">%s</div>' % packs
                     + '<p class="aside">%s</p>' % t(pk["note"]), look_packages, "packages")
     q = p["questions"]
