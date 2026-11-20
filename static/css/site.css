@@ -227,6 +227,7 @@ img.hero-bg, video.hero-bg { opacity: 0.55; }
 /* Per banner photo: which part to keep on narrow screens, and how strongly it shows. */
 .hero-bg-music { object-position: 86% 40%; }
 .hero-bg-film { object-position: 88% 45%; }
+@media (max-width: 48em) { .hero-bg-film { object-position: 60% 45%; } }   /* phones: frame the monitor, not the back of the head */
 .hero-bg-podcasts { object-position: 84% 0%; }   /* keep the top: the mic must never be cropped off */
 img.hero-bg-home, img.hero-bg-music, img.hero-bg-film, img.hero-bg-podcasts { opacity: 1; }
 .hero-bg-home { object-position: 80% 45%; }
