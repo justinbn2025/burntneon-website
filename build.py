@@ -272,8 +272,12 @@ def film_reel():
                e(chapters[0]["title"]) if chapters else "", e(chapters[0].get("role", "")) if chapters else "", FULL, segs))
 
 
-def player(title, sub, src, label):
-    """One audio sample: play button, title, time."""
+BARS = ('<svg class="bars" aria-hidden="true" viewBox="0 0 16 16"><rect x="1" y="9" width="3" height="6" rx="1"/>'
+        '<rect x="6.5" y="4" width="3" height="11" rx="1"/><rect x="12" y="1" width="3" height="14" rx="1"/></svg>')
+
+
+def player(title, sub, src, label, foot=""):
+    """One audio sample: play button, title, time. `foot` is an optional extra line under the progress bar."""
     if not src:
         missing("audio: " + label)
         if not SHOW:
@@ -283,9 +287,20 @@ def player(title, sub, src, label):
             '<button class="play" type="button" aria-label="Play %s"%s>%s</button>'
             '<div class="player-meta"><div class="player-title">%s</div><div class="player-sub">%s</div></div>'
             '<span class="player-time">0:00</span>'
-            '<input class="player-seek" type="range" min="0" max="1000" value="0" aria-label="Position in %s"%s></div>'
+            '<input class="player-seek" type="range" min="0" max="1000" value="0" aria-label="Position in %s"%s>%s</div>'
             % ("" if src else " slot", e(media(src)) if src else "", e(label), e(label), off, PLAY, title, sub,
-               e(label), off))
+               e(label), off, foot))
+
+
+def streams_line(tr, words):
+    """The line under a sample's progress bar when its track has "streams" in music.json:
+    the count, where it was streamed, and a link to the track if "streams_link" is given."""
+    if not tr.get("streams"):
+        return ""
+    link = ('<a href="%s" rel="noopener">%s &rarr;</a>' % (e(tr["streams_link"]), t(words["streams_link"]))
+            if tr.get("streams_link") else "")
+    return ('<p class="player-foot"><span>%s<b>%s</b> %s</span>%s</p>'
+            % (BARS, e(tr["streams"]), t(words["streams_line"]), link))
 
 
 def ab_player(sample, n):
@@ -607,7 +622,7 @@ def music():
             player(val(tr.get("title"), "track title"),
                    " &middot; ".join(x for x in (e(tr["artist"]) if tr.get("artist") else ("" if tr.get("src") else val("", "artist")),
                                                 val(tr.get("role"), "your role")) if x),
-                   tr.get("src"), "%s sample" % style["name"])
+                   tr.get("src"), "%s sample" % style["name"], streams_line(tr, p["listen"]))
             for tr in style["tracks"] if not hidden_track(tr))
         if rows:
             groups += '<div class="style"><h3>%s</h3>%s</div>' % (e(style["name"]), rows)
