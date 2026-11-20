@@ -22,8 +22,7 @@
       "headline": "Sound for *film*, *music* and *podcasts*.",
       "text": "Sound editing and mixing, session vocals, and podcast post-production. One engineer, start to finish.",
       "button": "Hear the work",
-      "second_button": "Get in touch",
-      "video_label": "Featured reel"
+      "second_button": "Get in touch"
     },
     "paths": {
       "label": "What do you need?",
@@ -59,8 +58,7 @@
       "text": "Sound design, dialogue editing and mixing for independent films, animation and game trailers. One person working on your sound from first spot to final delivery.",
       "button": "Watch the work",
       "second_button": "Tell me about your film",
-      "email_to": "film",
-      "video_label": "Sound reel"
+      "email_to": "film"
     },
     "credits": { "label": "Credits", "heading": "Recent work.", "link": "Full credits on IMDb" },
     "services": {

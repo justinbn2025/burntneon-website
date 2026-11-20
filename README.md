@@ -74,7 +74,7 @@ build. Sizes are a guide; JPG at about 80% quality.
 | `tile-film.jpg`, `tile-music.jpg`, `tile-podcasts.jpg` | Home tiles | portrait, 800 px wide |
 | `portrait.jpg`       | About                          | portrait 4:5, 900 px wide |
 | `theater.jpg`        | Music, theater writers section | landscape 4:3          |
-| `reel-home.jpg`, `reel-film.jpg` | Still shown on the video cards before play | 16:9 |
+| `reel-film.jpg`      | Still shown on the sound reel before play | 16:9 or wider |
 | `posters/<name>.jpg` | Film credits                   | portrait 2:3, 800 px wide |
 
 The Home banner video loop goes in `static/video/hero-home.mp4` (muted, 8 to 10

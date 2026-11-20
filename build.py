@@ -220,20 +220,6 @@ def heading(eyebrow, h2=""):
     return '<p class="eyebrow">%s</p>' % eyebrow + ('<h2>%s</h2>' % h2 if h2 else "")
 
 
-def reel(key, label, src, poster):
-    """A video card. Plays a YouTube or Vimeo link, or an .mp4, when clicked.
-    Left out entirely (drafts included) until its link is filled in under "reels" in site.json."""
-    if not src:
-        missing("video: " + label)
-        return ""
-    img = ('<img src="img/%s" alt="" loading="lazy">' % poster) if (STATIC / "img" / poster).exists() else ""
-    note = "" if src else '<span class="reel-note">Video to add: %s</span>' % e(label)
-    return ('<div class="reel%s" data-video="%s" data-title="%s">%s<span class="reel-label">%s</span>'
-            '<button class="play play-big" type="button" aria-label="Play the %s video"%s>%s</button>%s</div>'
-            % ("" if src else " slot", e(src or ""), e(label), img, e(label), e(label.lower()),
-               "" if src else " disabled", PLAY, note))
-
-
 def clock(value):
     """"1:05" or 65 -> seconds."""
     parts = [float(x) for x in str(value or 0).split(":")]
@@ -553,8 +539,7 @@ def home():
                          t(tile["text"]), hrefs[key], t(tile["link"])))
     b = p["banner"]
     body = hero("home", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#paths"),
-                reel("home", b["video_label"], SITE["reels"].get("home"), "reel-home.jpg"),
-                "", "Background: a muted video loop or photo of the studio")
+                "", "", "Background: a muted video loop or photo of the studio")
     body += section(heading(t(p["paths"]["label"]), t(p["paths"]["heading"])) + '<div class="grid tiles">%s</div>' % tile_html,
                     "band-rings rings-side fade-in", "paths")
     body += quotes("home", t(p["quotes_label"]), "band-foam foam-fade band-line")

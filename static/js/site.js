@@ -1,4 +1,4 @@
-/* Burnt Neon Productions: scroll waveform, audio players, video cards.
+/* Burnt Neon Productions: scroll waveform, audio players, the sound reel.
    No libraries, no tracking, nothing stored on the visitor's device. */
 (function () {
   'use strict';
@@ -236,33 +236,7 @@
     paint(); paintTime();
   });
 
-  /* 5. Video cards and film clips: nothing loads from YouTube or Vimeo until the visitor presses play. */
-  function embedFor(url) {
-    var m = url.match(/(?:youtube\.com\/watch\?(?:.*&)?v=|youtu\.be\/|youtube\.com\/embed\/)([\w-]{6,})/);
-    if (m) return 'https://www.youtube-nocookie.com/embed/' + m[1] + '?autoplay=1&rel=0';
-    m = url.match(/vimeo\.com\/(?:video\/)?(\d+)/);
-    if (m) return 'https://player.vimeo.com/video/' + m[1] + '?autoplay=1';
-    return null;
-  }
-  function showVideo(box, url, title) {
-    var src = embedFor(url), node;
-    stopOthers(null);
-    if (src) {
-      node = document.createElement('iframe');
-      node.src = src; node.allow = 'autoplay; fullscreen; picture-in-picture'; node.allowFullscreen = true;
-      node.title = title || 'Video';
-    } else {
-      node = document.createElement('video');
-      node.src = url; node.controls = true; node.setAttribute('aria-label', title || 'Video'); node.autoplay = true; node.playsInline = true;
-    }
-    box.classList.add('playing');
-    box.appendChild(node);
-  }
-  each('.reel[data-video]', function (box) {
-    var url = box.getAttribute('data-video'), node;
-    if (url) box.querySelector('.play').addEventListener('click', function () { showVideo(box, url, box.getAttribute('data-title')); node = box.lastElementChild; if (node) { node.tabIndex = 0; node.focus(); } });
-  });
-  /* 5b. Touch screens have no hover, so the service card that fills most of the screen lights up instead.
+  /* 5. Touch screens have no hover, so the service card that fills most of the screen lights up instead.
          Only when the cards are stacked in one column; side by side, none is singled out. */
   (function () {
     var cards = Array.prototype.slice.call(document.querySelectorAll('.pack-hover'));
