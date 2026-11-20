@@ -8,6 +8,13 @@ third-party builder, so there is very little to attack and nothing to pay for.
     python3 build.py
     open _site/index.html
 
+Opened this way (straight from the file), the podcast before/after players cannot load and the
+Music page's volume meters stay dark, because browsers restrict audio in files opened directly.
+To hear and see everything as visitors will, serve the folder instead and open
+<http://localhost:8000>:
+
+    python3 -m http.server 8000 --directory _site
+
 `build.py` uses only what ships with Python. It prints a list of everything still
 to fill in.
 
@@ -140,4 +147,5 @@ If the site ever has to leave GitHub Pages, the plan is in `MIGRATING-TO-CLOUDFL
   script and styles, Google Fonts, the audio hosts named in `content/`, and
   YouTube/Vimeo players. If you host media somewhere new, the build adds that host
   for audio automatically.
-- No cookies, analytics or forms. Contact is by email link.
+- No cookies, analytics or forms. Contact is by email link. The one thing the site keeps in a
+  visitor's browser is their volume setting, and only until they close the tab.

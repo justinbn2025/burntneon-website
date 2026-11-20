@@ -260,16 +260,17 @@ def film_reel():
             for n, c in enumerate(chapters, 1))
     else:
         segs = '<button class="rs-seg rs-seek" type="button" data-start="0" aria-label="Skip to this point in the reel"><i></i></button>'
-    return ('<section class="reelband" id="reel" aria-label="%s"><div class="rs">'
+    html = ('<section class="reelband" id="reel" aria-label="%s"><div class="rs">'
             '<div class="rs-pic"><video class="rs-video" src="%s"%s preload="metadata" playsinline controls></video>'
             '<button class="play rs-play" type="button" aria-label="Play the %s">%s</button></div>'
             '<div class="rs-ui"><div class="rs-row"><span class="rs-kicker">%s</span><span class="rs-title">%s</span>'
-            '<span class="rs-role">%s</span><span class="rs-time">0:00</span>'
+            '<span class="rs-role">%s</span><span class="rs-time">0:00</span>@@VOL@@'
             '<button class="rs-full" type="button" aria-label="Full screen" aria-pressed="false">%s</button></div>'
             '<div class="rs-chapters">%s</div><p class="rs-error" role="alert" hidden>This video didn’t load. Try again in a moment.</p>'
             '</div></div></section>'
             % (e(label), e(src), poster, e(label.lower()), PLAY, e(label),
                e(chapters[0]["title"]) if chapters else "", e(chapters[0].get("role", "")) if chapters else "", FULL, segs))
+    return html.replace("@@VOL@@", VOLCTL)
 
 
 def player(title, sub, src, label, foot=""):
@@ -329,6 +330,25 @@ def callout_line(tr, words):
             % (CALLOUT_ICONS.get(kind, CALLOUT_ICONS["news"]), showcase, t(c.get("description", "")), link))
 
 
+# A small volume control for a single player: a mute button and a slider. site.js keeps every one of
+# these, and the Music page's master fader, on the same setting. Hidden on phones and tablets.
+VOLCTL = ('<span class="volctl"><button class="volctl-mute" type="button" aria-label="Mute" aria-pressed="false"></button>'
+          '<input class="volctl-range" type="range" min="0" max="100" value="75" aria-label="Volume"></span>')
+
+
+def master_strip(words):
+    """The Music page's master fader: sets the volume for every player and shows the level of whatever
+    is playing. site.js drives it; it is left out on phones and tablets."""
+    meter = '<div class="m-meter">%s</div>' % ("<i></i>" * 18)
+    return ('<aside class="master" aria-label="%s"><div class="m-top" aria-hidden="true"><span>%s</span><i class="m-led"></i></div>'
+            '<div class="m-body"><div class="m-scale" aria-hidden="true"><span>10</span><span>8</span><span>6</span><span>4</span><span>2</span><span>0</span></div>'
+            '<div class="m-fader" role="slider" tabindex="0" aria-orientation="vertical" aria-label="%s" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75" aria-valuetext="75%%">'
+            '<i class="m-cap"></i></div><div class="m-meters" aria-hidden="true">%s%s</div></div>'
+            '<div class="m-name" aria-hidden="true">%s</div><p class="m-read" aria-hidden="true">75%%</p></aside>'
+            % (e(words.get("volume_label", "Volume")), e(words.get("master_label", "Master")), e(words.get("volume_label", "Volume")),
+               meter, meter, e(words.get("volume_label", "Volume"))))
+
+
 def ab_player(sample, n):
     """A before/after sample. Both files must be the same length."""
     ready = sample.get("before") and sample.get("after")
@@ -347,8 +367,8 @@ def ab_player(sample, n):
             '<div class="ab-switch" role="group" aria-label="Version"><button type="button" class="ab-before" aria-pressed="true"%s>Before</button>'
             '<button type="button" class="ab-after" aria-pressed="false"%s>After</button></div>'
             '<input class="ab-seek" type="range" min="0" max="1000" value="0" aria-label="Position in %s"%s>'
-            '<span class="ab-time">0:00</span></div><p class="ab-error" role="alert" hidden></p></div>'
-            % ("" if ready else " slot", name, data, title, note, name, off, PLAY, off, off, name, off))
+            '<span class="ab-time">0:00</span>%s</div><p class="ab-error" role="alert" hidden></p></div>'
+            % ("" if ready else " slot", name, data, title, note, name, off, PLAY, off, off, name, off, VOLCTL if ready else ""))
 
 
 def quotes(page, eyebrow, look="band-dots", reviews_line=""):
@@ -656,7 +676,8 @@ def music():
     if not spotify:
         missing("link: spotify")
     li = p["listen"]
-    body += section(heading(t(li["label"]), t(li["heading"])) + '<div class="grid styles">%s</div>' % groups
+    body += section(heading(t(li["label"]), t(li["heading"]))
+                    + '<div class="listen-row"><div class="grid styles">%s</div>%s</div>' % (groups, master_strip(li))
                     + ('<p class="aside">%s <a href="%s" target="_blank" rel="noopener">%s%s<span class="sr-only"> (opens in a new tab)</span></a>.</p>'
                        % (t(li["spotify_line"]), e(spotify), t(li["spotify_link"]), EXTERNAL) if spotify else ""), "band-spectro spectro-join", "listen")
     # Services is the page's pricing section, so it takes the dots (kept for pricing) and plain cards

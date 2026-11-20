@@ -646,3 +646,51 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
   .rs-seg span { display: none; }
   .rs-seg { padding-bottom: 0.5rem; }
 }
+
+/* ---------- Volume ---------- */
+/* Music: the master fader beside the samples. Shown only when the script is running, and not on phones or
+   tablets, where the device's own volume buttons are the control. */
+.listen-row { margin-top: 2.25rem; }
+.listen-row .styles { margin-top: 0; }
+.master { display: none; }
+@media (hover: hover) and (min-width: 44em) {
+  .js .listen-row { display: grid; grid-template-columns: minmax(0, 1fr) 9.875rem; gap: 1.75rem; align-items: start; }
+  .js .master { display: grid; gap: 0.75rem; margin-top: 2.375rem; padding: 1rem 1rem 1.125rem; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 0.375rem; transition: border-color 0.25s; }
+}
+.band-spectro .master { background-color: rgba(14, 14, 15, 0.9); }
+.master.live { border-color: #3a2a1f; }
+.m-top { display: flex; justify-content: space-between; align-items: center; font-family: var(--head); font-size: 0.75rem; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); }
+.m-led { display: block; inline-size: 0.5rem; block-size: 0.5rem; border-radius: 50%; background: #3a3a3f; transition: background 0.2s, box-shadow 0.2s; }
+.master.live .m-led { background: var(--accent); box-shadow: 0 0 0.5rem var(--accent); }
+.m-body { display: grid; grid-template-columns: auto 2.75rem auto; gap: 0.625rem; justify-content: center; block-size: 15rem; }
+.m-scale { display: flex; flex-direction: column; justify-content: space-between; padding: 0.125rem 0; text-align: right; font-size: 0.625rem; color: #6f6c67; font-variant-numeric: tabular-nums; }
+.m-fader { position: relative; cursor: grab; touch-action: none; border-radius: 0.25rem; --v: 0.75; --cap: 3.125rem; }
+.m-fader:active { cursor: grabbing; }
+.m-fader::before { content: ""; position: absolute; left: calc(50% - 2px); inset-block: 0; inline-size: 4px; border-radius: 2px; background: #0a0a0b; border: 1px solid var(--line); }
+.m-fader::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(#4a4a50, #4a4a50) left / 0.5rem 100% no-repeat, linear-gradient(#4a4a50, #4a4a50) right / 0.5rem 100% no-repeat;
+  -webkit-mask-image: repeating-linear-gradient(180deg, #000 0, #000 1px, transparent 1px, transparent 1.5rem); mask-image: repeating-linear-gradient(180deg, #000 0, #000 1px, transparent 1px, transparent 1.5rem); }
+.m-cap { position: absolute; z-index: 1; left: 0.25rem; bottom: calc(var(--v) * (100% - var(--cap))); inline-size: 2.25rem; block-size: var(--cap); border-radius: 0.25rem;
+  border: 1px solid #55534f; background: linear-gradient(180deg, #3b3a38, #232224 48%, #2e2d2c); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6); }
+.m-cap::after { content: ""; position: absolute; inset-inline: 0.25rem; top: calc(50% - 1.5px); block-size: 3px; background: var(--accent); }
+.m-fader:hover .m-cap, .m-fader:focus-visible .m-cap { border-color: #8a8782; }
+.m-meters { display: flex; gap: 0.25rem; }
+.m-meter { display: grid; gap: 3px; inline-size: 0.5625rem; }
+.m-meter i { display: block; border-radius: 1px; background: #26262a; }
+.m-meter i.on { background: var(--accent); }
+.m-meter i.hot { background: #f0a35c; }
+.m-name { background: #0a0a0b; border: 1px solid var(--line); border-radius: 3px; padding: 0.4375rem 0.5rem; text-align: center; font-family: var(--head); font-size: 1.0625rem; letter-spacing: 0.08em; text-transform: uppercase; }
+.m-read { margin: 0; text-align: center; color: var(--muted); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
+/* The small control on the other players (before/after samples, the sound reel) */
+.volctl { display: none; }
+@media (hover: hover) {
+  .js .volctl { display: inline-flex; align-items: center; gap: 0.375rem; }
+}
+.volctl-mute { display: grid; place-items: center; inline-size: 2rem; block-size: 2rem; padding: 0; border: 1px solid transparent; border-radius: 0.25rem; background: none; color: var(--soft); cursor: pointer; }
+.volctl-mute:hover { color: var(--text); border-color: var(--line); }
+.volctl-mute svg { inline-size: 1.125rem; block-size: 1.125rem; }
+.volctl-range { inline-size: 4.5rem; }
+.rs-row .volctl { align-self: center; }
+.ab-row .volctl { margin-left: auto; }
+.player.is-playing { border-color: var(--accent); box-shadow: 0 0 1.875rem rgba(210, 105, 30, 0.14); }

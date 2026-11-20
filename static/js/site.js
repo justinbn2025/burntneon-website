@@ -1,5 +1,6 @@
 /* Burnt Neon Productions: scroll waveform, audio players, the sound reel.
-   No libraries, no tracking, nothing stored on the visitor's device. */
+   No libraries, no tracking, and nothing kept on the visitor's device after the visit:
+   the volume setting is remembered only until the tab is closed. */
 (function () {
   'use strict';
   document.documentElement.classList.add('js');
@@ -77,13 +78,145 @@
     if ('ResizeObserver' in window) new ResizeObserver(setH).observe(header); else window.addEventListener('resize', setH);
   }
 
+  /* Volume. One setting for every player on the site, remembered for the visit (sessionStorage).
+     Sound goes through one output stage, so the Music page's master fader can set its level and
+     meter it. Phones and tablets are left alone: their own volume buttons are the control. */
+  var touch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
+  var AC = window.AudioContext || window.webkitAudioContext;
+  var vol = 0.75, lastVol = 0.75, volWatch = [], meterKick = function () {};
+  var ctx = null, out = null, taps = null;
+  if (!touch) {
+    try {
+      var saved = window.sessionStorage.getItem('bn-volume');
+      if (saved !== null && saved !== '' && isFinite(saved)) vol = Math.min(1, Math.max(0, Number(saved)));
+      var before = Number(window.sessionStorage.getItem('bn-volume-before'));
+      lastVol = vol > 0 ? vol : (before > 0 && before <= 1 ? before : 0.75);     // what "unmute" goes back to
+    } catch (e) { /* storage switched off: the setting just lasts for this page */ }
+  } else { vol = 1; }
+  function loud() { return vol * vol; }                  // the ear hears level roughly this way
+  function getCtx() {
+    if (!ctx) {
+      ctx = new AC();
+      out = ctx.createGain();
+      out.channelCount = 2; out.channelCountMode = 'explicit';      // mono samples light both meters
+      out.gain.value = loud();
+      out.connect(ctx.destination);
+      try {
+        var split = ctx.createChannelSplitter(2);
+        taps = [ctx.createAnalyser(), ctx.createAnalyser()];
+        out.connect(split);
+        taps.forEach(function (a, i) { a.fftSize = 1024; split.connect(a, i); });
+      } catch (e) { taps = null; }
+    }
+    if (ctx.state === 'suspended') ctx.resume();
+    meterKick();
+    return ctx;
+  }
+  function setVol(v) {
+    v = Math.min(1, Math.max(0, v));
+    if (v > 0) lastVol = v;
+    vol = v;
+    try { window.sessionStorage.setItem('bn-volume', String(v)); window.sessionStorage.setItem('bn-volume-before', String(lastVol)); } catch (e) { /* see above */ }
+    if (out) out.gain.setTargetAtTime(loud(), ctx.currentTime, 0.015);
+    volWatch.forEach(function (fn) { fn(); });
+  }
+  // An <audio> or <video> can be metered only when it comes from this site over http(s).
+  function canRoute(src) {
+    if (touch || !AC || location.protocol === 'file:') return false;
+    try { return new URL(src, location.href).origin === location.origin; } catch (e) { return false; }
+  }
+  var SPEAKER = '<path d="M2.5 6.2h2.6L8.6 3v10L5.1 9.8H2.5z" fill="currentColor" stroke="none"/>';
+  function volIcon() {
+    var waves = vol === 0 ? '<path d="M11 6l3.5 4M14.5 6L11 10"/>'
+      : '<path d="M10.8 6.2a2.6 2.6 0 0 1 0 3.6"/>' + (vol < 0.45 ? '' : '<path d="M12.6 4.4a5.2 5.2 0 0 1 0 7.2"/>');
+    return '<svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + SPEAKER + waves + '</svg>';
+  }
+  each('.volctl', function (box) {
+    var mute = box.querySelector('.volctl-mute'), range = box.querySelector('.volctl-range');
+    function show() {
+      range.value = Math.round(vol * 100);
+      range.setAttribute('aria-valuetext', Math.round(vol * 100) + '%');
+      mute.innerHTML = volIcon();
+      mute.setAttribute('aria-pressed', String(vol === 0));
+      mute.setAttribute('aria-label', vol === 0 ? 'Unmute' : 'Mute');
+    }
+    range.addEventListener('input', function () { setVol(range.value / 100); });
+    mute.addEventListener('click', function () { setVol(vol === 0 ? lastVol : 0); });
+    volWatch.push(show); show();
+  });
+  each('.master', function (strip) {
+    var fader = strip.querySelector('.m-fader'), read = strip.querySelector('.m-read');
+    var bars = Array.prototype.map.call(strip.querySelectorAll('.m-meter'), function (m) { return m.querySelectorAll('i'); });
+    var shown = [0, 0], lit = [-1, -1], quiet = 0, running = false, frame = 0, buf = null;
+    function show() {
+      var pct = Math.round(vol * 100);
+      fader.style.setProperty('--v', vol);
+      fader.setAttribute('aria-valuenow', pct); fader.setAttribute('aria-valuetext', pct + '%');
+      read.textContent = pct + '%';
+    }
+    function fromPointer(ev) {
+      var r = fader.getBoundingClientRect(), cap = parseFloat(getComputedStyle(fader).getPropertyValue('--cap')) * parseFloat(getComputedStyle(document.documentElement).fontSize) || 50;
+      setVol((r.bottom - cap / 2 - ev.clientY) / (r.height - cap));
+    }
+    fader.addEventListener('pointerdown', function (ev) {
+      fader.setPointerCapture(ev.pointerId); fromPointer(ev);
+      var move = function (e) { fromPointer(e); };
+      var up = function () { fader.removeEventListener('pointermove', move); fader.removeEventListener('pointerup', up); fader.removeEventListener('pointercancel', up); };
+      fader.addEventListener('pointermove', move); fader.addEventListener('pointerup', up); fader.addEventListener('pointercancel', up);
+      ev.preventDefault(); fader.focus();
+    });
+    fader.addEventListener('keydown', function (ev) {
+      var step = { ArrowUp: 0.05, ArrowRight: 0.05, ArrowDown: -0.05, ArrowLeft: -0.05, PageUp: 0.2, PageDown: -0.2 }[ev.key];
+      if (step) setVol(vol + step); else if (ev.key === 'Home') setVol(0); else if (ev.key === 'End') setVol(1); else return;
+      ev.preventDefault();
+    });
+    function paintMeter(ch, level) {                      // level: 0 to 18 segments, counted from the bottom
+      var n = Math.round(level), cells = bars[ch], k;
+      if (n === lit[ch]) return;
+      lit[ch] = n;
+      for (k = 0; k < cells.length; k++) {
+        var rank = cells.length - k;                      // the first cell is the top one
+        cells[k].className = rank <= n ? (rank > cells.length - 3 ? 'on hot' : 'on') : '';
+      }
+    }
+    function tick() {
+      var any = false, ch, i, peak, db, want;
+      frame++;
+      if (taps && (!calm || frame % 8 === 0)) {            // "less motion": the meters step a few times a second
+        for (ch = 0; ch < 2; ch++) {
+          if (!buf) buf = new Float32Array(taps[ch].fftSize);
+          taps[ch].getFloatTimeDomainData(buf);
+          for (peak = 0, i = 0; i < buf.length; i++) if (Math.abs(buf[i]) > peak) peak = Math.abs(buf[i]);
+          db = peak > 0 ? 20 * Math.log(peak) / Math.LN10 : -100;
+          want = Math.min(18, Math.max(0, (db + 45) / 45 * 18));
+          shown[ch] = calm ? want : Math.max(want, shown[ch] - 0.7);
+          if (shown[ch] > 0.5) any = true;
+          paintMeter(ch, shown[ch]);
+        }
+        strip.classList.toggle('live', any);
+        quiet = any ? 0 : quiet + 1;
+      }
+      if (quiet < 90 * (calm ? 0.125 : 1)) requestAnimationFrame(tick); else running = false;
+    }
+    meterKick = function () { quiet = 0; if (!running && taps) { running = true; requestAnimationFrame(tick); } };
+    volWatch.push(show); show();
+  });
+
   /* 3. Single audio samples: <div class="player" data-src="..."> and the Home tile buttons. */
   function simplePlayer(button, src, name, timeEl, seek) {
-    var audio = null, seeking = false;
+    var audio = null, seeking = false, wired = false, routed = canRoute(src), card = button.closest ? button.closest('.player') : null;
+    function level() { if (audio && !routed) audio.volume = loud(); }
+    function wire() {                                     // once, on the first press of play
+      if (!routed || wired) { if (routed) getCtx(); return; }
+      wired = true;
+      try { getCtx().createMediaElementSource(audio).connect(out); } catch (e) { routed = false; level(); }
+    }
+    volWatch.push(level);
     function paint() {
       var on = audio && !audio.paused;
       button.innerHTML = on ? PAUSE : PLAY;
       button.setAttribute('aria-label', (on ? 'Pause ' : 'Play ') + name);
+      if (card) card.classList.toggle('is-playing', !!on);
       if (timeEl && audio) timeEl.textContent = fmt(audio.currentTime) + (audio.duration ? ' / ' + fmt(audio.duration) : '');
       if (seek && audio && audio.duration && !seeking) {
         seek.value = Math.round(audio.currentTime / audio.duration * 1000);
@@ -95,12 +228,13 @@
       if (audio) return;
       audio = new Audio(src);
       audio.preload = 'auto';
+      level();
       ['play', 'pause', 'timeupdate', 'loadedmetadata', 'ended'].forEach(function (ev) { audio.addEventListener(ev, paint); });
     }
     stoppers.push(stop);
     button.addEventListener('click', function () {
       ready();
-      if (audio.paused) { stopOthers(stop); audio.play(); } else { audio.pause(); }
+      if (audio.paused) { wire(); stopOthers(stop); audio.play(); } else { audio.pause(); }
     });
     if (seek) {
       seek.addEventListener('input', function () { seeking = true; });
@@ -118,12 +252,6 @@
   each('.tile-play[data-src]', function (b) { simplePlayer(b, b.getAttribute('data-src'), b.getAttribute('data-label')); });
 
   /* 4. Before/after samples. Both files play in step; the switch crossfades between them. */
-  var ctx = null;
-  function getCtx() {
-    if (!ctx) ctx = new (window.AudioContext || window.webkitAudioContext)();
-    if (ctx.state === 'suspended') ctx.resume();
-    return ctx;
-  }
   function loadBuffer(c, url) {
     return fetch(url).then(function (r) {
       if (!r.ok) throw new Error('load');
@@ -168,7 +296,7 @@
         var src = c.createBufferSource(), gain = c.createGain();
         src.buffer = s.buffers[k];
         gain.gain.value = k === s.active ? 1 : 0;
-        src.connect(gain); gain.connect(c.destination);
+        src.connect(gain); gain.connect(out);
         n[k] = { src: src, gain: gain };
       });
       n.before.src.onended = function () {
@@ -271,6 +399,8 @@
     var starts = segs.map(function (s) { return parseFloat(s.getAttribute('data-start')) || 0; });
     var name = playBtn.getAttribute('aria-label').replace(/^Play /, '');
     v.controls = false;                                   // the page's own controls take over from the browser's
+    function level() { v.volume = loud(); }
+    volWatch.push(level); level();
     function dur() { return isFinite(v.duration) ? v.duration : 0; }
     function end(k) { return k + 1 < starts.length ? starts[k + 1] : dur(); }
     function stop() { v.pause(); }
