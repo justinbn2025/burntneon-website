@@ -5,7 +5,8 @@
     "role": "Supervising Sound Editor, Re-recording Mixer",
     "poster": "",
     "clip": "",
-    "on_home": true
+    "on_home": true,
+    "hidden": false
   },
   {
     "title": "Pussycat Pussycat",
@@ -13,7 +14,8 @@
     "role": "Assistant Sound Editor",
     "poster": "pussycat-pussycat.jpg",
     "clip": "",
-    "on_home": true
+    "on_home": true,
+    "hidden": false
   },
   {
     "title": "Til' Death Do Us Part",
@@ -21,7 +23,8 @@
     "role": "Re-recording Mixer, Sound Editor",
     "poster": "til-death-do-us-part.jpg",
     "clip": "",
-    "on_home": true
+    "on_home": true,
+    "hidden": false
   },
   {
     "title": "Eclipse Chasers",
@@ -29,6 +32,7 @@
     "role": "Sound Editor",
     "poster": "eclipse-chasers.jpg",
     "clip": "",
-    "on_home": true
+    "on_home": true,
+    "hidden": false
   }
 ]

@@ -351,8 +351,13 @@ def contact_band(h2, text, button, subject="", blend=False, to=""):
 
 
 def credit_cards(items):
+    """Film credits. A credit with "hidden": true in credits.json is left off the site
+    (and out of the page source) until that line is removed or set to false."""
     cards = []
     for c in items:
+        if c.get("hidden"):
+            missing("hidden for now: credit " + c["title"])
+            continue
         poster = image("posters/" + c["poster"] if c.get("poster") else "", "Poster: " + c["title"],
                        "poster", "Poster: " + c["title"])
         clip = ('<button class="play poster-play" type="button" data-video="%s" aria-label="Watch a clip from %s (opens in a new tab)">%s</button>'
@@ -360,7 +365,7 @@ def credit_cards(items):
         cards.append('<li class="credit"><div class="poster-wrap">%s%s</div><p class="credit-title">%s '
                      '<span>(%s)</span></p><p class="credit-role">%s</p></li>'
                      % (poster, clip, e(c["title"]), e(c["year"]), e(c["role"])))
-    return '<ul class="grid credits" role="list">%s</ul>' % "".join(cards)
+    return '<ul class="grid credits" role="list">%s</ul>' % "".join(cards) if cards else ""
 
 
 def steps(items):
@@ -572,10 +577,12 @@ def film():
                 "", "", "Background: a darkened film still, or the mix session on screen")
     body += sound_reel
     c = p["credits"]
-    body += section('<div class="split-head"><div>%s</div>%s</div>%s' % (
-        heading(t(c["label"]), t(c["heading"])),
-        '<a href="%s" rel="noopener">%s &rarr;</a>' % (e(imdb), t(c["link"])) if imdb else "",
-        credit_cards(CREDITS)), "glow-br", "credits")      # glow kept low: the top stays dark under the banner's fade
+    shown = credit_cards(CREDITS)
+    if shown:       # with every credit hidden, the whole section is left out
+        body += section('<div class="split-head"><div>%s</div>%s</div>%s' % (
+            heading(t(c["label"]), t(c["heading"])),
+            '<a href="%s" rel="noopener">%s &rarr;</a>' % (e(imdb), t(c["link"])) if imdb else "",
+            shown), "glow-br", "credits")      # glow kept low: the top stays dark under the banner's fade
     s = p["services"]
     body += section(heading(t(s["label"]), t(s["heading"])) + cards([(t(i["title"]), t(i["text"]), "") for i in s["items"]]),
                     "band-timeline band-line")
