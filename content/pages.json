@@ -109,8 +109,7 @@
       "heading": "Hear the work.",
       "spotify_line": "My own artist project, JVSTN., is on",
       "spotify_link": "Spotify",
-      "streams_line": "streams on Spotify",
-      "streams_link": "Listen there"
+      "callout_links": { "streams": "Listen there", "press": "Read it", "tv": "Watch it", "other": "See more" }
     },
     "services": {
       "label": "Services",

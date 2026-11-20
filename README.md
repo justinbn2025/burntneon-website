@@ -48,9 +48,14 @@ Examples:
 - **Hide a music sample for now:** add `"hidden": true` to its line in `music.json`, and keep
   its audio file out of `static/audio/` until it can go up: everything in that folder is
   published even if no page uses it. The build warns if a hidden sample's file is still there.
-- **Show a stream count on a music sample:** add `"streams": "200,000+"` to its line in
-  `music.json`, and `"streams_link"` with the track's Spotify address if you want a link.
-  It appears as a line under that sample's progress bar.
+- **Add a callout to a music sample** (a stream count, press, a TV credit): add a `"callout"`
+  to its line in `music.json`, for example
+  `"callout": { "type": "streams", "showcase": "200,000+", "description": "streams on Spotify", "link": "" }`.
+  It appears as a line under that sample's progress bar. `"type"` picks the icon: `streams`
+  (rising chart), `press` (newspaper), `tv` (screen), `award` (star) or `news` (general).
+  `"showcase"` is the part shown in white, `"description"` the rest, and `"link"` is optional.
+  The link's words come from `pages.json` (`music` > `listen` > `callout_links`), or add
+  `"link_text"` to the callout to set them for that one.
 - **Add a clip to a credit:** paste the YouTube or Vimeo link into `"clip"`.
 - **Add a music sample:** put the MP3 in `static/audio/` and write its file name
   in `"src"`, or paste a full `https://` link to a file hosted elsewhere.
