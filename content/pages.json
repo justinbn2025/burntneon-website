@@ -11,9 +11,7 @@
     "menu": { "film": "Film & Games", "music": "Music", "podcasts": "Podcasts", "about": "About" },
     "menu_on_phones": { "film": "Film" },
     "menu_button": "Get in touch",
-    "skip_link": "Skip to content",
-    "swipe_hint": "Swipe for the next step",
-    "sample_hint": "Press play, then switch between Before and After while it plays. Headphones show it best."
+    "skip_link": "Skip to content"
   },
 
   "home": {
@@ -77,6 +75,7 @@
     "steps": {
       "label": "How it works",
       "heading": "From picture lock to delivery.",
+      "swipe_hint": "Swipe for the next step",
       "items": [
         { "title": "Spotting", "text": "You send me your initial notes on what each scene needs." },
         { "title": "Edit and design", "text": "Dialogue cleaned and cut. Effects, ambiences and foley built." },
@@ -163,7 +162,8 @@
     },
     "sample": {
       "label": "Before and after",
-      "heading": "Hear the difference."
+      "heading": "Hear the difference.",
+      "hint": "Press play, then switch between Before and After while it plays. Headphones show it best."
     },
     "more_samples": { "label": "More examples", "heading": "Different problems, same result." },
     "steps": {

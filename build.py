@@ -379,13 +379,13 @@ def cards(items):
         '<div class="card"><h3>%s</h3><p>%s</p>%s</div>' % (h, p, extra) for h, p, extra in items)
 
 
-def filmstrip(items):
+def filmstrip(items, hint="Swipe"):
     """Film & Games 'How it works': each stage is a frame on a strip of film."""
     frames = "".join(
         '<li class="frame"><div class="frame-mark" aria-hidden="true"><span>REEL 1</span><span>FRAME %02d</span></div>'
         '<h3>%s</h3><p>%s</p></li>' % (i, h, p) for i, (h, p) in enumerate(items, 1))
     # On narrower screens the strip scrolls sideways; site.js adds the dots and makes it reachable by keyboard.
-    hint = e(PAGES["shared"].get("swipe_hint", "Swipe"))
+    hint = e(hint)
     return ('<div class="filmstrip" role="group" aria-label="%s"><ol class="frames" role="list">%s</ol></div>'
             '<p class="film-hint" aria-hidden="true"><span class="film-dots"></span><span>%s</span></p>' % (hint, frames, hint))
 
@@ -587,7 +587,7 @@ def film():
     body += section(heading(t(s["label"]), t(s["heading"])) + cards([(t(i["title"]), t(i["text"]), "") for i in s["items"]]),
                     "band-timeline band-line")
     s = p["steps"]
-    body += section(heading(t(s["label"]), t(s["heading"])) + filmstrip([(t(i["title"]), t(i["text"])) for i in s["items"]]),
+    body += section(heading(t(s["label"]), t(s["heading"])) + filmstrip([(t(i["title"]), t(i["text"])) for i in s["items"]], s.get("swipe_hint", "Swipe")),
                     "glow-bl")       # no line: what I do runs straight into how it works
     body += quotes("film", t(p["quotes_label"]), "band-rings band-line")
     body += contact(p["contact"])
@@ -664,7 +664,7 @@ def podcasts():
     if first:
         sm = p["sample"]
         body += section('<div class="sample"><div>%s<p class="sample-lead">%s</p></div><div class="sample-player">%s</div></div>'
-                        % (heading(t(sm["label"]), t(sm["heading"])), t(PAGES["shared"]["sample_hint"]), first),
+                        % (heading(t(sm["label"]), t(sm["heading"])), t(sm["hint"]), first),
                         "band-ba", "sample")
     # "show_more_samples": false in podcasts.json hides the "More examples" section
     # (and stops the build asking for those samples) until it is switched back on.
