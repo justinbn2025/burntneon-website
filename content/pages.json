@@ -103,8 +103,8 @@
       "text": "A tenor for musical theater, pop and rock who also produces and mixes. Hire me for one part of your track or all of it.",
       "button": "Hear the work",
       "second_button": "Send me your song",
-      "email_subject": "Session vocals",
-      "email_to": "singing"
+      "email_subject": "Music enquiry",
+      "email_to": "music"
     },
     "reel": { "title": "Musical theater reel", "text": "Three minutes of singing and speaking." },
     "listen": {
@@ -144,8 +144,8 @@
       "heading": "Have a song that needs a voice?",
       "text": "Send me the track and what you’re hearing for it.[ I’ll reply with a price and a delivery date within {reply_days} business days.]",
       "button": "Send me your song",
-      "email_subject": "Session vocals",
-      "email_to": "singing"
+      "email_subject": "Music enquiry",
+      "email_to": "music"
     }
   },
 
