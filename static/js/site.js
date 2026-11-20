@@ -83,17 +83,16 @@
      meter it. Phones and tablets are left alone: their own volume buttons are the control. */
   var touch = window.matchMedia('(hover: none) and (pointer: coarse)').matches;
   var AC = window.AudioContext || window.webkitAudioContext;
-  var vol = 0.75, lastVol = 0.75, volWatch = [], meterKick = function () {};
+  var vol = 0.75, muted = false, volWatch = [], meterKick = function () {};
   var ctx = null, out = null, taps = null;
   if (!touch) {
     try {
       var saved = window.sessionStorage.getItem('bn-volume');
       if (saved !== null && saved !== '' && isFinite(saved)) vol = Math.min(1, Math.max(0, Number(saved)));
-      var before = Number(window.sessionStorage.getItem('bn-volume-before'));
-      lastVol = vol > 0 ? vol : (before > 0 && before <= 1 ? before : 0.75);     // what "unmute" goes back to
+      muted = window.sessionStorage.getItem('bn-muted') === '1';
     } catch (e) { /* storage switched off: the setting just lasts for this page */ }
   } else { vol = 1; }
-  function loud() { return vol * vol; }                  // the ear hears level roughly this way
+  function loud() { return muted ? 0 : vol * vol; }      // the ear hears level roughly this way
   function getCtx() {
     if (!ctx) {
       ctx = new AC();
@@ -112,13 +111,17 @@
     meterKick();
     return ctx;
   }
-  function setVol(v) {
-    v = Math.min(1, Math.max(0, v));
-    if (v > 0) lastVol = v;
-    vol = v;
-    try { window.sessionStorage.setItem('bn-volume', String(v)); window.sessionStorage.setItem('bn-volume-before', String(lastVol)); } catch (e) { /* see above */ }
+  function applyVol() {
+    try { window.sessionStorage.setItem('bn-volume', String(vol)); window.sessionStorage.setItem('bn-muted', muted ? '1' : '0'); } catch (e) { /* see above */ }
     if (out) out.gain.setTargetAtTime(loud(), ctx.currentTime, 0.015);
     volWatch.forEach(function (fn) { fn(); });
+  }
+  function setVol(v) {                                   // moving any volume control also unmutes
+    vol = Math.min(1, Math.max(0, v)); muted = false; applyVol();
+  }
+  function toggleMute() {
+    if (muted) muted = false; else if (vol === 0) vol = 0.75; else muted = true;
+    applyVol();
   }
   // An <audio> or <video> can be metered only when it comes from this site over http(s).
   function canRoute(src) {
@@ -127,35 +130,39 @@
   }
   var SPEAKER = '<path d="M2.5 6.2h2.6L8.6 3v10L5.1 9.8H2.5z" fill="currentColor" stroke="none"/>';
   function volIcon() {
-    var waves = vol === 0 ? '<path d="M11 6l3.5 4M14.5 6L11 10"/>'
+    var waves = (muted || vol === 0) ? '<path d="M11 6l3.5 4M14.5 6L11 10"/>'
       : '<path d="M10.8 6.2a2.6 2.6 0 0 1 0 3.6"/>' + (vol < 0.45 ? '' : '<path d="M12.6 4.4a5.2 5.2 0 0 1 0 7.2"/>');
     return '<svg aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' + SPEAKER + waves + '</svg>';
   }
   each('.volctl', function (box) {
     var mute = box.querySelector('.volctl-mute'), range = box.querySelector('.volctl-range');
     function show() {
-      range.value = Math.round(vol * 100);
-      range.setAttribute('aria-valuetext', Math.round(vol * 100) + '%');
+      var off = muted || vol === 0;
+      range.value = muted ? 0 : Math.round(vol * 100);
+      range.setAttribute('aria-valuetext', muted ? 'Muted' : Math.round(vol * 100) + '%');
       mute.innerHTML = volIcon();
-      mute.setAttribute('aria-pressed', String(vol === 0));
-      mute.setAttribute('aria-label', vol === 0 ? 'Unmute' : 'Mute');
+      mute.setAttribute('aria-pressed', String(off));
+      mute.setAttribute('aria-label', off ? 'Unmute' : 'Mute');
     }
     range.addEventListener('input', function () { setVol(range.value / 100); });
-    mute.addEventListener('click', function () { setVol(vol === 0 ? lastVol : 0); });
+    mute.addEventListener('click', toggleMute);
     volWatch.push(show); show();
   });
   each('.master', function (strip) {
-    var fader = strip.querySelector('.m-fader'), read = strip.querySelector('.m-read');
+    var fader = strip.querySelector('.m-fader'), read = strip.querySelector('.m-read'), muteBtn = strip.querySelector('.m-mute');
+    var mutedWord = strip.getAttribute('data-muted') || 'Muted';
     var bars = Array.prototype.map.call(strip.querySelectorAll('.m-meter'), function (m) { return m.querySelectorAll('i'); });
     var shown = [0, 0], lit = [-1, -1], quiet = 0, running = false, frame = 0, buf = null;
     function show() {
       var pct = Math.round(vol * 100);
       fader.style.setProperty('--v', vol);
-      fader.setAttribute('aria-valuenow', pct); fader.setAttribute('aria-valuetext', pct + '%');
-      read.textContent = pct + '%';
+      fader.setAttribute('aria-valuenow', pct); fader.setAttribute('aria-valuetext', pct + '%' + (muted ? ', ' + mutedWord.toLowerCase() : ''));
+      read.textContent = muted ? mutedWord : pct + '%';
+      strip.classList.toggle('muted', muted);
+      if (muteBtn) muteBtn.setAttribute('aria-pressed', String(muted));
     }
     function fromPointer(ev) {
-      var r = fader.getBoundingClientRect(), cap = parseFloat(getComputedStyle(fader).getPropertyValue('--cap')) * parseFloat(getComputedStyle(document.documentElement).fontSize) || 50;
+      var r = fader.getBoundingClientRect(), cap = (fader.querySelector('.m-cap') || {}).offsetHeight || 50;
       setVol((r.bottom - cap / 2 - ev.clientY) / (r.height - cap));
     }
     fader.addEventListener('pointerdown', function (ev) {
@@ -170,6 +177,7 @@
       if (step) setVol(vol + step); else if (ev.key === 'Home') setVol(0); else if (ev.key === 'End') setVol(1); else return;
       ev.preventDefault();
     });
+    if (muteBtn) muteBtn.addEventListener('click', toggleMute);
     function paintMeter(ch, level) {                      // level: 0 to 18 segments, counted from the bottom
       var n = Math.round(level), cells = bars[ch], k;
       if (n === lit[ch]) return;

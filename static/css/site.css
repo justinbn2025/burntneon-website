@@ -655,7 +655,7 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .master { display: none; }
 @media (hover: hover) and (min-width: 44em) {
   .js .listen-row { display: grid; grid-template-columns: minmax(0, 1fr) 9.875rem; gap: 1.75rem; align-items: start; }
-  .js .master { display: grid; gap: 0.75rem; margin-top: 2.375rem; padding: 1rem 1rem 1.125rem; background: var(--panel);
+  .js .master { --cap: 3.125rem; display: grid; gap: 0.75rem; margin-top: 2.375rem; padding: 1rem 1rem 1.125rem; background: var(--panel);
     border: 1px solid var(--line); border-radius: 0.375rem; transition: border-color 0.25s; }
 }
 .band-spectro .master { background-color: rgba(14, 14, 15, 0.9); }
@@ -664,13 +664,14 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .m-led { display: block; inline-size: 0.5rem; block-size: 0.5rem; border-radius: 50%; background: #3a3a3f; transition: background 0.2s, box-shadow 0.2s; }
 .master.live .m-led { background: var(--accent); box-shadow: 0 0 0.5rem var(--accent); }
 .m-body { display: grid; grid-template-columns: auto 2.75rem auto; gap: 0.625rem; justify-content: center; block-size: 15rem; }
-.m-scale { display: flex; flex-direction: column; justify-content: space-between; padding: 0.125rem 0; text-align: right; font-size: 0.625rem; color: #6f6c67; font-variant-numeric: tabular-nums; }
-.m-fader { position: relative; cursor: grab; touch-action: none; border-radius: 0.25rem; --v: 0.75; --cap: 3.125rem; }
+/* the numbers and tick marks span the fader's real travel: 10 is level with the cap's orange line at the top of its run, 0 at the bottom */
+.m-scale { display: flex; flex-direction: column; justify-content: space-between; padding: calc(var(--cap) / 2 - 0.5em) 0; text-align: right; font-size: 0.625rem; line-height: 1; color: #6f6c67; font-variant-numeric: tabular-nums; }
+.m-fader { position: relative; cursor: grab; touch-action: none; border-radius: 0.25rem; --v: 0.75; }
 .m-fader:active { cursor: grabbing; }
 .m-fader::before { content: ""; position: absolute; left: calc(50% - 2px); inset-block: 0; inline-size: 4px; border-radius: 2px; background: #0a0a0b; border: 1px solid var(--line); }
-.m-fader::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+.m-fader::after { content: ""; position: absolute; inset: calc(var(--cap) / 2) 0 calc(var(--cap) / 2 - 1px); pointer-events: none;
   background: linear-gradient(#4a4a50, #4a4a50) left / 0.5rem 100% no-repeat, linear-gradient(#4a4a50, #4a4a50) right / 0.5rem 100% no-repeat;
-  -webkit-mask-image: repeating-linear-gradient(180deg, #000 0, #000 1px, transparent 1px, transparent 1.5rem); mask-image: repeating-linear-gradient(180deg, #000 0, #000 1px, transparent 1px, transparent 1.5rem); }
+  -webkit-mask-image: repeating-linear-gradient(180deg, #000 0, #000 1px, transparent 1px, transparent calc((100% - 1px) / 10)); mask-image: repeating-linear-gradient(180deg, #000 0, #000 1px, transparent 1px, transparent calc((100% - 1px) / 10)); }
 .m-cap { position: absolute; z-index: 1; left: 0.25rem; bottom: calc(var(--v) * (100% - var(--cap))); inline-size: 2.25rem; block-size: var(--cap); border-radius: 0.25rem;
   border: 1px solid #55534f; background: linear-gradient(180deg, #3b3a38, #232224 48%, #2e2d2c); box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6); }
 .m-cap::after { content: ""; position: absolute; inset-inline: 0.25rem; top: calc(50% - 1.5px); block-size: 3px; background: var(--accent); }
@@ -680,6 +681,11 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .m-meter i { display: block; border-radius: 1px; background: #26262a; }
 .m-meter i.on { background: var(--accent); }
 .m-meter i.hot { background: #f0a35c; }
+.m-mute { justify-self: center; min-inline-size: 4.25rem; padding: 0.3125rem 0.625rem; border: 1px solid #55534f; border-radius: 0.25rem; background: linear-gradient(180deg, #2c2b2a, #1c1c1d);
+  color: var(--soft); font: 600 0.6875rem var(--body); letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); }
+.m-mute:hover { border-color: #8a8782; color: var(--text); }
+.m-mute[aria-pressed="true"] { background: var(--accent); border-color: var(--accent-hi); color: var(--ink); box-shadow: 0 0 0.75rem rgba(210, 105, 30, 0.5); }
+.master.muted .m-cap::after { background: #8a8782; }
 .m-name { background: #0a0a0b; border: 1px solid var(--line); border-radius: 3px; padding: 0.4375rem 0.5rem; text-align: center; font-family: var(--head); font-size: 1.0625rem; letter-spacing: 0.08em; text-transform: uppercase; }
 .m-read { margin: 0; text-align: center; color: var(--muted); font-size: 0.8125rem; font-variant-numeric: tabular-nums; }
 /* The small control on the other players (before/after samples, the sound reel) */

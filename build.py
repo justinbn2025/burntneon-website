@@ -340,13 +340,15 @@ def master_strip(words):
     """The Music page's master fader: sets the volume for every player and shows the level of whatever
     is playing. site.js drives it; it is left out on phones and tablets."""
     meter = '<div class="m-meter">%s</div>' % ("<i></i>" * 18)
-    return ('<aside class="master" aria-label="%s"><div class="m-top" aria-hidden="true"><span>%s</span><i class="m-led"></i></div>'
+    return ('<aside class="master" aria-label="%s" data-muted="@@MUTED@@"><div class="m-top" aria-hidden="true"><span>%s</span><i class="m-led"></i></div>'
             '<div class="m-body"><div class="m-scale" aria-hidden="true"><span>10</span><span>8</span><span>6</span><span>4</span><span>2</span><span>0</span></div>'
             '<div class="m-fader" role="slider" tabindex="0" aria-orientation="vertical" aria-label="%s" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75" aria-valuetext="75%%">'
             '<i class="m-cap"></i></div><div class="m-meters" aria-hidden="true">%s%s</div></div>'
+            '<button class="m-mute" type="button" aria-pressed="false">%s</button>'
             '<div class="m-name" aria-hidden="true">%s</div><p class="m-read" aria-hidden="true">75%%</p></aside>'
             % (e(words.get("volume_label", "Volume")), e(words.get("master_label", "Master")), e(words.get("volume_label", "Volume")),
-               meter, meter, e(words.get("volume_label", "Volume"))))
+               meter, meter, e(words.get("mute_label", "Mute")), e(words.get("volume_label", "Volume")))
+            ).replace("@@MUTED@@", e(words.get("muted_label", "Muted")))
 
 
 def ab_player(sample, n):
