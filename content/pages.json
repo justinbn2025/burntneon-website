@@ -61,6 +61,7 @@
       "text": "Sound design, dialogue editing and mixing for independent films, animation and game trailers. One person working on your sound from first spot to final delivery.",
       "button": "Watch the work",
       "second_button": "Tell me about your film",
+      "email_to": "film",
       "video_label": "Sound reel"
     },
     "credits": { "label": "Credits", "heading": "Recent work.", "link": "Full credits on IMDb" },
@@ -88,7 +89,8 @@
       "heading": "Have a cut that needs sound?",
       "text": "Send me the film, your delivery list and your deadline.[ I’ll reply with a quote and a schedule within {reply_days} business days.]",
       "button": "Tell me about your film",
-      "email_subject": "Film sound"
+      "email_subject": "Film sound",
+      "email_to": "film"
     }
   },
 
@@ -101,7 +103,8 @@
       "text": "A tenor for musical theater, pop and rock who also produces and mixes. Hire me for one part of your track or all of it.",
       "button": "Hear the work",
       "second_button": "Send me your song",
-      "email_subject": "Session vocals"
+      "email_subject": "Session vocals",
+      "email_to": "singing"
     },
     "reel": { "title": "Musical theater reel", "text": "Three minutes of singing and speaking." },
     "listen": {
@@ -132,7 +135,8 @@
       "heading": "Demos and workshop albums, start to finish.",
       "text": "Writing a musical? I sing, bring in the rest of the cast, and record, edit and mix the whole set, so your score sounds like a show when you send it out.",
       "button": "Ask about your score",
-      "email_subject": "Musical theater demo"
+      "email_subject": "Musical theater demo",
+      "email_to": "singing"
     },
     "quotes_label": "What clients say",
     "reviews_line": "5-star average across {review_count} client reviews on Fiverr and SoundBetter.",
@@ -140,7 +144,8 @@
       "heading": "Have a song that needs a voice?",
       "text": "Send me the track and what you’re hearing for it.[ I’ll reply with a price and a delivery date within {reply_days} business days.]",
       "button": "Send me your song",
-      "email_subject": "Session vocals"
+      "email_subject": "Session vocals",
+      "email_to": "singing"
     }
   },
 

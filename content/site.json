@@ -3,6 +3,13 @@
   "legal_name": "BURNT NEON Productions LLC",
   "url": "https://www.burntneonproductions.com",
   "email": "info@burntneonproductions.com",
+  "emails": {
+    "film": "audio-post@burntneonproductions.com",
+    "singing": "singing@burntneonproductions.com",
+    "production": "music-prod@burntneonproductions.com",
+    "mixing": "mixing@burntneonproductions.com",
+    "mastering": "mastering@burntneonproductions.com"
+  },
   "location": "Culver City, CA",
 
   "show_placeholders": true,

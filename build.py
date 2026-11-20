@@ -95,8 +95,10 @@ def image(name, alt, cls, label):
     return ""
 
 
-def mailto(subject=""):
-    return "mailto:" + SITE["email"] + ("?subject=" + quote(subject) if subject else "")
+def mailto(subject="", to=""):
+    """An email link. `to` names an address under "emails" in site.json (one per service, so
+    enquiries arrive already sorted); anything else goes to the main address."""
+    return "mailto:" + (SITE.get("emails", {}).get(to) or SITE["email"]) + ("?subject=" + quote(subject) if subject else "")
 
 
 PLAY = '<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>'
@@ -205,7 +207,7 @@ def layout(page, title, description, body):
 </html>
 """.format(csp=csp, title=e(title), desc=e(description), url=SITE["url"], path=path, page=page,
            defs=wave_defs(), ver=VERSION, nav=nav, logo=logo(), skip=e(PAGES["shared"]["skip_link"]),
-           menu_button=e(PAGES["shared"]["menu_button"]), mail=mailto(), wave=WAVE_USE, body=body,
+           menu_button=e(PAGES["shared"]["menu_button"]), mail=mailto("", page), wave=WAVE_USE, body=body,
            legal=e(SITE["legal_name"]), loc=e(SITE["location"]), foot=foot)
 
 
@@ -341,11 +343,11 @@ def quotes(page, eyebrow, look="band-dots", reviews_line=""):
     return section(heading(eyebrow) + '<div class="grid quotes">%s</div>%s' % (figs, line), look)
 
 
-def contact_band(h2, text, button, subject="", blend=False):
+def contact_band(h2, text, button, subject="", blend=False, to=""):
     """The contact band. blend=True drops its top line, for a page whose last section
     fades into the band's own colours (fade-ember)."""
     return ('<section class="band band-cta%s"><div class="wrap cta-row"><div><h2>%s</h2><p>%s</p></div>'
-            '<a class="btn" href="%s">%s</a></div></section>' % (" seamless" if blend else "", h2, text, mailto(subject), button))
+            '<a class="btn" href="%s">%s</a></div></section>' % (" seamless" if blend else "", h2, text, mailto(subject, to), button))
 
 
 def credit_cards(items):
@@ -416,10 +418,10 @@ def step_list(lines):
     return '<ul class="strip-list">%s</ul>' % out if out else ""
 
 
-def ask_button(label, name, subject, ghost=True):
+def ask_button(label, name, subject, ghost=True, to=""):
     """A card's enquiry button, always on two lines: the label, then the thing asked about."""
     return ('<a class="btn btn-ask%s" href="%s"><span>%s</span> <span>%s</span></a>'
-            % (" btn-ghost" if ghost else "", mailto(subject), label, e(name)))
+            % (" btn-ghost" if ghost else "", mailto(subject, to), label, e(name)))
 
 
 def strips(items, label="CH", ordered=False):
@@ -517,11 +519,11 @@ def t(text):
 
 
 def banner_buttons(b, first_href, subject=""):
-    return [(first_href, t(b["button"])), (mailto(b.get("email_subject", subject)), t(b["second_button"]))]
+    return [(first_href, t(b["button"])), (mailto(b.get("email_subject", subject), b.get("email_to", "")), t(b["second_button"]))]
 
 
 def contact(c, blend=False):
-    return contact_band(t(c["heading"]), t(c["text"]), t(c["button"]), c.get("email_subject", ""), blend)
+    return contact_band(t(c["heading"]), t(c["text"]), t(c["button"]), c.get("email_subject", ""), blend, c.get("email_to", ""))
 
 
 # ---------- pages ----------
@@ -625,7 +627,7 @@ def music():
         send = ('<p class="pack-send"><b>%s</b> %s</p>' % (t(sv["send_label"]), e(s["send"]))) if s.get("send") else ""
         svc += ('<div class="pack pack-hover"><h3>%s</h3>%s<p>%s</p>%s%s</div>'
                 % (e(s["name"]), '<div class="pack-price">%s</div>' % price if price else "", e(s["text"]), send,
-                   ask_button(t(sv["button"]), s["name"], "Music: " + s["name"])))
+                   ask_button(t(sv["button"]), s["name"], "Music: " + s["name"], to=s.get("email_to", ""))))
     body += section(heading(t(sv["label"]), t(sv["heading"])) + '<div class="grid packs">%s</div>' % svc
                     + '<p class="aside">%s</p>' % t(sv["note"]), "band-dots fade-out", "services")
     if MUSIC.get("questions"):
@@ -634,7 +636,7 @@ def music():
             "<div><h3>%s</h3><p>%s</p></div>" % (e(x["q"]), e(x["a"])) for x in MUSIC["questions"]), "")
     th = p["theater"]
     body += section('<div class="about"><div class="about-text">%s<p>%s</p><a class="btn" href="%s">%s</a></div>%s</div>'
-                    % (heading(t(th["label"]), t(th["heading"])), t(th["text"]), mailto(th.get("email_subject", "")), t(th["button"]),
+                    % (heading(t(th["label"]), t(th["heading"])), t(th["text"]), mailto(th.get("email_subject", ""), th.get("email_to", "")), t(th["button"]),
                        image("theater.jpg", "A score on the music stand", "wide-img", "Photo: a score on the stand, or recording a cast number")),
                     "band-notes")
     music_quotes = quotes("music", t(p["quotes_label"]), "band-foam foam-fade band-line fade-ember", p.get("reviews_line", ""))
