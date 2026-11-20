@@ -682,7 +682,7 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .m-scale [data-n="11"] { --n: 11; } .m-scale [data-n="10"] { --n: 10; } .m-scale [data-n="8"] { --n: 8; } .m-scale [data-n="6"] { --n: 6; } .m-scale [data-n="4"] { --n: 4; } .m-scale [data-n="2"] { --n: 2; } .m-scale [data-n="0"] { --n: 0; }
 .m-fader { position: relative; cursor: grab; touch-action: none; border-radius: 0.25rem; --v: 0.75; }
 .m-fader:active { cursor: grabbing; }
-.m-fader::before { content: ""; position: absolute; left: calc(50% - 2px); inset-block: 0; inline-size: 4px; border-radius: 2px; background: #0a0a0b; border: 1px solid var(--line); }
+.m-fader::before { content: ""; position: absolute; left: calc(50% - 2px); inset-block: calc(var(--cap) / 2 - 2px); inline-size: 4px;   /* the slot runs from 0 to 11 only; the cap still travels the full height */ border-radius: 2px; background: #0a0a0b; border: 1px solid var(--line); }
 .m-fader::after { content: ""; position: absolute; inset: calc(var(--cap) / 2) 0 calc(var(--cap) / 2 - 1px); pointer-events: none;
   background: linear-gradient(#4a4a50, #4a4a50) left / 0.5rem 100% no-repeat, linear-gradient(#4a4a50, #4a4a50) right / 0.5rem 100% no-repeat;
   -webkit-mask-image: repeating-linear-gradient(180deg, #000 0, #000 1px, transparent 1px, transparent calc((100% - 1px) / 11)); mask-image: repeating-linear-gradient(180deg, #000 0, #000 1px, transparent 1px, transparent calc((100% - 1px) / 11)); }
