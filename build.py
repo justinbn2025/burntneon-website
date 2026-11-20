@@ -315,7 +315,7 @@ def callout_line(tr, words):
     if kind not in CALLOUT_ICONS:
         missing("callout type not recognised (using the general icon): " + kind)
     links = words.get("callout_links", {})
-    link = ('<a href="%s" rel="noopener">%s &rarr;</a>'
+    link = ('<a href="%s" target="_blank" rel="noopener">%s &rarr;<span class="sr-only"> (opens in a new tab)</span></a>'
             % (e(c["link"]), t(c.get("link_text") or links.get(kind) or links.get("other") or "See more"))
             if c.get("link") else "")
     showcase = "<b>%s</b> " % e(c["showcase"]) if c.get("showcase") else ""
