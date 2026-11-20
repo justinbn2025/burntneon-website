@@ -156,7 +156,6 @@
       var move = function (e) { fromPointer(e); };
       var up = function () { fader.removeEventListener('pointermove', move); fader.removeEventListener('pointerup', up); fader.removeEventListener('pointercancel', up); };
       fader.addEventListener('pointermove', move); fader.addEventListener('pointerup', up); fader.addEventListener('pointercancel', up);
-      ev.preventDefault(); fader.focus();
     });
     fader.addEventListener('keydown', function (ev) {
       var step = { ArrowUp: 0.05, ArrowRight: 0.05, ArrowDown: -0.05, ArrowLeft: -0.05, PageUp: 0.2, PageDown: -0.2 }[ev.key];
