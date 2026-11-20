@@ -15,20 +15,20 @@
   },
 
   "home": {
-    "browser_title": "BURNT NEON Productions: sound for film, music and podcasts",
-    "search_description": "Sound editing and mixing, session vocals, and podcast post-production in Los Angeles.",
+    "browser_title": "Sound for film, music and podcasts | BURNT NEON Productions",
+    "search_description": "Audio post-production for film, session vocals and music production, and podcast editing and mixing. Based in Los Angeles, working with clients anywhere.",
     "banner": {
       "label": "Los Angeles audio studio",
       "headline": "Sound for *film*, *music* and *podcasts*.",
-      "text": "Sound editing and mixing, session vocals, and podcast post-production. One engineer, start to finish.",
+      "text": "Sound editing and mixing, session vocals, and podcast post-production. One human, start to finish.",
       "button": "Hear the work",
       "second_button": "Get in touch"
     },
     "paths": {
       "label": "What do you need?",
       "heading": "Pick your path.",
-      "film": { "name": "Film & games", "text": "Sound design, dialogue editing, and stereo and 5.1 mixing that serve the story.", "link": "See film credits" },
-      "music": { "name": "Music", "text": "Session vocals, production, mixing and mastering, from musical theater to modern pop.", "link": "Hear the music" },
+      "film": { "name": "Film & Games", "text": "Sound design, dialogue editing, and mixing that serve the story.", "link": "See film credits" },
+      "music": { "name": "Music", "text": "Session vocals, production, mixing and mastering, from musical theater to modern pop and electronic.", "link": "Hear the music" },
       "podcasts": { "name": "Podcasts", "text": "Every episode edited, mixed and mastered, so you sound clear, even and close.", "link": "Hear a before and after" }
     },
     "credits": { "label": "Selected credits", "heading": "Recent film work.", "link": "All credits and reel" },
@@ -37,8 +37,8 @@
       "label": "About",
       "heading": "Hi, I’m Justin.",
       "paragraphs": [
-        "I’m a sound editor, mixer and session singer in Los Angeles. I started BURNT NEON Productions in 2025 to do the work I care about most: making stories and songs sound the way their makers hear them.",
-        "On screen, I’ve been supervising sound editor and re-recording mixer on independent films. On stage, I’ve played Melchior in Spring Awakening and Jamie in The Last Five Years. In the studio, I sing, produce and mix across pop, rock, R&B and musical theater."
+        "I’m a Sound Editor, Mixer and Session Singer in Los Angeles. I started BURNT NEON Productions in 2025 to do the work I care about most: making *stories* and *songs* sound the way their makers imagined them.",
+        "On screen, I’ve been a Supervising Sound Editor, Re-recording Mixer, and Actor on independent films. On stage, I’ve played Melchior in Spring Awakening and Jamie in The Last Five Years. In the studio, I sing, produce and mix across Pop, Rock, R&B and Musical Theater."
       ],
       "button": "Tell me about your project"
     },
@@ -50,12 +50,12 @@
   },
 
   "film": {
-    "browser_title": "Film and game sound: BURNT NEON Productions",
-    "search_description": "Sound design, dialogue editing and mixing for independent films, animation and game trailers.",
+    "browser_title": "Film, animation, and game sound | BURNT NEON Productions",
+    "search_description": "Sound design and dialogue editing for independent films, animation and video game trailers.",
     "banner": {
       "label": "Post-production sound for film, animation, and games",
       "headline": "Sound that *serves the story*.",
-      "text": "Sound design, dialogue editing and mixing for independent films, animation and game trailers. One person working on your sound from first spot to final delivery.",
+      "text": "Sound design, dialogue editing and mixing for independent films, animation and game trailers. Crafting your world's sonic landscape with care.",
       "button": "Watch the work",
       "second_button": "Tell me about your film",
       "email_to": "film"
@@ -65,9 +65,9 @@
       "label": "Services",
       "heading": "What I do on a film.",
       "items": [
-        { "title": "Sound editing and design", "text": "I build the sound world your picture needs, from library effects to designed elements to custom foley recorded to picture." },
-        { "title": "Dialogue editing", "text": "The best takes from each microphone, repaired and blended so the cuts disappear. Room tone smoothed, levels evened, space added where the scene calls for it." },
-        { "title": "Stereo and 5.1 mixing", "text": "Dialogue, music, and effects balanced so nothing fights. Delivered at the loudness your festival or platform specifies." }
+        { "title": "Sound effects editing and design", "text": "I build the sound world your picture needs, from library effects to designed elements to custom foley recorded to picture." },
+        { "title": "Dialogue cleanup and editing", "text": "The best takes from each microphone, cleaned and blended so the cuts and clicks disappear. Room tone smoothed, volume evened." },
+        { "title": "Re-recording mixing", "text": "Dialogue, music, and effects balanced so nothing fights. Delivered at the loudness your festival or platform specifies. Stereo, 5.1, or atmos." }
       ]
     },
     "steps": {
@@ -76,9 +76,9 @@
       "swipe_hint": "Swipe for the next step",
       "items": [
         { "title": "Spotting", "text": "You send me your initial notes on what each scene needs." },
-        { "title": "Edit and design", "text": "Dialogue cleaned and cut. Effects, ambiences and foley built." },
-        { "title": "Mix", "text": "Everything balanced to picture. You review and send notes." },
-        { "title": "Deliver", "text": "Final mixes in the formats on your delivery list." }
+        { "title": "Edit and design", "text": "Dialogue cleaned and cut. Effects, ambiences and foley built. Rough mix and editorial revision rounds." },
+        { "title": "Mix", "text": "Honing the balance of all combined elements with a focused ear. Mix revisions." },
+        { "title": "Deliver", "text": "Full mix and stems exported to the formats on your delivery list." }
       ]
     },
     "quotes_label": "What filmmakers say",
@@ -92,8 +92,8 @@
   },
 
   "music": {
-    "browser_title": "Session vocals, production and mixing: BURNT NEON Productions",
-    "search_description": "Session singing, music production, mixing and mastering, from musical theater to modern pop.",
+    "browser_title": "Session vocals, music production, mixing and mastering | BURNT NEON Productions",
+    "search_description": "Session singing, music production, mixing and mastering - from musical theater to modern pop and genres in between.",
     "banner": {
       "label": "Session vocals, production, mixing and mastering",
       "headline": "The voice and the mix that *finish the song*.",
