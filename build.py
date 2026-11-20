@@ -657,8 +657,8 @@ def music():
         missing("link: spotify")
     li = p["listen"]
     body += section(heading(t(li["label"]), t(li["heading"])) + '<div class="grid styles">%s</div>' % groups
-                    + ('<p class="aside">%s <a href="%s" rel="noopener">%s</a>.</p>'
-                       % (t(li["spotify_line"]), e(spotify), t(li["spotify_link"])) if spotify else ""), "band-spectro spectro-join", "listen")
+                    + ('<p class="aside">%s <a href="%s" target="_blank" rel="noopener">%s%s<span class="sr-only"> (opens in a new tab)</span></a>.</p>'
+                       % (t(li["spotify_line"]), e(spotify), t(li["spotify_link"]), EXTERNAL) if spotify else ""), "band-spectro spectro-join", "listen")
     # Services is the page's pricing section, so it takes the dots (kept for pricing) and plain cards
     # like the podcast packages, with the same "Before you ask" questions under it.
     sv = p["services"]
