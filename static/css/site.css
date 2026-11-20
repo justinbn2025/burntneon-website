@@ -247,6 +247,8 @@ img.hero-bg-home, img.hero-bg-music, img.hero-bg-film, img.hero-bg-podcasts { op
 .hero-row.stack { grid-template-columns: 1fr; }
 .hero-row.stack .hero-side { justify-self: start; }
 .hero-row.stack .hero-text, :is(.hero-bg-home, .hero-bg-film, .hero-bg-podcasts) ~ .hero-row.solo .hero-text { max-inline-size: 29rem; }   /* keeps the headline clear of the photo's subject */
+/* the small label may run wider than the headline column, so it stays on one line where the page has room */
+.hero-text .eyebrow { inline-size: max-content; max-inline-size: min(100vw - 2 * var(--gutter), 70rem); }
 .hint { margin-top: 0.75rem; color: var(--muted); font-size: 0.875rem; }
 .reel-audio { margin-top: 1.75rem; max-inline-size: 32rem; }
 .hero-pause { position: absolute; right: var(--gutter); bottom: 1rem; z-index: 2; background: rgba(14, 14, 15, 0.8); color: var(--text);
