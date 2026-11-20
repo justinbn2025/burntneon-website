@@ -679,6 +679,8 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .m-scale { position: relative; inline-size: 1rem; font-size: 0.625rem; line-height: 1; color: #6f6c67; font-variant-numeric: tabular-nums; }
 .m-scale span { position: absolute; right: 0; bottom: calc(var(--cap) / 2 + var(--n) / 11 * (100% - var(--cap))); transform: translateY(50%); }
 .m-scale .m-top-mark { color: var(--accent); font-weight: 700; }
+/* each number's place on the scale (set here, not on the element: the page's security policy blocks inline styles) */
+.m-scale [data-n="11"] { --n: 11; } .m-scale [data-n="10"] { --n: 10; } .m-scale [data-n="8"] { --n: 8; } .m-scale [data-n="6"] { --n: 6; } .m-scale [data-n="4"] { --n: 4; } .m-scale [data-n="2"] { --n: 2; } .m-scale [data-n="0"] { --n: 0; }
 .m-fader { position: relative; cursor: grab; touch-action: none; border-radius: 0.25rem; --v: 0.75; }
 .m-fader:active { cursor: grabbing; }
 .m-fader::before { content: ""; position: absolute; left: calc(50% - 2px); inset-block: 0; inline-size: 4px; border-radius: 2px; background: #0a0a0b; border: 1px solid var(--line); }

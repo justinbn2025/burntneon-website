@@ -341,7 +341,7 @@ def master_strip(words):
     """The Music page's master fader: sets the volume for every player and shows the level of whatever
     is playing. site.js drives it; it is left out on phones and tablets. The scale goes to 11."""
     meter = '<div class="m-meter">%s</div>' % ("<i></i>" * 18)
-    scale = "".join('<span%s style="--n:%d">%d</span>' % (' class="m-top-mark"' if n == 11 else "", n, n) for n in (11, 10, 8, 6, 4, 2, 0))
+    scale = "".join('<span%s data-n="%d">%d</span>' % (' class="m-top-mark"' if n == 11 else "", n, n) for n in (11, 10, 8, 6, 4, 2, 0))
     return ('<aside class="master" aria-label="%s"><div class="m-top" aria-hidden="true"><span>%s</span><i class="m-led"></i></div>'
             '<div class="m-body"><div class="m-scale" aria-hidden="true">%s</div>'
             '<div class="m-fader" role="slider" tabindex="0" aria-orientation="vertical" aria-label="%s" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75" aria-valuetext="75%%">'
