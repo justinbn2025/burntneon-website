@@ -45,6 +45,9 @@ Examples:
 - **Hide a credit for now:** add `"hidden": true` to its block in `credits.json` (for work
   or permission still pending). It stays off the site until you remove that line or set it
   to `false`; the build lists hidden credits as a reminder.
+- **Hide a music sample for now:** add `"hidden": true` to its line in `music.json`, and keep
+  its audio file out of `static/audio/` until it can go up: everything in that folder is
+  published even if no page uses it. The build warns if a hidden sample's file is still there.
 - **Add a clip to a credit:** paste the YouTube or Vimeo link into `"clip"`.
 - **Add a music sample:** put the MP3 in `static/audio/` and write its file name
   in `"src"`, or paste a full `https://` link to a file hosted elsewhere.

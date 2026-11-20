@@ -579,6 +579,18 @@ def film():
     return layout("film", p["browser_title"], p["search_description"], body)
 
 
+def hidden_track(tr):
+    """A sample with "hidden": true in music.json stays off the page (and out of the page source)
+    until that is removed or set to false. Its audio file should not be in static/audio meanwhile:
+    everything in that folder is published whether or not a page uses it."""
+    if tr.get("hidden"):
+        missing("hidden for now: music sample " + (tr.get("title") or "(untitled)"))
+        if tr.get("src") and not tr["src"].startswith("http") and (STATIC / "audio" / tr["src"]).exists():
+            missing("hidden sample's file is still in static/audio and will be published: " + tr["src"])
+        return True
+    return False
+
+
 def music():
     p = PAGES["music"]
     b = p["banner"]
@@ -596,7 +608,7 @@ def music():
                    " &middot; ".join(x for x in (e(tr["artist"]) if tr.get("artist") else ("" if tr.get("src") else val("", "artist")),
                                                 val(tr.get("role"), "your role")) if x),
                    tr.get("src"), "%s sample" % style["name"])
-            for tr in style["tracks"])
+            for tr in style["tracks"] if not hidden_track(tr))
         if rows:
             groups += '<div class="style"><h3>%s</h3>%s</div>' % (e(style["name"]), rows)
     spotify = SITE["links"].get("spotify")
