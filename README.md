@@ -66,6 +66,9 @@ Examples:
 - **Add a clip to a credit:** paste the YouTube or Vimeo link into `"clip"`.
 - **Add a music sample:** put the MP3 in `static/audio/` and write its file name
   in `"src"`, or paste a full `https://` link to a file hosted elsewhere.
+  Each sample has a `"genre"` (its bold title on the page), a `"title"` and `"artist"` (shown
+  together on the next line) and `"roles"`, a list such as `["Mixing", "Mastering"]`, shown
+  as one tag each.
 - **Add a podcast before/after:** fill in `title`, `note`, `before` and `after`.
   The two files must be the same length and start at the same moment.
   Only the first sample shows while `"show_more_samples": false` in

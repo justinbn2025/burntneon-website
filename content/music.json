@@ -6,14 +6,14 @@
 
   "styles": [
     { "name": "Session Singing", "tracks": [
-      { "title": "Musical Theater Singing - Reel", "artist": "Various Artists", "role": "Singing and VO", "src": "musical-theater-reel.mp3" },
-      { "title": "Pop Singing - Reel", "artist": "Various Artists", "role": "Lead and Backing Vocals", "src": "pop-reel.mp3" }
+      { "genre": "Musical Theater", "title": "Singing reel", "artist": "Various Artists", "roles": ["Singing", "Voice Over"], "src": "musical-theater-reel.mp3" },
+      { "genre": "Pop", "title": "Singing reel", "artist": "Various Artists", "roles": ["Lead Vocals", "Backing Vocals"], "src": "pop-reel.mp3" }
     ]},
     { "name": "Production, Mixing and Mastering", "tracks": [
-      { "title": "feels like dancing", "artist": "Slan", "role": "Mixing and Mastering", "src": "feels-like-dancing.mp3", "hidden": true,
+      { "genre": "Indie Pop", "title": "feels like dancing", "artist": "Slan", "roles": ["Mixing", "Mastering"], "src": "feels-like-dancing.mp3", "hidden": true,
         "callout": { "type": "streams", "showcase": "200,000+", "description": "streams on Spotify", "link": "" } },
-      { "title": "KARMA", "artist": "JVSTN.", "role": "Songwriting, Production, Mixing, and Mastering", "src": "karma.mp3" },
-      { "title": "Sleepwalking (Bodies In The Basement)", "artist": "JVSTN.", "role": "Re-mixing/Production, Mixing, and Mastering", "src": "sleepwalking.mp3" }
+      { "genre": "Hip-Hop", "title": "KARMA", "artist": "JVSTN.", "roles": ["Songwriting", "Production", "Mixing", "Mastering"], "src": "karma.mp3" },
+      { "genre": "Electronic", "title": "Sleepwalking (Bodies In The Basement)", "artist": "JVSTN.", "roles": ["Re-mixing/Production", "Mixing", "Mastering"], "src": "sleepwalking.mp3" }
     ]}
   ],
 

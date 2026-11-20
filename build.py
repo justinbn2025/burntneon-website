@@ -273,19 +273,20 @@ def film_reel():
     return html.replace("@@VOL@@", VOLCTL)
 
 
-def player(title, sub, src, label, foot=""):
-    """One audio sample: play button, title, time. `foot` is an optional extra line under the progress bar."""
+def player(title, sub, src, label, foot="", extra=""):
+    """One audio sample: play button, title, time. `extra` is an optional third line in the details
+    (the role tags); `foot` an optional line under the progress bar (a callout)."""
     if not src:
         missing("audio: " + label)
         if not SHOW:
             return ""
     off = "" if src else " disabled"
-    return ('<div class="player%s" data-src="%s" data-label="%s">'
+    return ('<div class="player%s%s" data-src="%s" data-label="%s">'
             '<button class="play" type="button" aria-label="Play %s"%s>%s</button>'
-            '<div class="player-meta"><div class="player-title">%s</div><div class="player-sub">%s</div></div>'
+            '<div class="player-meta"><div class="player-title">%s</div><div class="player-sub">%s</div>%s</div>'
             '<span class="player-time">0:00</span>'
             '<input class="player-seek" type="range" min="0" max="1000" value="0" aria-label="Position in %s"%s>%s</div>'
-            % ("" if src else " slot", e(media(src)) if src else "", e(label), e(label), off, PLAY, title, sub,
+            % ("" if src else " slot", " player-rich" if extra else "", e(media(src)) if src else "", e(label), e(label), off, PLAY, title, sub, extra,
                e(label), off, foot))
 
 
@@ -330,25 +331,24 @@ def callout_line(tr, words):
             % (CALLOUT_ICONS.get(kind, CALLOUT_ICONS["news"]), showcase, t(c.get("description", "")), link))
 
 
-# A small volume control for a single player: a mute button and a slider. site.js keeps every one of
+# A small volume control for a single player: a speaker icon and a slider. site.js keeps every one of
 # these, and the Music page's master fader, on the same setting. Hidden on phones and tablets.
-VOLCTL = ('<span class="volctl"><button class="volctl-mute" type="button" aria-label="Mute" aria-pressed="false"></button>'
+VOLCTL = ('<span class="volctl"><span class="volctl-icon" aria-hidden="true"></span>'
           '<input class="volctl-range" type="range" min="0" max="100" value="75" aria-label="Volume"></span>')
 
 
 def master_strip(words):
     """The Music page's master fader: sets the volume for every player and shows the level of whatever
-    is playing. site.js drives it; it is left out on phones and tablets."""
+    is playing. site.js drives it; it is left out on phones and tablets. The scale goes to 11."""
     meter = '<div class="m-meter">%s</div>' % ("<i></i>" * 18)
-    return ('<aside class="master" aria-label="%s" data-muted="@@MUTED@@"><div class="m-top" aria-hidden="true"><span>%s</span><i class="m-led"></i></div>'
-            '<div class="m-body"><div class="m-scale" aria-hidden="true"><span>10</span><span>8</span><span>6</span><span>4</span><span>2</span><span>0</span></div>'
+    scale = "".join('<span%s style="--n:%d">%d</span>' % (' class="m-top-mark"' if n == 11 else "", n, n) for n in (11, 10, 8, 6, 4, 2, 0))
+    return ('<aside class="master" aria-label="%s"><div class="m-top" aria-hidden="true"><span>%s</span><i class="m-led"></i></div>'
+            '<div class="m-body"><div class="m-scale" aria-hidden="true">%s</div>'
             '<div class="m-fader" role="slider" tabindex="0" aria-orientation="vertical" aria-label="%s" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75" aria-valuetext="75%%">'
             '<i class="m-cap"></i></div><div class="m-meters" aria-hidden="true">%s%s</div></div>'
-            '<button class="m-mute" type="button" aria-pressed="false">%s</button>'
             '<div class="m-name" aria-hidden="true">%s</div><p class="m-read" aria-hidden="true">75%%</p></aside>'
-            % (e(words.get("volume_label", "Volume")), e(words.get("master_label", "Master")), e(words.get("volume_label", "Volume")),
-               meter, meter, e(words.get("mute_label", "Mute")), e(words.get("volume_label", "Volume")))
-            ).replace("@@MUTED@@", e(words.get("muted_label", "Muted")))
+            % (e(words.get("volume_label", "Volume")), e(words.get("master_label", "Master")), scale, e(words.get("volume_label", "Volume")),
+               meter, meter, e(words.get("volume_label", "Volume"))))
 
 
 def ab_player(sample, n):
@@ -642,6 +642,22 @@ def film():
     return layout("film", p["browser_title"], p["search_description"], body)
 
 
+def sample_player(tr, words):
+    """A music sample. The bold title is the genre, so visitors can find the samples nearest their own
+    music; under it the song and artist on one line, then one tag per role."""
+    song = val(tr.get("title"), "track title")
+    artist = e(tr["artist"]) if tr.get("artist") else ("" if tr.get("src") else val("", "artist"))
+    line = '<span class="player-song">%s</span>%s' % (song, ' <span class="player-artist">%s</span>' % artist if artist else "")
+    roles = tr.get("roles") or ([tr["role"]] if tr.get("role") else [])
+    if not roles:
+        missing("your role on: " + (tr.get("title") or "a music sample"))
+    tags = ('<ul class="player-roles" role="list" aria-label="%s">%s</ul>'
+            % (e(words.get("roles_label", "My role")), "".join("<li>%s</li>" % e(r) for r in roles)) if roles else "")
+    name = " ".join(x for x in (tr.get("genre", "") + ":" if tr.get("genre") else "", tr.get("title"),
+                                "by " + tr["artist"] if tr.get("artist") else "") if x) or "sample"
+    return player(val(tr.get("genre"), "genre"), line, tr.get("src"), name, callout_line(tr, words), tags)
+
+
 def hidden_track(tr):
     """A sample with "hidden": true in music.json stays off the page (and out of the page source)
     until that is removed or set to false. Its audio file should not be in static/audio meanwhile:
@@ -666,12 +682,7 @@ def music():
     body = body.replace('<div class="btn-row">', side + '<div class="btn-row">', 1) if side else body
     groups = ""
     for style in MUSIC["styles"]:
-        rows = "".join(
-            player(val(tr.get("title"), "track title"),
-                   " &middot; ".join(x for x in (e(tr["artist"]) if tr.get("artist") else ("" if tr.get("src") else val("", "artist")),
-                                                val(tr.get("role"), "your role")) if x),
-                   tr.get("src"), "%s sample" % style["name"], callout_line(tr, p["listen"]))
-            for tr in style["tracks"] if not hidden_track(tr))
+        rows = "".join(sample_player(tr, p["listen"]) for tr in style["tracks"] if not hidden_track(tr))
         if rows:
             groups += '<div class="style"><h3>%s</h3>%s</div>' % (e(style["name"]), rows)
     spotify = SITE["links"].get("spotify")

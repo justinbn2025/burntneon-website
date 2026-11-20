@@ -111,8 +111,7 @@
       "spotify_link": "Spotify",
       "master_label": "Master",
       "volume_label": "Volume",
-      "mute_label": "Mute",
-      "muted_label": "Muted",
+      "roles_label": "My role",
       "callout_links": { "streams": "Listen there", "press": "Read it", "tv": "Watch it", "other": "See more" }
     },
     "services": {
