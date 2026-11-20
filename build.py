@@ -303,6 +303,12 @@ CALLOUT_ICONS = {
 }
 
 
+# The usual "leaves this site" mark: a box with an arrow out of its top-right corner.
+EXTERNAL = ('<svg class="ext-icon" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" '
+            'stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2.5h4v4M13.5 2.5l-6 6M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7'
+            'a1 1 0 0 1 1-1h3"/></svg>')
+
+
 def callout_line(tr, words):
     """The line under a sample's progress bar when its track has a "callout" in music.json:
     {"type": which icon, "showcase": the part in white ("200,000+"), "description": the rest
@@ -315,8 +321,8 @@ def callout_line(tr, words):
     if kind not in CALLOUT_ICONS:
         missing("callout type not recognised (using the general icon): " + kind)
     links = words.get("callout_links", {})
-    link = ('<a href="%s" target="_blank" rel="noopener">%s &rarr;<span class="sr-only"> (opens in a new tab)</span></a>'
-            % (e(c["link"]), t(c.get("link_text") or links.get(kind) or links.get("other") or "See more"))
+    link = ('<a href="%s" target="_blank" rel="noopener">%s%s<span class="sr-only"> (opens in a new tab)</span></a>'
+            % (e(c["link"]), t(c.get("link_text") or links.get(kind) or links.get("other") or "See more"), EXTERNAL)
             if c.get("link") else "")
     showcase = "<b>%s</b> " % e(c["showcase"]) if c.get("showcase") else ""
     return ('<p class="player-foot"><span>%s%s%s</span>%s</p>'

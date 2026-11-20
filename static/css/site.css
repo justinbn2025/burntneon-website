@@ -341,6 +341,7 @@ img.hero-bg-home, img.hero-bg-music, img.hero-bg-film, img.hero-bg-podcasts { op
 .player-foot b { color: var(--text); font-weight: 600; }
 .callout-icon { inline-size: 0.875rem; block-size: 0.875rem; color: var(--accent); margin-right: 0.4rem; vertical-align: -0.15em; display: inline-block; }
 .player-foot a { font-weight: 600; white-space: nowrap; }
+.ext-icon { inline-size: 0.8125rem; block-size: 0.8125rem; margin-left: 0.3rem; vertical-align: -0.12em; display: inline-block; }
 .sr-only { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }   /* read aloud by screen readers, not shown */
 .player-time { color: var(--muted); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
 .player.slot { text-align: left; }
