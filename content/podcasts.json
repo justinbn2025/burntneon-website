@@ -30,7 +30,7 @@
         "Music and sound effects placed",
         "A cut list for video shows"
       ]},
-    { "name": "Show Sound", "kind": "One-off setup", "price": "$1500", "per": "show", "highlight": false,
+    { "name": "Show Sound", "kind": "One-off setup", "price": "$350", "per": "show", "highlight": false,
       "includes": [
         "Intro and outro built",
         "Music beds and transitions",
