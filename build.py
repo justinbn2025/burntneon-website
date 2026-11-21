@@ -379,9 +379,28 @@ def ab_player(sample, n):
             % ("" if ready else " slot", name, data, title, note, name, off, PLAY, off, off, name, off, VOLCTL if ready else ""))
 
 
+STAR = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m8 1.3 2 4.2 4.6.6-3.4 3.2.9 4.6L8 11.7 3.9 13.9l.9-4.6L1.4 6.1 6 5.5z"/></svg>'
+CHEVRON = ('<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" '
+           'aria-hidden="true"><path d="%s"/></svg>')
+
+
+def star_row(n):
+    """The rating a review was given on its platform, out of 5. Left out when quotes.json gives none."""
+    try:
+        n = max(0, min(5, int(n)))
+    except (TypeError, ValueError):
+        return ""
+    if not n:
+        return ""
+    return ('<div class="stars" role="img" aria-label="%d out of 5 stars">%s%s</div>'
+            % (n, STAR * n, '<span class="stars-off">%s</span>' % (STAR * (5 - n)) if n < 5 else ""))
+
+
 def quotes(page, eyebrow, look="band-dots", reviews_line=""):
     """Client quotes for one page; the section appears once quotes.json has at least one quote for the page.
-    reviews_line is that page's own line under the quotes, if it has one."""
+    Three are in view (two on tablets, one on phones); any more are reached with "Show more reviews" and
+    the arrows, or by swiping. Each quote may carry "stars" (1 to 5, as given on the platform) and
+    "source" (the platform's name). reviews_line is that page's own line under the quotes, if it has one."""
     items = [q for q in QUOTES if page in q.get("pages", [])]
     filled = [q for q in items if q.get("quote")]
     if len(filled) < len(items):
@@ -389,13 +408,27 @@ def quotes(page, eyebrow, look="band-dots", reviews_line=""):
     if not filled:      # no quotes written for this page yet: leave the whole section out, drafts included
         return ""
     show = items if SHOW else filled
+    w = PAGES["shared"].get("reviews", {})
     figs = "".join(
-        '<figure class="quote"><blockquote>&ldquo;%s&rdquo;</blockquote><figcaption>%s</figcaption></figure>'
-        % (e(q["quote"]) if q.get("quote") else '<span class="todo">[client quote]</span>',
-           e(", ".join(x for x in (q.get("name"), q.get("role")) if x)) or '<span class="todo">[name, role or project]</span>')
+        '<figure class="quote">%s<blockquote>&ldquo;%s&rdquo;</blockquote><figcaption>%s%s</figcaption></figure>'
+        % (star_row(q.get("stars")),
+           e(q["quote"]) if q.get("quote") else '<span class="todo">[client quote]</span>',
+           e(", ".join(x for x in (q.get("name"), q.get("role")) if x)) or '<span class="todo">[name, role or project]</span>',
+           '<span class="quote-src">%s %s</span>' % (e(w.get("via", "via")), e(q["source"])) if q.get("source") else "")
         for q in show)
-    line = '<p class="reviews">%s</p>' % t(reviews_line) if reviews_line else ""
-    return section(heading(eyebrow) + '<div class="grid quotes">%s</div>%s' % (figs, line), look)
+    line = '<p class="reviews">%s</p>' % t(reviews_line) if reviews_line else "<span></span>"
+    controls = ('<div class="rv-controls"><button class="rv-more btn btn-ghost btn-small" type="button">%s</button>'
+                '<button class="rv-prev" type="button" aria-label="%s">%s</button><span class="rv-count" aria-live="polite"></span>'
+                '<button class="rv-next" type="button" aria-label="%s">%s</button></div>'
+                % (e(w.get("more", "Show more reviews")), e(w.get("previous", "Previous reviews")), CHEVRON % "M10 3 5 8l5 5",
+                   e(w.get("next", "More reviews")), CHEVRON % "m6 3 5 5-5 5"))
+    return section(heading(eyebrow) + '<div class="rv" data-full="%s" data-less="%s" data-of="%s"><div class="rv-track" tabindex="0" role="group" aria-label="%s">%s</div>'
+                   '<div class="rv-bar">%s%s</div></div>'
+                   % (e(w.get("read_full", "Read full review")), e(w.get("read_less", "Show less")), e(w.get("of", "of")), e(eyebrow_text(eyebrow)), figs, line, controls), look)
+
+
+def eyebrow_text(html):
+    return re.sub(r"<[^>]+>", "", html)
 
 
 def contact_band(h2, text, button, subject="", blend=False, to=""):

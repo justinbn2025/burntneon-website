@@ -382,6 +382,53 @@
     pick();
   })();
 
+  /* Reviews: three in view (two on tablets, one on phones). "Show more reviews" moves the row on and
+     brings out the arrows; nothing moves by itself. Long reviews get a "Read full review" switch. */
+  each('.rv', function (box) {
+    var track = box.querySelector('.rv-track'), cards = Array.prototype.slice.call(track.children);
+    var more = box.querySelector('.rv-more'), prev = box.querySelector('.rv-prev'), next = box.querySelector('.rv-next'), count = box.querySelector('.rv-count');
+    var queued = false;
+    function step() { return cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth; }
+    function per() { return Math.max(1, Math.round(track.clientWidth / step())); }
+    function first() { return Math.max(0, Math.min(cards.length - 1, Math.round(track.scrollLeft / step()))); }
+    function paint() {
+      queued = false;
+      var n = cards.length, p = per(), i = Math.min(first(), Math.max(0, n - p)), last = Math.min(n, i + p);
+      box.classList.toggle('fits', n <= p);
+      count.textContent = (p > 1 ? (i + 1) + '–' + last : String(i + 1)) + ' ' + (box.getAttribute('data-of') || 'of') + ' ' + n;
+      prev.disabled = i <= 0;
+      next.disabled = last >= n;
+      if (i > 0) box.classList.add('open');              // moved by swipe, trackpad or keyboard: show the arrows too
+    }
+    function go(dir) { track.scrollTo({ left: Math.max(0, (first() + dir * per()) * step()), behavior: calm ? 'auto' : 'smooth' }); }
+    function ask() { if (!queued) { queued = true; window.requestAnimationFrame(paint); } }
+    more.addEventListener('click', function () { box.classList.add('open'); go(1); next.focus({ preventScroll: true }); });
+    prev.addEventListener('click', function () { go(-1); });
+    next.addEventListener('click', function () { go(1); });
+    track.addEventListener('scroll', ask, { passive: true });
+    window.addEventListener('resize', function () { ask(); trim(); });
+    function trim() {                                    // offer "Read full review" only where a review is actually cut
+      cards.forEach(function (card) {
+        var q = card.querySelector('blockquote'), btn = card.querySelector('.quote-more');
+        if (!q || card.classList.contains('full')) return;
+        var cut = q.scrollHeight > q.clientHeight + 2;
+        if (cut && !btn) {
+          btn = document.createElement('button');
+          btn.type = 'button'; btn.className = 'quote-more'; btn.setAttribute('aria-expanded', 'false');
+          btn.textContent = box.getAttribute('data-full') || 'Read full review';
+          btn.addEventListener('click', function () {
+            var open = card.classList.toggle('full');
+            btn.setAttribute('aria-expanded', String(open));
+            btn.textContent = box.getAttribute(open ? 'data-less' : 'data-full') || (open ? 'Show less' : 'Read full review');
+          });
+          q.parentNode.insertBefore(btn, q.nextSibling);
+        } else if (!cut && btn) { btn.parentNode.removeChild(btn); }
+      });
+    }
+    paint(); trim();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(trim);
+  });
+
   /* 6. The sound reel: plays in place, one marker per film, optional full screen. */
   each('.rs', function (box) {
     var v = box.querySelector('video'), playBtn = box.querySelector('.rs-play'), full = box.querySelector('.rs-full');
