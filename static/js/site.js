@@ -389,7 +389,10 @@
     var more = box.querySelector('.rv-more'), prev = box.querySelector('.rv-prev'), next = box.querySelector('.rv-next'), count = box.querySelector('.rv-count');
     var queued = false;
     function step() { return cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth; }
-    function per() { return Math.max(1, Math.round(track.clientWidth / step())); }
+    function per() {                                     // how many fit, not counting the faded edges
+      var cs = getComputedStyle(track), inner = track.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+      return Math.max(1, Math.round((inner + parseFloat(cs.columnGap || 0)) / step()));
+    }
     function first() { return Math.max(0, Math.min(cards.length - 1, Math.round(track.scrollLeft / step()))); }
     function paint() {
       queued = false;
