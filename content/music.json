@@ -13,7 +13,7 @@
       { "genre": "Indie Pop", "title": "feels like dancing", "artist": "Slan", "roles": ["Mixing", "Mastering"], "src": "feels-like-dancing.mp3",
         "callout": { "type": "streams", "showcase": "200,000+", "description": "streams", "link": "https://open.spotify.com/track/7vC29mfWaOsNdbFejwvDMh?si=af39310cf3ae4c5e" } },
       { "genre": "Hip-Hop", "title": "KARMA", "artist": "JVSTN.", "roles": ["Songwriting", "Production", "Mixing", "Mastering", "Lead Vocals"], "src": "karma.mp3" },
-      { "genre": "Electronic", "title": "Sleepwalking (Bodies In The Basement)", "artist": "JVSTN.", "roles": ["Re-mixing/Production", "Mixing", "Mastering"], "src": "sleepwalking.mp3" },
+      { "genre": "Electronic", "title": "Sleepwalking (Bodies In The Basement)", "artist": "JVSTN.", "roles": ["Remixing", "Production", "Mixing", "Mastering"], "src": "sleepwalking.mp3" },
       { "genre": "Rock", "title": "Nancy Thomas", "artist": "David Orien", "roles": ["Recording Engineer", "Production", "Editing"], "src": "nancy-thomas.mp3", "callout": {"link": "https://open.spotify.com/track/712sB9NCEwhzZkF6C2dv9P?si=6c8759ed0bf94888"}}
     ]}
   ],
