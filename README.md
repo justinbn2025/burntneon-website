@@ -68,8 +68,8 @@ Examples:
 - **Add a client review:** copy one `{ ... }` block in `quotes.json`. Put your strongest three
   first: three show at a time, and the rest are reached with "Show more reviews". Optional
   fields: `"stars"` (1 to 5, exactly as given on the platform) and `"source"` (`"Fiverr"`,
-  `"SoundBetter"`). Reviews of about 240 characters or fewer show in full; longer ones are cut
-  to six lines with a "Read full review" link.
+  `"SoundBetter"`). Reviews of about 320 characters or fewer show in full; longer ones are cut
+  to eight lines with a "Read full review" link.
 - **Add a clip to a credit:** paste the YouTube or Vimeo link into `"clip"`.
 - **Add a music sample:** put the MP3 in `static/audio/` and write its file name
   in `"src"`, or paste a full `https://` link to a file hosted elsewhere.
