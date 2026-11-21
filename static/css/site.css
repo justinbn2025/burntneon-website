@@ -753,13 +753,14 @@ button.btn { cursor: pointer; }   /* a real button does not get the pointing han
   .rv.open .rv-next { right: -4rem; }
 }
 @media (max-width: 62em) { .rv-track { grid-auto-columns: calc((100% - var(--rv-gap)) / 2); } }
-@media (max-width: 40em) {     /* phones: one review, the next one peeking in; arrows from the start, centred */
+@media (max-width: 40em) {     /* phones: one review, with the faded edges of its neighbours; arrows from the start, centred */
   .rv { --rv-gap: 1.125rem; }
-  .rv-track { grid-auto-columns: 86%; }
+  .rv .rv-track, .rv.open .rv-track { --peek: 2.75rem; grid-auto-columns: 100%; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--peek); scroll-padding-inline: var(--peek);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 var(--peek), #000 calc(100% - var(--peek)), transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0, #000 var(--peek), #000 calc(100% - var(--peek)), transparent 100%); }
   .rv .rv-more { display: none; }
   .rv:not(.open) .rv-prev, .rv:not(.open) .rv-next, .rv:not(.open) .rv-count { display: grid; }
   .rv:not(.open) .rv-count { display: inline; }
-  .rv.open .rv-track { margin-inline: 0; padding-inline: 0; scroll-padding-inline: 0; -webkit-mask-image: none; mask-image: none; }   /* the next review already peeks in here */
   .js .rv:not(.fits) .rv-controls { order: -1; inline-size: 100%; justify-content: center; margin: 0; }
 }
 @media (prefers-reduced-motion: reduce) { .rv-track { scroll-behavior: auto; } }

@@ -388,12 +388,14 @@
     var track = box.querySelector('.rv-track'), cards = Array.prototype.slice.call(track.children);
     var more = box.querySelector('.rv-more'), prev = box.querySelector('.rv-prev'), next = box.querySelector('.rv-next'), count = box.querySelector('.rv-count');
     var queued = false;
-    function step() { return cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth; }
+    function step() { return (cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth) || track.clientWidth || 1; }
     function per() {                                     // how many fit, not counting the faded edges
-      var cs = getComputedStyle(track), inner = track.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
-      return Math.max(1, Math.round((inner + parseFloat(cs.columnGap || 0)) / step()));
+      var cs = getComputedStyle(track), w = step();
+      var inner = track.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
+      var gap = cards.length > 1 ? Math.max(0, w - cards[0].offsetWidth) : 0;      // measured, not read from the style (browsers report it differently)
+      return Math.max(1, Math.round((inner + gap) / w) || 1);
     }
-    function first() { return Math.max(0, Math.min(cards.length - 1, Math.round(track.scrollLeft / step()))); }
+    function first() { return Math.max(0, Math.min(cards.length - 1, Math.round(track.scrollLeft / step()) || 0)); }
     function paint() {
       queued = false;
       var n = cards.length, p = per(), i = Math.min(first(), Math.max(0, n - p)), last = Math.min(n, i + p);
