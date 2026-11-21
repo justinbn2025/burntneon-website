@@ -113,7 +113,7 @@
       "volume_label": "Volume",
       "roles_label": "My role",
       "listen_line": "Hear the full track",
-      "callout_links": { "listen": "Listen on Spotify", "streams": "Listen there", "press": "Read it", "tv": "Watch it", "other": "See more" }
+      "callout_links": { "listen": "Listen on Spotify", "streams": "Listen on Spotify", "press": "Read it", "tv": "Watch it", "other": "See more" }
     },
     "services": {
       "label": "Services",

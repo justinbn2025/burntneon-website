@@ -11,7 +11,7 @@
     ]},
     { "name": "Production, Mixing and Mastering", "tracks": [
       { "genre": "Indie Pop", "title": "feels like dancing", "artist": "Slan", "roles": ["Mixing", "Mastering"], "src": "feels-like-dancing.mp3", "hidden": true,
-        "callout": { "type": "streams", "showcase": "200,000+", "description": "streams on Spotify", "link": "" } },
+        "callout": { "type": "streams", "showcase": "200,000+", "description": "streams", "link": "" } },
       { "genre": "Hip-Hop", "title": "KARMA", "artist": "JVSTN.", "roles": ["Songwriting", "Production", "Mixing", "Mastering"], "src": "karma.mp3" },
       { "genre": "Electronic", "title": "Sleepwalking (Bodies In The Basement)", "artist": "JVSTN.", "roles": ["Re-mixing/Production", "Mixing", "Mastering"], "src": "sleepwalking.mp3" }
     ]}
