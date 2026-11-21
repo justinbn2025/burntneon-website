@@ -301,6 +301,7 @@ CALLOUT_ICONS = {
     "press": _icon('<rect x="1.5" y="2.5" width="13" height="11" rx="1.5"/><path d="M4.5 6h4M4.5 9h7M4.5 11.5h7M11 5.5h.5"/>'),
     "tv": _icon('<rect x="1.5" y="2.5" width="13" height="9" rx="1.5"/><path d="M5.5 14h5"/>'),
     "award": _icon('<path d="m8 1.8 1.9 3.9 4.3.6-3.1 3 .7 4.3L8 11.6l-3.8 2 .7-4.3-3.1-3 4.3-.6z"/>'),
+    "listen": _icon('<path d="M6 12.5v-9l7-1.5v8.5"/><circle cx="4.2" cy="12.5" r="1.8"/><circle cx="11.2" cy="10.5" r="1.8"/>'),   # music notes
     "news": _icon('<path d="M8 1.5v3M8 11.5v3M1.5 8h3M11.5 8h3M3.6 3.6l2 2M10.4 10.4l2 2M12.4 3.6l-2 2M5.6 10.4l-2 2"/>'),
 }
 
@@ -315,10 +316,15 @@ def callout_line(tr, words):
     """The line under a sample's progress bar when its track has a "callout" in music.json:
     {"type": which icon, "showcase": the part in white ("200,000+"), "description": the rest
     ("streams on Spotify"), "link": an address (optional), "link_text": the link's words (optional;
-    otherwise the usual words for that type from pages.json)}."""
-    c = tr.get("callout") or {}
+    otherwise the usual words for that type from pages.json)}.
+    A callout holding only a "link" becomes a plain line inviting the visitor to hear the full track."""
+    c = dict(tr.get("callout") or {})
     if not (c.get("showcase") or c.get("description")):
-        return ""
+        if not c.get("link"):
+            return ""
+        # a link and nothing else: a plain "hear the full track" line
+        c.setdefault("type", "listen")
+        c["description"] = words.get("listen_line", "Hear the full track")
     kind = c.get("type") or "news"
     if kind not in CALLOUT_ICONS:
         missing("callout type not recognised (using the general icon): " + kind)

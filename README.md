@@ -63,6 +63,8 @@ Examples:
   `"showcase"` is the part shown in white, `"description"` the rest, and `"link"` is optional.
   The link's words come from `pages.json` (`music` > `listen` > `callout_links`), or add
   `"link_text"` to the callout to set them for that one.
+  With nothing to announce, a callout holding only a link, `"callout": { "link": "https://..." }`,
+  shows a plain "Hear the full track" line with a link out.
 - **Add a clip to a credit:** paste the YouTube or Vimeo link into `"clip"`.
 - **Add a music sample:** put the MP3 in `static/audio/` and write its file name
   in `"src"`, or paste a full `https://` link to a file hosted elsewhere.
