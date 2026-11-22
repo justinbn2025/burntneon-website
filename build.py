@@ -396,11 +396,17 @@ def star_row(n):
             % (n, STAR * n, '<span class="stars-off">%s</span>' % (STAR * (5 - n)) if n < 5 else ""))
 
 
+def credit(q):
+    """A quote's role and project, e.g. Director, <i>Film Title</i>."""
+    return ", ".join(x for x in (e(q.get("role", "")), '<i class="quote-project">%s</i>' % e(q["project"]) if q.get("project") else "") if x)
+
+
 def quotes(page, eyebrow, look="band-dots", reviews_line=""):
     """Client quotes for one page; the section appears once quotes.json has at least one quote for the page.
     A page with exactly one quote shows it as a single featured quote. With more, three are in view (two on
     tablets, one on phones) with the arrows there from the start, and the row loops once there are enough.
-    Each quote may carry "stars" (1 to 5, as given on the platform) and "source" (the platform's name).
+    Each quote may carry "stars" (1 to 5, as given on the platform), "source" (the platform's name) and
+    "project" (the film, show or record it was for, set in italics after the role).
     reviews_line is that page's own line under the quotes, if it has one."""
     items = [q for q in QUOTES if page in q.get("pages", [])]
     filled = [q for q in items if q.get("quote")]
@@ -415,7 +421,7 @@ def quotes(page, eyebrow, look="band-dots", reviews_line=""):
         q = show[0]
         who = "".join(x for x in (
             "<b>%s</b>" % e(q["name"]) if q.get("name") else "",
-            "<span>%s</span>" % e(q["role"]) if q.get("role") else "",
+            "<span>%s</span>" % credit(q) if credit(q) else "",
             '<span class="quote-src">%s %s</span>' % (e(w.get("via", "via")), e(q["source"])) if q.get("source") else ""))
         fig = ('<figure class="quote-solo">%s<span class="qs-mark" aria-hidden="true">&ldquo;</span><blockquote>%s</blockquote>'
                '<span class="qs-rule" aria-hidden="true"></span><figcaption>%s</figcaption></figure>'
@@ -426,7 +432,7 @@ def quotes(page, eyebrow, look="band-dots", reviews_line=""):
         '<figure class="quote">%s<blockquote>&ldquo;%s&rdquo;</blockquote><figcaption>%s%s</figcaption></figure>'
         % (star_row(q.get("stars")),
            e(q["quote"]) if q.get("quote") else '<span class="todo">[client quote]</span>',
-           e(", ".join(x for x in (q.get("name"), q.get("role")) if x)) or '<span class="todo">[name, role or project]</span>',
+           ", ".join(x for x in (e(q.get("name", "")), credit(q)) if x) or '<span class="todo">[name, role or project]</span>',
            '<span class="quote-src">%s %s</span>' % (e(w.get("via", "via")), e(q["source"])) if q.get("source") else "")
         for q in show)
     controls = ('<div class="rv-controls"><button class="rv-prev" type="button" aria-label="%s">%s</button>'

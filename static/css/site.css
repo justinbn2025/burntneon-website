@@ -768,4 +768,5 @@ button.btn { cursor: pointer; }   /* a real button does not get the pointing han
 .quote-solo figcaption { display: grid; gap: 0.25rem; max-inline-size: 32rem; color: var(--muted); font-size: 0.9375rem; }
 .quote-solo figcaption b { color: var(--text); font-weight: 600; font-size: 1rem; }
 .quote-solo .stars { margin-bottom: 0.25rem; }
+.quote-project { font-style: italic; }
 .quote-one .rv-bar { justify-content: center; }
