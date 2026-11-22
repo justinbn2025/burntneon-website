@@ -4,6 +4,7 @@
     "year": "2027",
     "role": "Assistant Sound Editor",
     "poster": "",
+    "status": "",
     "clip": "",
     "on_home": true,
     "hidden": true
@@ -13,6 +14,7 @@
     "year": "2026",
     "role": "Assistant Sound Editor",
     "poster": "",
+    "status": "",
     "clip": "",
     "on_home": true,
     "hidden": true
@@ -22,6 +24,7 @@
     "year": "2026",
     "role": "Supervising Sound Editor, Re-recording Mixer",
     "poster": "",
+    "status": "",
     "clip": "",
     "on_home": true,
     "hidden": true
@@ -31,6 +34,7 @@
     "year": "2026",
     "role": "Assistant Sound Editor",
     "poster": "pussycat-pussycat.jpg",
+    "status": "",
     "clip": "",
     "on_home": true,
     "hidden": false
@@ -40,6 +44,7 @@
     "year": "2025",
     "role": "Re-recording Mixer, Sound Editor",
     "poster": "til-death-do-us-part.jpg",
+    "status": "",
     "clip": "",
     "on_home": true,
     "hidden": false
@@ -49,6 +54,7 @@
     "year": "2024",
     "role": "Sound Editor",
     "poster": "eclipse-chasers.jpg",
+    "status": "",
     "clip": "",
     "on_home": true,
     "hidden": false

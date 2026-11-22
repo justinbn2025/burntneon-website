@@ -49,6 +49,9 @@ Examples:
 - **Add a film credit:** copy one `{ ... }` block in `credits.json`, change the
   text, and put the poster in `static/img/posters/` (vertical, 2:3, about 800 px
   wide). `"on_home": true` also shows it on the Home page.
+  A credit with no `"poster"` shows a title card in the poster's place: the film's title in
+  type, with the optional `"status"` line under it (for example `"In post-production"`). Add
+  the poster's file name later and the card is replaced by the poster.
 - **Hide a credit for now:** add `"hidden": true` to its block in `credits.json` (for work
   or permission still pending). It stays off the site until you remove that line or set it
   to `false`; the build lists hidden credits as a reminder.

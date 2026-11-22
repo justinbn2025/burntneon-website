@@ -459,14 +459,18 @@ def contact_band(h2, text, button, subject="", blend=False, to=""):
 
 def credit_cards(items):
     """Film credits. A credit with "hidden": true in credits.json is left off the site
-    (and out of the page source) until that line is removed or set to false."""
+    (and out of the page source) until that line is removed or set to false. A credit with no
+    "poster" gets a title card in the poster's place, showing its "status" if it has one."""
     cards = []
     for c in items:
         if c.get("hidden"):
             missing("hidden for now: credit " + c["title"])
             continue
-        poster = image("posters/" + c["poster"] if c.get("poster") else "", "Poster: " + c["title"],
-                       "poster", "Poster: " + c["title"])
+        if c.get("poster"):
+            poster = image("posters/" + c["poster"], "Poster: " + c["title"], "poster", "Poster: " + c["title"])
+        else:           # no poster yet: a title card in the poster's place, with the optional "status" line
+            poster = ('<div class="poster title-card"><b aria-hidden="true">%s</b><span class="tc-rule" aria-hidden="true"></span>%s</div>'
+                      % (e(c["title"]), "<em>%s</em>" % e(c["status"]) if c.get("status") else ""))
         clip = ('<button class="play poster-play" type="button" data-video="%s" aria-label="Watch a clip from %s (opens in a new tab)">%s</button>'
                 % (e(c["clip"]), e(c["title"]), PLAY)) if c.get("clip") else ""
         cards.append('<li class="credit"><div class="poster-wrap">%s%s</div><p class="credit-title">%s '
