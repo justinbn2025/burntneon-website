@@ -307,8 +307,8 @@ CALLOUT_ICONS = {
 
 
 # "Go to this page": a plain arrow, drawn (not typed) so it is as heavy as the link's lettering and easy to see.
-GO = ('<svg class="go-icon" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" '
-      'stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h12M9 3l5 5-5 5"/></svg>')
+GO = ('<svg class="go-icon" aria-hidden="true" viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="2" '
+      'stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h20M17 3l5 5-5 5"/></svg>')
 # The usual "leaves this site" mark: a box with an arrow out of its top-right corner.
 EXTERNAL = ('<svg class="ext-icon" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" '
             'stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2.5h4v4M13.5 2.5l-6 6M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7'
