@@ -360,6 +360,9 @@ img.hero-bg-home, img.hero-bg-music, img.hero-bg-film, img.hero-bg-podcasts { op
 .callout-icon { inline-size: 0.875rem; block-size: 0.875rem; color: var(--accent); margin-right: 0.4rem; vertical-align: -0.15em; display: inline-block; }
 .player-foot a { font-weight: 600; white-space: nowrap; }
 .ext-icon { inline-size: 0.8125rem; block-size: 0.8125rem; margin-left: 0.3rem; vertical-align: -0.12em; display: inline-block; }
+.go-icon { inline-size: 1.15em; block-size: 1.15em; margin-left: 0.4em; vertical-align: -0.22em; display: inline-block; transition: transform 0.2s; }   /* the arrow after "go to this page" links */
+a.go:hover .go-icon, a.go:focus-visible .go-icon, .tile:hover .go-icon { transform: translateX(0.25em); }
+@media (prefers-reduced-motion: reduce) { .go-icon { transition: none; } }
 .sr-only { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }   /* read aloud by screen readers, not shown */
 .player-time { color: var(--muted); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
 .player.slot { text-align: left; }

@@ -306,6 +306,9 @@ CALLOUT_ICONS = {
 }
 
 
+# "Go to this page": a plain arrow, drawn (not typed) so it is as heavy as the link's lettering and easy to see.
+GO = ('<svg class="go-icon" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" '
+      'stroke-linecap="round" stroke-linejoin="round"><path d="M2 8h12M9 3l5 5-5 5"/></svg>')
 # The usual "leaves this site" mark: a box with an arrow out of its top-right corner.
 EXTERNAL = ('<svg class="ext-icon" aria-hidden="true" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" '
             'stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2.5h4v4M13.5 2.5l-6 6M11.5 9.5v3a1 1 0 0 1-1 1h-7a1 1 0 0 1-1-1v-7'
@@ -659,9 +662,9 @@ def home():
         btn = ('<button class="play tile-play" type="button" data-src="%s" data-label="a %s sample" aria-label="Play a %s sample">%s</button>'
                % (e(media(sample)), key, key, PLAY)) if sample else ""
         tile_html += ('<div class="tile">%s<div class="tile-panel"><div class="tile-head"><h3>%s</h3>%s</div>'
-                      '<p>%s</p><a href="%s">%s &rarr;</a></div></div>'
+                      '<p>%s</p><a class="go" href="%s">%s%s</a></div></div>'
                       % (image("tile-%s.jpg" % key, "", "tile-img tile-img-%s" % key, "Photo: " + slots[key]), t(tile["name"]), btn,
-                         t(tile["text"]), hrefs[key], t(tile["link"])))
+                         t(tile["text"]), hrefs[key], t(tile["link"]), GO))
     b = p["banner"]
     body = hero("home", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#paths"),
                 "", "", "Background: a muted video loop or photo of the studio")
@@ -691,7 +694,8 @@ def film():
     if shown:       # with every credit hidden, the whole section is left out
         body += section('<div class="split-head"><div>%s</div>%s</div>%s' % (
             heading(t(c["label"]), t(c["heading"])),
-            '<a href="%s" rel="noopener">%s &rarr;</a>' % (e(imdb), t(c["link"])) if imdb else "",
+            '<a href="%s" target="_blank" rel="noopener">%s%s<span class="sr-only"> (opens in a new tab)</span></a>'
+            % (e(imdb), t(c["link"]), EXTERNAL) if imdb else "",
             shown), "glow-br", "credits")      # glow kept low: the top stays dark under the banner's fade
     s = p["services"]
     body += section(heading(t(s["label"]), t(s["heading"])) + cards([(t(i["title"]), t(i["text"]), "") for i in s["items"]]),
