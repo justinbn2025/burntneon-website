@@ -382,38 +382,107 @@
     pick();
   })();
 
-  /* Reviews: three in view (two on tablets, one on phones). "Show more reviews" moves the row on and
-     brings out the arrows; nothing moves by itself. Long reviews get a "Read full review" switch. */
+  /* Reviews: three in view (two on tablets, one on phones), with the faded edges of their neighbours and
+     the arrows there from the start. With more than two screens' worth, the row loops: past the last
+     review comes the first again. Nothing moves by itself. Long reviews get a "Read full review" switch. */
   each('.rv', function (box) {
     var track = box.querySelector('.rv-track'), cards = Array.prototype.slice.call(track.children);
-    var more = box.querySelector('.rv-more'), prev = box.querySelector('.rv-prev'), next = box.querySelector('.rv-next'), count = box.querySelector('.rv-count');
-    var queued = false;
-    function step() { return (cards.length > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth) || track.clientWidth || 1; }
+    var prev = box.querySelector('.rv-prev'), next = box.querySelector('.rv-next'), count = box.querySelector('.rv-count');
+    var n = cards.length, K = n > 2 ? Math.min(n, 6) : 0, twins = cards.map(function () { return []; });
+    var loop = false, queued = false, timer = 0;
+    function copy(i) {                                   // a stand-in for a review, shown where the row wraps round
+      var c = cards[i].cloneNode(true);
+      c.classList.add('rv-clone'); c.setAttribute('aria-hidden', 'true'); c.setAttribute('inert', '');
+      twins[i].push(c);
+      return c;
+    }
+    cards.forEach(function (card, i) { card.setAttribute('data-i', i); });
+    (function () {
+      var i, first = cards[0];
+      for (i = n - K; i < n; i++) track.insertBefore(copy(i), first);
+      for (i = 0; i < K; i++) track.appendChild(copy(i));
+    })();
+    function mirror(i) {                                 // keep a review's stand-ins looking the same as the review
+      twins[i].forEach(function (c) { c.innerHTML = cards[i].innerHTML; c.classList.toggle('full', cards[i].classList.contains('full')); });
+    }
+    function lead() { return loop ? K : 0; }
+    function step() { return (n > 1 ? cards[1].offsetLeft - cards[0].offsetLeft : track.clientWidth) || track.clientWidth || 1; }
     function per() {                                     // how many fit, not counting the faded edges
       var cs = getComputedStyle(track), w = step();
       var inner = track.clientWidth - (parseFloat(cs.paddingLeft) || 0) - (parseFloat(cs.paddingRight) || 0);
-      var gap = cards.length > 1 ? Math.max(0, w - cards[0].offsetWidth) : 0;      // measured, not read from the style (browsers report it differently)
+      var gap = n > 1 ? Math.max(0, w - cards[0].offsetWidth) : 0;                 // measured, not read from the style (browsers report it differently)
       return Math.max(1, Math.round((inner + gap) / w) || 1);
     }
-    function first() { return Math.max(0, Math.min(cards.length - 1, Math.round(track.scrollLeft / step()) || 0)); }
+    function pos() { return Math.round(track.scrollLeft / step()) || 0; }          // the first card in view, stand-ins included
+    function real() {                                    // the same, as a review number from 0
+      var i = pos() - lead();
+      return loop ? ((i % n) + n) % n : Math.max(0, Math.min(n - 1, i));
+    }
+    function place(left) { track.style.scrollBehavior = 'auto'; track.scrollLeft = left; track.style.scrollBehavior = ''; }
+    function wrap() {                                    // on a stand-in: hop to the real review it copies, without any visible move
+      if (!loop) return;
+      var q = pos();
+      if (q < K) place(track.scrollLeft + n * step());
+      else if (q >= K + n) place(track.scrollLeft - n * step());
+    }
+    function mode() {                                    // decide whether to loop, and keep the same review first in view
+      var at = real(), p = per(), want = K > 0 && n > 2 * p;
+      box.classList.toggle('fits', n <= p);
+      box.classList.toggle('open', n > p);
+      if (want !== loop) { loop = want; box.classList.toggle('loop', loop); }
+      if (!loop) at = Math.min(at, Math.max(0, n - p));
+      place((lead() + at) * step());
+    }
     function paint() {
       queued = false;
-      var n = cards.length, p = per(), i = Math.min(first(), Math.max(0, n - p)), last = Math.min(n, i + p);
-      box.classList.toggle('fits', n <= p);
-      count.textContent = (p > 1 ? (i + 1) + '–' + last : String(i + 1)) + ' ' + (box.getAttribute('data-of') || 'of') + ' ' + n;
-      prev.disabled = i <= 0;
-      next.disabled = last >= n;
-      if (i > 0) box.classList.add('open');              // moved by swipe, trackpad or keyboard: show the arrows too
+      var p = per(), i = real(), last, text;
+      if (!loop) i = Math.min(i, Math.max(0, n - p));
+      last = loop ? (i + p - 1) % n : Math.min(n, i + p) - 1;
+      prev.disabled = !loop && i <= 0;
+      next.disabled = !loop && i + p >= n;
+      text = (box.getAttribute('data-showing') || 'Showing reviews') + ' ' +
+        (last < i ? span(i + 1, n) + ', ' + span(1, last + 1) : span(i + 1, last + 1)) + ' ' + (box.getAttribute('data-of') || 'of') + ' ' + n;
+      if (count.textContent !== text) count.textContent = text;                    // read out by screen readers; not shown
     }
-    function go(dir) { track.scrollTo({ left: Math.max(0, (first() + dir * per()) * step()), behavior: calm ? 'auto' : 'smooth' }); }
-    function ask() { if (!queued) { queued = true; window.requestAnimationFrame(paint); } }
-    more.addEventListener('click', function () { box.classList.add('open'); go(1); next.focus({ preventScroll: true }); });
+    function expose() {                                  // screen readers and the keyboard get each review once: the copy on screen if there is one
+      var box0 = track.getBoundingClientRect();
+      function seen(el) { var r = el.getBoundingClientRect(); return r.width > 0 && r.left >= box0.left - 2 && r.right <= box0.right + 2; }
+      cards.forEach(function (card, i) {
+        var live = card;
+        if (loop && !seen(card)) twins[i].forEach(function (c) { if (live === card && seen(c)) live = c; });
+        [card].concat(twins[i]).forEach(function (el) {
+          if (el === live) { el.removeAttribute('aria-hidden'); el.removeAttribute('inert'); }
+          else { el.setAttribute('aria-hidden', 'true'); el.setAttribute('inert', ''); }
+        });
+      });
+    }
+    function span(a, b) { return a === b ? String(a) : a + '–' + b; }
+    function settled() { wrap(); paint(); expose(); }
+    function go(dir) {
+      wrap();
+      track.scrollTo({ left: Math.max(0, (pos() + dir * per()) * step()), behavior: calm ? 'auto' : 'smooth' });
+    }
     prev.addEventListener('click', function () { go(-1); });
     next.addEventListener('click', function () { go(1); });
-    track.addEventListener('scroll', ask, { passive: true });
-    window.addEventListener('resize', function () { ask(); trim(); });
+    track.addEventListener('scroll', function () {
+      window.clearTimeout(timer); timer = window.setTimeout(settled, 140);
+      if (!queued) { queued = true; window.requestAnimationFrame(paint); }
+    }, { passive: true });
+    if ('onscrollend' in window) track.addEventListener('scrollend', settled);
+    window.addEventListener('resize', function () { mode(); paint(); trim(); expose(); });
+    track.addEventListener('click', function (ev) {      // "Read full review", on a review or on its stand-in
+      var btn = ev.target.closest ? ev.target.closest('.quote-more') : null, fig = btn && btn.closest('.quote'), i, card, real1, open, again;
+      if (!fig) return;
+      i = parseInt(fig.getAttribute('data-i'), 10); card = cards[i]; real1 = card.querySelector('.quote-more');
+      open = card.classList.toggle('full');
+      real1.setAttribute('aria-expanded', String(open));
+      real1.textContent = box.getAttribute(open ? 'data-less' : 'data-full') || (open ? 'Show less' : 'Read full review');
+      mirror(i);
+      again = fig.querySelector('.quote-more');
+      if (again && again !== document.activeElement) again.focus({ preventScroll: true });
+    });
     function trim() {                                    // offer "Read full review" only where a review is actually cut
-      cards.forEach(function (card) {
+      cards.forEach(function (card, i) {
         var q = card.querySelector('blockquote'), btn = card.querySelector('.quote-more');
         if (!q || card.classList.contains('full')) return;
         var cut = q.scrollHeight > q.clientHeight + 2;
@@ -421,17 +490,13 @@
           btn = document.createElement('button');
           btn.type = 'button'; btn.className = 'quote-more'; btn.setAttribute('aria-expanded', 'false');
           btn.textContent = box.getAttribute('data-full') || 'Read full review';
-          btn.addEventListener('click', function () {
-            var open = card.classList.toggle('full');
-            btn.setAttribute('aria-expanded', String(open));
-            btn.textContent = box.getAttribute(open ? 'data-less' : 'data-full') || (open ? 'Show less' : 'Read full review');
-          });
           q.parentNode.insertBefore(btn, q.nextSibling);
-        } else if (!cut && btn) { btn.parentNode.removeChild(btn); }
+          mirror(i);
+        } else if (!cut && btn) { btn.parentNode.removeChild(btn); mirror(i); }
       });
     }
-    paint(); trim();
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(trim);
+    mode(); paint(); trim(); expose();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { trim(); mode(); paint(); expose(); });
   });
 
   /* 6. The sound reel: plays in place, one marker per film, optional full screen. */

@@ -398,9 +398,10 @@ def star_row(n):
 
 def quotes(page, eyebrow, look="band-dots", reviews_line=""):
     """Client quotes for one page; the section appears once quotes.json has at least one quote for the page.
-    Three are in view (two on tablets, one on phones); any more are reached with "Show more reviews" and
-    the arrows, or by swiping. Each quote may carry "stars" (1 to 5, as given on the platform) and
-    "source" (the platform's name). reviews_line is that page's own line under the quotes, if it has one."""
+    A page with exactly one quote shows it as a single featured quote. With more, three are in view (two on
+    tablets, one on phones) with the arrows there from the start, and the row loops once there are enough.
+    Each quote may carry "stars" (1 to 5, as given on the platform) and "source" (the platform's name).
+    reviews_line is that page's own line under the quotes, if it has one."""
     items = [q for q in QUOTES if page in q.get("pages", [])]
     filled = [q for q in items if q.get("quote")]
     if len(filled) < len(items):
@@ -409,6 +410,18 @@ def quotes(page, eyebrow, look="band-dots", reviews_line=""):
         return ""
     show = items if SHOW else filled
     w = PAGES["shared"].get("reviews", {})
+    line = '<p class="reviews">%s</p>' % t(reviews_line) if reviews_line else ""
+    if len(show) == 1:  # one quote: featured on its own, no row and no arrows
+        q = show[0]
+        who = "".join(x for x in (
+            "<b>%s</b>" % e(q["name"]) if q.get("name") else "",
+            "<span>%s</span>" % e(q["role"]) if q.get("role") else "",
+            '<span class="quote-src">%s %s</span>' % (e(w.get("via", "via")), e(q["source"])) if q.get("source") else ""))
+        fig = ('<figure class="quote-solo">%s<span class="qs-mark" aria-hidden="true">&ldquo;</span><blockquote>%s</blockquote>'
+               '<span class="qs-rule" aria-hidden="true"></span><figcaption>%s</figcaption></figure>'
+               % (star_row(q.get("stars")), e(q["quote"]) if q.get("quote") else '<span class="todo">[client quote]</span>',
+                  who or '<span class="todo">[name, role or project]</span>'))
+        return section(heading(eyebrow) + fig + (line and '<div class="rv-bar">%s</div>' % line), look + " quote-one")
     figs = "".join(
         '<figure class="quote">%s<blockquote>&ldquo;%s&rdquo;</blockquote><figcaption>%s%s</figcaption></figure>'
         % (star_row(q.get("stars")),
@@ -416,15 +429,15 @@ def quotes(page, eyebrow, look="band-dots", reviews_line=""):
            e(", ".join(x for x in (q.get("name"), q.get("role")) if x)) or '<span class="todo">[name, role or project]</span>',
            '<span class="quote-src">%s %s</span>' % (e(w.get("via", "via")), e(q["source"])) if q.get("source") else "")
         for q in show)
-    line = '<p class="reviews">%s</p>' % t(reviews_line) if reviews_line else "<span></span>"
-    controls = ('<div class="rv-controls"><button class="rv-more btn btn-ghost btn-small" type="button">%s</button>'
-                '<button class="rv-prev" type="button" aria-label="%s">%s</button><span class="rv-count" aria-live="polite"></span>'
+    controls = ('<div class="rv-controls"><button class="rv-prev" type="button" aria-label="%s">%s</button>'
+                '<span class="rv-count sr-only" aria-live="polite"></span>'
                 '<button class="rv-next" type="button" aria-label="%s">%s</button></div>'
-                % (e(w.get("more", "Show more reviews")), e(w.get("previous", "Previous reviews")), CHEVRON % "M10 3 5 8l5 5",
+                % (e(w.get("previous", "Previous reviews")), CHEVRON % "M10 3 5 8l5 5",
                    e(w.get("next", "More reviews")), CHEVRON % "m6 3 5 5-5 5"))
-    return section(heading(eyebrow) + '<div class="rv" data-full="%s" data-less="%s" data-of="%s"><div class="rv-track" tabindex="0" role="group" aria-label="%s">%s</div>'
+    return section(heading(eyebrow) + '<div class="rv" data-full="%s" data-less="%s" data-of="%s" data-showing="%s"><div class="rv-track" tabindex="0" role="group" aria-label="%s">%s</div>'
                    '<div class="rv-bar">%s%s</div></div>'
-                   % (e(w.get("read_full", "Read full review")), e(w.get("read_less", "Show less")), e(w.get("of", "of")), e(eyebrow_text(eyebrow)), figs, line, controls), look)
+                   % (e(w.get("read_full", "Read full review")), e(w.get("read_less", "Show less")), e(w.get("of", "of")), e(w.get("showing", "Showing reviews")),
+                      e(eyebrow_text(eyebrow)), figs, line or "<span></span>", controls), look)
 
 
 def eyebrow_text(html):
@@ -676,7 +689,7 @@ def film():
     s = p["steps"]
     body += section(heading(t(s["label"]), t(s["heading"])) + filmstrip([(t(i["title"]), t(i["text"])) for i in s["items"]], s.get("swipe_hint", "Swipe")),
                     "glow-bl")       # no line: what I do runs straight into how it works
-    body += quotes("film", t(p["quotes_label"]), "band-rings band-line")
+    body += quotes("film", t(p["quotes_label"]), "band-foam foam-fade band-line")
     body += contact(p["contact"])
     return layout("film", p["browser_title"], p["search_description"], body)
 

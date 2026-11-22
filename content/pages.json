@@ -12,8 +12,8 @@
     "menu_on_phones": { "film": "Film" },
     "menu_button": "Get in touch",
     "skip_link": "Skip to content",
-    "reviews": { "more": "Show more reviews", "read_full": "Read full review", "read_less": "Show less", "via": "via",
-                 "of": "of", "previous": "Previous reviews", "next": "More reviews" }
+    "reviews": { "read_full": "Read full review", "read_less": "Show less", "via": "via",
+                 "of": "of", "showing": "Showing reviews", "previous": "Previous reviews", "next": "More reviews" }
   },
 
   "home": {
