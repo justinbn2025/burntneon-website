@@ -233,7 +233,9 @@ FULL = ('<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M
 def film_reel():
     """The sound reel under the Film & Games banner: edge to edge, cinema-wide, one marker per film.
     Left out entirely until "reels" > "film" > "video" in site.json names a file in static/video
-    (or a full address). "chapters" is optional: without it there is one plain progress line."""
+    (or a full address). "chapters" is optional: without it there is one plain progress line.
+    A chapter may carry "link" (an address, e.g. the film's official trailer) and "link_text": the link
+    shows beside the title while that chapter plays, and opens in a new tab."""
     r = SITE["reels"].get("film") or {}
     if isinstance(r, str):
         r = {"video": r}
@@ -252,11 +254,19 @@ def film_reel():
     poster = r.get("poster") or "reel-film.jpg"
     poster = ' poster="img/%s"' % e(poster) if (STATIC / "img" / poster).exists() else ""
     chapters = [c for c in r.get("chapters", []) if c.get("title")]
+    link_text = PAGES["film"].get("reel_link", "Watch the trailer")
+    first = chapters[0] if chapters else {}
+    link = ('<a class="rs-link" href="%s" target="_blank" rel="noopener"%s><span class="rs-link-text">%s</span>%s'
+            '<span class="sr-only"> (opens in a new tab)</span></a>'
+            % (e(first.get("link", "")), "" if first.get("link") else " hidden", e(first.get("link_text") or link_text), EXTERNAL)
+            if any(c.get("link") for c in chapters) else "")
     if chapters:
         segs = "".join(
-            '<button class="rs-seg" type="button" data-start="%g" data-title="%s" data-role="%s" aria-label="Jump to %s">'
+            '<button class="rs-seg" type="button" data-start="%g" data-title="%s" data-role="%s"%s aria-label="Jump to %s">'
             '<i></i><span><em>%02d</em>%s</span></button>'
-            % (clock(c.get("start")), e(c["title"]), e(c.get("role", "")), e(c["title"]), n, e(c["title"]))
+            % (clock(c.get("start")), e(c["title"]), e(c.get("role", "")),
+               ' data-link="%s" data-link-text="%s"' % (e(c["link"]), e(c.get("link_text") or link_text)) if c.get("link") else "",
+               e(c["title"]), n, e(c["title"]))
             for n, c in enumerate(chapters, 1))
     else:
         segs = '<button class="rs-seg rs-seek" type="button" data-start="0" aria-label="Skip to this point in the reel"><i></i></button>'
@@ -264,13 +274,13 @@ def film_reel():
             '<div class="rs-pic"><video class="rs-video" src="%s"%s preload="metadata" playsinline controls></video>'
             '<button class="play rs-play" type="button" aria-label="Play the %s">%s</button></div>'
             '<div class="rs-ui"><div class="rs-row"><span class="rs-kicker">%s</span><span class="rs-title">%s</span>'
-            '<span class="rs-role">%s</span><span class="rs-time">0:00</span>@@VOL@@'
+            '<span class="rs-role">%s</span>@@LINK@@<span class="rs-time">0:00</span>@@VOL@@'
             '<button class="rs-full" type="button" aria-label="Full screen" aria-pressed="false">%s</button></div>'
             '<div class="rs-chapters">%s</div><p class="rs-error" role="alert" hidden>This video didn’t load. Try again in a moment.</p>'
             '</div></div></section>'
             % (e(label), e(src), poster, e(label.lower()), PLAY, e(label),
                e(chapters[0]["title"]) if chapters else "", e(chapters[0].get("role", "")) if chapters else "", FULL, segs))
-    return html.replace("@@VOL@@", VOLCTL)
+    return html.replace("@@VOL@@", VOLCTL).replace("@@LINK@@", link)
 
 
 def player(title, sub, src, label, foot="", extra=""):

@@ -504,6 +504,7 @@
     var v = box.querySelector('video'), playBtn = box.querySelector('.rs-play'), full = box.querySelector('.rs-full');
     var time = box.querySelector('.rs-time'), title = box.querySelector('.rs-title'), role = box.querySelector('.rs-role');
     var rail = box.querySelector('.rs-chapters'), err = box.querySelector('.rs-error');
+    var link = box.querySelector('.rs-link');
     var segs = Array.prototype.slice.call(box.querySelectorAll('.rs-seg'));
     var starts = segs.map(function (s) { return parseFloat(s.getAttribute('data-start')) || 0; });
     var name = playBtn.getAttribute('aria-label').replace(/^Play /, '');
@@ -514,6 +515,7 @@
     function end(k) { return k + 1 < starts.length ? starts[k + 1] : dur(); }
     function stop() { v.pause(); }
     stoppers.push(stop);
+    if (link) link.addEventListener('click', stop);      // the trailer opens in a new tab: don't leave the reel playing behind it
     function layout() {                                   // each marker is as wide as its film's share of the reel
       if (!dur() || segs.length < 2) return;
       rail.style.gridAutoFlow = 'row';
@@ -533,6 +535,14 @@
       if (segs[cur].getAttribute('data-title')) {
         title.textContent = segs[cur].getAttribute('data-title');
         role.textContent = segs[cur].getAttribute('data-role') || '';
+      }
+      if (link) {                                         // this chapter's own link (its official trailer, say), if it has one
+        var href = segs[cur].getAttribute('data-link');
+        if (href && link.getAttribute('href') !== href) {
+          link.setAttribute('href', href);
+          link.querySelector('.rs-link-text').textContent = segs[cur].getAttribute('data-link-text') || '';
+        }
+        link.hidden = !href;
       }
       time.textContent = dur() ? fmt(t) + ' / ' + fmt(dur()) : fmt(t);
     }

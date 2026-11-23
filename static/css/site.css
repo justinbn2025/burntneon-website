@@ -631,6 +631,8 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .rs-kicker { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
 .rs-title { font-family: var(--head); font-size: 1.375rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rs-role { font-size: 0.875rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rs-link { font-size: 0.8125rem; font-weight: 600; white-space: nowrap; flex: none; }   /* e.g. "Watch the trailer", only while a chapter that has a link plays */
+.rs-link[hidden] { display: none; }
 .rs-time { margin-left: auto; font-size: 0.8125rem; color: var(--soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .rs-full { align-self: center; display: grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; padding: 0; border: 1px solid transparent; border-radius: 0.25rem;
   background: none; color: var(--soft); cursor: pointer; }
