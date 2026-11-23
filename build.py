@@ -668,6 +668,7 @@ def t(text):
     text = re.sub(r"\[([^\]]*)\]", optional, str(text))
     text = e(text)
     text = re.sub(r"\{(\w+)\}", fill, text)
+    text = re.sub(r"(?<!\w)_(?=\S)(.+?)(?<=\S)_(?!\w)", r"<em>\1</em>", text)      # _italics_, e.g. the title of a show or film
     return re.sub(r"\*(.+?)\*", r'<span class="hi">\1</span>', text)
 
 

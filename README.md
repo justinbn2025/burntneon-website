@@ -38,6 +38,7 @@ publishes it (see "Publishing").
 In `pages.json`:
 
 - `*asterisks*` around words colour them orange (headlines).
+- `_underscores_` around words set them in italics (for example the title of a show or film).
 - `{reply_days}`, `{turnaround_days}`, `{revision_rounds}` and `{review_count}` are
   filled in from `site.json`, `music.json` and `podcasts.json`.
 - A part in `[square brackets]` is left out of the page while the number it needs
