@@ -565,6 +565,21 @@
     function shape() { if (v.videoWidth && v.videoHeight) box.style.setProperty('--ar', (v.videoWidth / v.videoHeight).toFixed(4)); }
     // Pause button: shown while the pointer moves over the playing picture, gone a moment after it rests or leaves.
     var pic = box.querySelector('.rs-pic'), hot = 0;
+    // Freeze-frame: Safari can drop a paused video's picture and show black. So on pause the current frame is copied
+    // onto a canvas that sits exactly over the video (same shape, same faded edges) until frames are flowing again.
+    var ice = document.createElement('canvas');
+    ice.className = 'rs-video rs-freeze'; ice.setAttribute('aria-hidden', 'true');
+    pic.insertBefore(ice, v.nextSibling);
+    function freeze() {
+      if (!v.videoWidth || v.readyState < 2) return;
+      try {
+        ice.width = v.videoWidth; ice.height = v.videoHeight;
+        ice.getContext('2d').drawImage(v, 0, 0, ice.width, ice.height);
+        box.classList.add('frozen');
+      } catch (e) {}
+    }
+    function thaw() { box.classList.remove('frozen'); }
+    ice.addEventListener('click', function () { toggle(); });
     function cool() { clearTimeout(hot); box.classList.remove('hot'); }
     function warm() { clearTimeout(hot); box.classList.add('hot'); hot = setTimeout(cool, 1800); }
     if (window.matchMedia && matchMedia('(hover: hover)').matches) {
@@ -583,7 +598,10 @@
     v.addEventListener('pause', function () {
       box.classList.remove('playing');
       playBtn.innerHTML = PLAY; playBtn.setAttribute('aria-label', 'Play ' + name);
+      freeze();
     });
+    v.addEventListener('playing', thaw);
+    v.addEventListener('seeked', function () { if (v.paused && box.classList.contains('started')) freeze(); });
     v.addEventListener('loadedmetadata', function () { shape(); layout(); paint(); });
     v.addEventListener('durationchange', function () { layout(); paint(); });
     v.addEventListener('timeupdate', paint);

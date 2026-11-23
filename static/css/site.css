@@ -624,6 +624,8 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
    layer over the picture, not a filter on the video: some browsers show a filtered video as black while it is paused. */
 .rs-pic::before { content: ""; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: rgba(14, 14, 15, 0.5); opacity: 0; transition: opacity 0.5s ease; }
 .js .rs.started:not(.playing) .rs-pic::before { opacity: 1; }
+.rs-freeze { display: none; }                         /* the paused frame, drawn over the video (see the script) */
+.rs.frozen .rs-freeze { display: block; }
 .rs-pic::after { content: ""; position: absolute; inset: 0; pointer-events: none;   /* the foot of the picture goes fully dark, so the title line that overlaps it stays readable */
   background: linear-gradient(0deg, rgba(14, 14, 15, 0.94) 0, rgba(14, 14, 15, 0.86) 6%, rgba(14, 14, 15, 0.68) 12%, rgba(14, 14, 15, 0.42) 18%, rgba(14, 14, 15, 0.18) 25%, transparent 33%); }
 .rs-play, .rs-ui { display: none; }
