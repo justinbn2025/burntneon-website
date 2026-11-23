@@ -135,7 +135,11 @@ The reel plays under the Film & Games banner. It stays hidden until a file is na
    seconds). Each clip's marker is worked out by adding up the durations before it, so to add
    or reorder clips, add or move lines and change nothing else. The last clip's duration is
    optional: it runs to the end of the video. (`"start"` still works in place of a duration
-   and overrides the running count from that clip on.) Leave `"chapters"` empty for one plain
+   and overrides the running count from that clip on.) To copy durations straight from Final Cut, add `"fps": 24` (the project's frame rate)
+   next to `"video"`. Times are then read as timecode, where the last number is frames:
+   `"44:19"` is 44 seconds and 19 frames, and `"1:02:00"` is 1 minute 2 seconds. Without
+   `"fps"`, `"1:02"` means 1 minute 2 seconds.
+   Leave `"chapters"` empty for one plain
    line.
    A chapter can also have a `"link"` (a full address, for example the film's official trailer).
    A "Watch the trailer" link then shows beside the title while that chapter plays, and opens

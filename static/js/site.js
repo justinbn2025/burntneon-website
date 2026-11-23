@@ -590,11 +590,27 @@
     v.addEventListener('seeked', paint);
     v.addEventListener('error', function () { err.hidden = false; });
     segs.forEach(function (seg, k) {
+      var name2 = seg.querySelector('span');
+      // On the line itself (not the film's name under it)? Then where along it, 0 to 1; otherwise -1.
+      function along(ev) {
+        var box2 = seg.getBoundingClientRect();
+        if (!ev.clientX || !dur() || (name2 && name2.offsetParent && ev.clientY >= name2.getBoundingClientRect().top)) return -1;
+        return Math.min(1, Math.max(0, (ev.clientX - box2.left) / box2.width));
+      }
+      if (window.matchMedia && matchMedia('(hover: hover)').matches) {
+        seg.addEventListener('mousemove', function (ev) {      // show where a click would land, and the time there
+          var f = along(ev);
+          seg.classList.toggle('aim', f >= 0);
+          if (f < 0) return;
+          seg.style.setProperty('--h', f.toFixed(4));
+          seg.setAttribute('data-at', fmt(starts[k] + (end(k) - starts[k]) * f));
+        });
+        seg.addEventListener('mouseleave', function () { seg.classList.remove('aim'); });
+      }
       seg.addEventListener('click', function (ev) {
         // A click on the line itself goes to that exact point; a click on the film's name (or the keyboard) goes to its start.
-        var box2 = seg.getBoundingClientRect(), to = starts[k], name2 = seg.querySelector('span');
-        var onLine = ev.clientX && (!name2 || !name2.offsetParent || ev.clientY < name2.getBoundingClientRect().top);
-        if (onLine && dur()) to = starts[k] + (end(k) - starts[k]) * Math.min(1, Math.max(0, (ev.clientX - box2.left) / box2.width));
+        var f = along(ev), to = starts[k];
+        if (f >= 0) to = starts[k] + (end(k) - starts[k]) * f;
         v.currentTime = to;
         if (v.paused) { stopOthers(stop); v.play(); }
         paint();

@@ -220,10 +220,12 @@ def heading(eyebrow, h2=""):
     return '<p class="eyebrow">%s</p>' % eyebrow + ('<h2>%s</h2>' % h2 if h2 else "")
 
 
-def clock(value):
-    """"1:05" or 65 -> seconds."""
+def clock(value, fps=0):
+    """"1:05" or 65 -> seconds. With fps (the reel's frame rate) a time with colons is read as an editor's
+    timecode, whose last number is frames: at 24, "44:19" is 44 seconds 19 frames, "1:02:00" is 1 minute 2 seconds."""
     parts = [float(x) for x in str(value or 0).split(":")]
-    return sum(x * 60 ** i for i, x in enumerate(reversed(parts)))
+    frames = parts.pop() / fps if fps and len(parts) > 1 else 0
+    return sum(x * 60 ** i for i, x in enumerate(reversed(parts))) + frames
 
 
 FULL = ('<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" fill="none" '
@@ -238,6 +240,8 @@ def film_reel():
     Each chapter gives its "duration" ("0:22", "1:05.5"): the clips are taken in the order listed and each
     one's starting point is added up from the ones before it, so reordering or adding a clip needs no
     other edits. A "start" on a chapter is still honoured and overrides the running count.
+    With "fps" set on the reel (e.g. 24), times are read as timecode copied from the editor: "44:19" is
+    44 seconds and 19 frames.
     A chapter may carry "link" (an address, e.g. the film's official trailer) and "link_text": the link
     shows beside the title while that chapter plays, and opens in a new tab."""
     r = SITE["reels"].get("film") or {}
@@ -258,15 +262,20 @@ def film_reel():
     poster = r.get("poster") or "reel-film.jpg"
     poster = ' poster="img/%s"' % e(poster) if (STATIC / "img" / poster).exists() else ""
     chapters = [c for c in r.get("chapters", []) if c.get("title")]
+    fps = float(r.get("fps") or 0)                        # set: times are timecode, as the editor shows them (last number = frames)
     at = 0.0                                              # where the next clip begins, counted up from the durations
     for c in chapters:
+        for key in ("start", "duration"):
+            t = str(c.get(key) or "")
+            if fps and ":" in t and float(t.split(":")[-1]) >= fps:
+                missing('sound reel: "%s" has %s frames in "%s", but "fps" is %g' % (c["title"], t.split(":")[-1], t, fps))
         if c.get("start") not in (None, ""):              # a written "start" wins, and the count carries on from it
-            at = clock(c["start"])
+            at = clock(c["start"], fps)
         elif at < 0:
             missing('sound reel: "%s" needs a "start", or a "duration" on the clip before it' % c["title"])
             at = 0.0
         c["_at"] = at
-        at = at + clock(c["duration"]) if c.get("duration") not in (None, "") else -1.0
+        at = at + clock(c["duration"], fps) if c.get("duration") not in (None, "") else -1.0
     if any(b["_at"] <= a["_at"] for a, b in zip(chapters, chapters[1:])):
         missing("sound reel: chapter times are not in order")
     link_text = PAGES["film"].get("reel_link", "Watch the trailer")
