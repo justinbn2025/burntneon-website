@@ -30,7 +30,7 @@
       "video": "reel-film.mp4",
       "fps": 24,
       "chapters": [
-        { "title": "The Devils of Peabody County", "role": "Supervising Sound Editor, Re-Recording Mixer", "duration": "1:02:12" },
+        { "title": "The Devils of Peabody County", "role": "Supervising Sound Editor, Re-Recording Mixer", "duration": "1:02:12", "link": "https://youtu.be/ZbcHzbqwyCY", "link_text": "Full video on YouTube" },
         { "title": "Disaster Island | Animated Launch Trailer", "role": "Supervising Sound Editor, Re-Recording Mixer", "duration": "0:44:19",
           "link": "https://www.youtube.com/watch?v=toBK2I757RA", "link_text": "Official trailer on YouTube" }
       ]
