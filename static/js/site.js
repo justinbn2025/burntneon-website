@@ -562,14 +562,6 @@
     }
     // The whole picture is shown, so the frame takes the video's own shape.
     function shape() { if (v.videoWidth && v.videoHeight) box.style.setProperty('--ar', (v.videoWidth / v.videoHeight).toFixed(4)); }
-    // Behind it, a tiny copy of the current frame, blurred by the stylesheet, fills the band to both edges.
-    var back = box.querySelector('canvas.rs-back'), pen = back && back.getContext && back.getContext('2d'), glowing = 0;
-    function glow() {
-      if (!pen || !v.videoWidth || v.readyState < 2 || !back.offsetParent) return;
-      try { pen.drawImage(v, 0, 0, back.width, back.height); back.classList.add('lit'); } catch (e) {}
-    }
-    function glowOn() { glow(); if (!glowing && !calm) glowing = setInterval(glow, 125); }
-    function glowOff() { clearInterval(glowing); glowing = 0; glow(); }
     // Pause button: shown while the pointer moves over the playing picture, gone a moment after it rests or leaves.
     var pic = box.querySelector('.rs-pic'), hot = 0;
     function cool() { clearTimeout(hot); box.classList.remove('hot'); }
@@ -586,15 +578,12 @@
     v.addEventListener('play', function () {
       box.classList.add('started'); box.classList.add('playing');
       playBtn.innerHTML = PAUSE; playBtn.setAttribute('aria-label', 'Pause ' + name);
-      glowOn();
     });
     v.addEventListener('pause', function () {
       box.classList.remove('playing');
       playBtn.innerHTML = PLAY; playBtn.setAttribute('aria-label', 'Play ' + name);
-      glowOff();
     });
     v.addEventListener('loadedmetadata', function () { shape(); layout(); paint(); });
-    v.addEventListener('seeked', glow);
     v.addEventListener('durationchange', function () { layout(); paint(); });
     v.addEventListener('timeupdate', paint);
     v.addEventListener('seeked', paint);

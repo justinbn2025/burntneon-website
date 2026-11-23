@@ -141,9 +141,8 @@ The reel plays under the Film & Games banner. It stays hidden until a file is na
    A "Watch the trailer" link then shows beside the title while that chapter plays, and opens
    in a new tab. `"link_text"` changes the wording for that one chapter.
 
-The whole picture is shown, uncropped, in the video's own shape (16:9 or otherwise), centred
-in a band that runs the full width of the page: a blurred, dimmed copy of the picture fills the
-sides. The picture dims while paused, and a pause button appears when the pointer moves over it.
+The whole picture is shown, uncropped, in the video's own shape (16:9 or otherwise), centred,
+with its edges fading into the page. The picture dims while paused, and a pause button appears when the pointer moves over it.
 
 ## Publishing
 

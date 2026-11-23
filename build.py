@@ -231,8 +231,8 @@ FULL = ('<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M4 9V4h5M15 4h5v5M
 
 
 def film_reel():
-    """The sound reel under the Film & Games banner: the whole 16:9 picture, centred in a band that runs
-    edge to edge (a blurred copy of the picture fills the sides), one marker per film underneath.
+    """The sound reel under the Film & Games banner: the whole 16:9 picture, centred, its edges
+    fading into the page, one marker per film underneath.
     Left out entirely until "reels" > "film" > "video" in site.json names a file in static/video
     (or a full address). "chapters" is optional: without it there is one plain progress line.
     Each chapter gives its "duration" ("0:22", "1:05.5"): the clips are taken in the order listed and each
@@ -256,11 +256,7 @@ def film_reel():
         src = "video/" + src
     label = r.get("label") or "Sound reel"
     poster = r.get("poster") or "reel-film.jpg"
-    has_poster = (STATIC / "img" / poster).exists()
-    # Behind the picture: a blurred, dimmed copy that fills the band edge to edge (the still first, then live frames).
-    back = ('<img class="rs-back" src="img/%s" alt="">' % e(poster) if has_poster else "") + \
-        '<canvas class="rs-back rs-live" width="64" height="36" aria-hidden="true"></canvas>'
-    poster = ' poster="img/%s"' % e(poster) if has_poster else ""
+    poster = ' poster="img/%s"' % e(poster) if (STATIC / "img" / poster).exists() else ""
     chapters = [c for c in r.get("chapters", []) if c.get("title")]
     at = 0.0                                              # where the next clip begins, counted up from the durations
     for c in chapters:
@@ -290,7 +286,7 @@ def film_reel():
     else:
         segs = '<button class="rs-seg rs-seek" type="button" data-start="0" aria-label="Skip to this point in the reel"><i></i></button>'
     html = ('<section class="reelband" id="reel" aria-label="%s"><div class="rs">'
-            '<div class="rs-pic">@@BACK@@<video class="rs-video" src="%s"%s preload="metadata" playsinline controls></video>'
+            '<div class="rs-pic"><video class="rs-video" src="%s"%s preload="metadata" playsinline controls></video>'
             '<button class="play rs-play" type="button" aria-label="Play the %s">%s</button></div>'
             '<div class="rs-ui"><div class="rs-row"><span class="rs-kicker">%s</span><span class="rs-title">%s</span>'
             '<span class="rs-role">%s</span>@@LINK@@<span class="rs-time">0:00</span>@@VOL@@'
@@ -299,7 +295,7 @@ def film_reel():
             '</div></div></section>'
             % (e(label), e(src), poster, e(label.lower()), PLAY, e(label),
                e(chapters[0]["title"]) if chapters else "", e(chapters[0].get("role", "")) if chapters else "", FULL, segs))
-    return html.replace("@@VOL@@", VOLCTL).replace("@@LINK@@", link).replace("@@BACK@@", back)
+    return html.replace("@@VOL@@", VOLCTL).replace("@@LINK@@", link)
 
 
 def player(title, sub, src, label, foot="", extra=""):
