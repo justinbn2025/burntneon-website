@@ -132,6 +132,7 @@
     function show() {
       range.value = Math.round(vol * 100);
       range.setAttribute('aria-valuetext', Math.round(vol * 100) + '%');
+      range.style.setProperty('--vn', vol.toFixed(3));        // how far the track is filled
       if (icon) icon.innerHTML = volIcon();
     }
     range.addEventListener('input', function () { setVol(range.value / 100); });
@@ -590,8 +591,10 @@
     v.addEventListener('error', function () { err.hidden = false; });
     segs.forEach(function (seg, k) {
       seg.addEventListener('click', function (ev) {
-        var box2 = seg.getBoundingClientRect(), to = starts[k];
-        if (segs.length < 2 && dur() && ev.clientX) to = dur() * Math.min(1, Math.max(0, (ev.clientX - box2.left) / box2.width));
+        // A click on the line itself goes to that exact point; a click on the film's name (or the keyboard) goes to its start.
+        var box2 = seg.getBoundingClientRect(), to = starts[k], name2 = seg.querySelector('span');
+        var onLine = ev.clientX && (!name2 || !name2.offsetParent || ev.clientY < name2.getBoundingClientRect().top);
+        if (onLine && dur()) to = starts[k] + (end(k) - starts[k]) * Math.min(1, Math.max(0, (ev.clientX - box2.left) / box2.width));
         v.currentTime = to;
         if (v.paused) { stopOthers(stop); v.play(); }
         paint();

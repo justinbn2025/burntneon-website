@@ -615,20 +615,20 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .rs-pic { position: relative; block-size: min(calc(100vw / var(--ar)), 72vh); overflow: hidden; }
 .rs-video { position: absolute; top: 0; left: 50%; block-size: 100%; inline-size: auto; aspect-ratio: var(--ar); transform: translateX(-50%);
   object-fit: cover; cursor: pointer; background: transparent; transition: filter 0.5s ease;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%), linear-gradient(180deg, transparent 0, #000 6%, #000 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%), linear-gradient(180deg, transparent 0, rgba(0,0,0,0.04) 2%, rgba(0,0,0,0.16) 4.5%, rgba(0,0,0,0.38) 7.5%, rgba(0,0,0,0.64) 10.5%, rgba(0,0,0,0.86) 13.5%, #000 17%, #000 78%, rgba(0,0,0,0.86) 82.5%, rgba(0,0,0,0.62) 87%, rgba(0,0,0,0.36) 91.5%, rgba(0,0,0,0.14) 96%, transparent 100%);
   -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%), linear-gradient(180deg, transparent 0, #000 6%, #000 90%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%), linear-gradient(180deg, transparent 0, rgba(0,0,0,0.04) 2%, rgba(0,0,0,0.16) 4.5%, rgba(0,0,0,0.38) 7.5%, rgba(0,0,0,0.64) 10.5%, rgba(0,0,0,0.86) 13.5%, #000 17%, #000 78%, rgba(0,0,0,0.86) 82.5%, rgba(0,0,0,0.62) 87%, rgba(0,0,0,0.36) 91.5%, rgba(0,0,0,0.14) 96%, transparent 100%);
   mask-composite: intersect; }
 .js .rs:not(.playing) .rs-video { filter: brightness(0.55) saturate(0.85); }      /* dimmed before play and whenever it is paused; full brightness while it plays */
 .rs-pic::after { content: ""; position: absolute; inset: 0; pointer-events: none;   /* the foot of the picture goes fully dark, so the title line that overlaps it stays readable */
-  background: linear-gradient(0deg, var(--bg) 0, rgba(14, 14, 15, 0.86) 7%, rgba(14, 14, 15, 0.45) 15%, transparent 26%); }
+  background: linear-gradient(0deg, rgba(14, 14, 15, 0.94) 0, rgba(14, 14, 15, 0.86) 6%, rgba(14, 14, 15, 0.68) 12%, rgba(14, 14, 15, 0.42) 18%, rgba(14, 14, 15, 0.18) 25%, transparent 33%); }
 .rs-play, .rs-ui { display: none; }
 .js .rs-play { display: grid; position: absolute; left: 50%; top: 50%; z-index: 2; inline-size: 5.75rem; block-size: 5.75rem; margin: -2.875rem 0 0 -2.875rem;
   box-shadow: 0 0 0 0.625rem rgba(210, 105, 30, 0.18), 0 0 3.75rem rgba(210, 105, 30, 0.45); transition: opacity 0.25s ease, transform 0.15s ease, background 0.15s ease; }
 .rs-play svg { inline-size: 2.5rem; block-size: 2.5rem; }
 .rs.playing .rs-play:not(:focus-visible) { opacity: 0; pointer-events: none; }
 .rs.playing.hot .rs-play { opacity: 1; pointer-events: auto; }                    /* the pointer is moving over the picture: offer pause */
-.js .rs-ui { display: block; position: relative; z-index: 2; margin-top: -1.75rem; padding: 0 var(--pad); }   /* under the picture, its first line just overlapping it */
+.js .rs-ui { display: block; position: relative; z-index: 2; margin-top: -4.25rem; padding: 0 var(--pad); }   /* the title line sits over the foot of the picture, the markers at its lower edge */
 .rs-row { display: flex; align-items: baseline; gap: 0.875rem; margin-bottom: 0.5rem; min-inline-size: 0; }
 .rs-kicker { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
 .rs-title { font-family: var(--head); font-size: 1.375rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -667,7 +667,7 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
   .rs { overflow: visible; }
   .rs-pic { block-size: auto; aspect-ratio: var(--ar); }
   .rs-pic::after { background: none; }
-  .rs-video { -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 90%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 90%, transparent 100%); }
+  .rs-video { -webkit-mask-image: linear-gradient(180deg, transparent 0, rgba(0,0,0,0.04) 2%, rgba(0,0,0,0.16) 4.5%, rgba(0,0,0,0.38) 7.5%, rgba(0,0,0,0.64) 10.5%, rgba(0,0,0,0.86) 13.5%, #000 17%, #000 78%, rgba(0,0,0,0.86) 82.5%, rgba(0,0,0,0.62) 87%, rgba(0,0,0,0.36) 91.5%, rgba(0,0,0,0.14) 96%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, rgba(0,0,0,0.04) 2%, rgba(0,0,0,0.16) 4.5%, rgba(0,0,0,0.38) 7.5%, rgba(0,0,0,0.64) 10.5%, rgba(0,0,0,0.86) 13.5%, #000 17%, #000 78%, rgba(0,0,0,0.86) 82.5%, rgba(0,0,0,0.62) 87%, rgba(0,0,0,0.36) 91.5%, rgba(0,0,0,0.14) 96%, transparent 100%); }
   .js .rs-ui { position: static; margin: 0; padding: 0.5rem var(--gutter) 0; }
   .js .rs-play { inline-size: 4.25rem; block-size: 4.25rem; margin: -2.125rem 0 0 -2.125rem; }
   .rs-play svg { inline-size: 1.875rem; block-size: 1.875rem; }
@@ -725,7 +725,17 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 }
 .volctl-icon { display: grid; place-items: center; color: var(--soft); }
 .volctl-icon svg { inline-size: 1.125rem; block-size: 1.125rem; }
-.volctl-range { inline-size: 4.5rem; }
+/* Drawn by hand, so the track is visible on a dark page in every browser: filled up to the knob, faint beyond it. --vn is 0 to 1, set by the script. */
+.volctl-range { -webkit-appearance: none; appearance: none; inline-size: 4.5rem; block-size: 1.5rem; background: transparent; --vn: 0.75;
+  --fill: calc(0.375rem + (100% - 0.75rem) * var(--vn)); }
+.volctl-range::-webkit-slider-runnable-track { block-size: 0.25rem; border-radius: 0.125rem;
+  background: linear-gradient(90deg, var(--accent) var(--fill), rgba(255, 250, 240, 0.3) var(--fill)); }
+.volctl-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; inline-size: 0.75rem; block-size: 0.75rem; margin-top: -0.25rem;
+  border: 0; border-radius: 50%; background: var(--text); box-shadow: 0 0 0 1px rgba(14, 14, 15, 0.5); }
+.volctl-range::-moz-range-track { block-size: 0.25rem; border-radius: 0.125rem; background: rgba(255, 250, 240, 0.3); }
+.volctl-range::-moz-range-progress { block-size: 0.25rem; border-radius: 0.125rem; background: var(--accent); }
+.volctl-range::-moz-range-thumb { inline-size: 0.75rem; block-size: 0.75rem; border: 0; border-radius: 50%; background: var(--text); box-shadow: 0 0 0 1px rgba(14, 14, 15, 0.5); }
+@media (forced-colors: active) { .volctl-range { -webkit-appearance: auto; appearance: auto; } }
 .rs-row .volctl { align-self: center; }
 .ab-row .volctl { margin-left: auto; }
 .player.is-playing { border-color: var(--accent); box-shadow: 0 0 1.875rem rgba(210, 105, 30, 0.14); }
