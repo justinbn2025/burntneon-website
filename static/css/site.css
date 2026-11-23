@@ -609,24 +609,36 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 
 /* ---------- Film & Games: the sound reel, edge to edge under the banner ---------- */
 .reelband { position: relative; background: var(--bg); padding: 0.5rem 0 1.5rem; scroll-margin-top: var(--header-h); }
-.rs { position: relative; aspect-ratio: 2.39 / 1; max-block-size: 84vh; inline-size: 100%; overflow: hidden; background: var(--bg);
-  --pad: max(var(--gutter), calc(50% - 35rem)); }
-.rs-pic { position: absolute; inset: 0; }
-.rs-video { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; object-fit: cover; cursor: pointer; background: var(--bg);
-  transition: filter 0.5s ease;
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16%, #000 84%, transparent 100%), linear-gradient(180deg, transparent 0, #000 10%, #000 86%, transparent 100%);
+.rs { position: relative; inline-size: 100%; overflow: hidden; background: var(--bg);
+  --pad: max(var(--gutter), calc(50% - 35rem)); --ar: 1.7778; }   /* --ar: the video's own shape, set from the file once it loads */
+/* The picture is shown whole, centred, as tall as the screen allows. The band still runs edge to edge:
+   a blurred, dimmed copy of the picture fills the sides, and every edge fades into the page. */
+.rs-pic { position: relative; block-size: min(calc(100vw / var(--ar)), 72vh); overflow: hidden; }
+.rs-back { position: absolute; inset: 0; inline-size: 100%; block-size: 100%; max-width: none; object-fit: cover; pointer-events: none;
+  filter: blur(2.25rem) brightness(0.5) saturate(1.15); transform: scale(1.14);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 12%, #000 88%, transparent 100%);
   -webkit-mask-composite: source-in;
-  mask-image: linear-gradient(90deg, transparent 0, #000 16%, #000 84%, transparent 100%), linear-gradient(180deg, transparent 0, #000 10%, #000 86%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 14%, #000 86%, transparent 100%), linear-gradient(180deg, transparent 0, #000 12%, #000 88%, transparent 100%);
+  mask-composite: intersect; transition: opacity 0.5s ease; }
+.rs-live { opacity: 0; }
+.rs-live.lit { opacity: 1; }
+.js .rs:not(.playing) .rs-back.lit, .js .rs:not(.playing) img.rs-back { opacity: 0.55; }
+.rs-video { position: absolute; top: 0; left: 50%; block-size: 100%; inline-size: auto; aspect-ratio: var(--ar); transform: translateX(-50%);
+  object-fit: cover; cursor: pointer; background: transparent; transition: filter 0.5s ease;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%), linear-gradient(180deg, transparent 0, #000 6%, #000 90%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent 0, #000 7%, #000 93%, transparent 100%), linear-gradient(180deg, transparent 0, #000 6%, #000 90%, transparent 100%);
   mask-composite: intersect; }
-.js .rs:not(.started) .rs-video { filter: brightness(0.55) saturate(0.85); }      /* the still is dimmed until play is pressed */
-.rs-pic::after { content: ""; position: absolute; inset: 0; pointer-events: none;   /* keeps the title and markers readable over a bright frame */
-  background: linear-gradient(0deg, rgba(14, 14, 15, 0.82) 0, rgba(14, 14, 15, 0.35) 22%, transparent 42%); }
+.js .rs:not(.playing) .rs-video { filter: brightness(0.55) saturate(0.85); }      /* dimmed before play and whenever it is paused; full brightness while it plays */
+.rs-pic::after { content: ""; position: absolute; inset: 0; pointer-events: none;   /* the foot of the picture goes fully dark, so the title line that overlaps it stays readable */
+  background: linear-gradient(0deg, var(--bg) 0, rgba(14, 14, 15, 0.86) 7%, rgba(14, 14, 15, 0.45) 15%, transparent 26%); }
 .rs-play, .rs-ui { display: none; }
 .js .rs-play { display: grid; position: absolute; left: 50%; top: 50%; z-index: 2; inline-size: 5.75rem; block-size: 5.75rem; margin: -2.875rem 0 0 -2.875rem;
   box-shadow: 0 0 0 0.625rem rgba(210, 105, 30, 0.18), 0 0 3.75rem rgba(210, 105, 30, 0.45); transition: opacity 0.25s ease, transform 0.15s ease, background 0.15s ease; }
 .rs-play svg { inline-size: 2.5rem; block-size: 2.5rem; }
 .rs.playing .rs-play:not(:focus-visible) { opacity: 0; pointer-events: none; }
-.js .rs-ui { display: block; position: absolute; inset: auto var(--pad) 1.5rem; z-index: 2; }
+.rs.playing.hot .rs-play { opacity: 1; pointer-events: auto; }                    /* the pointer is moving over the picture: offer pause */
+.js .rs-ui { display: block; position: relative; z-index: 2; margin-top: -1.75rem; padding: 0 var(--pad); }   /* under the picture, its first line just overlapping it */
 .rs-row { display: flex; align-items: baseline; gap: 0.875rem; margin-bottom: 0.5rem; min-inline-size: 0; }
 .rs-kicker { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
 .rs-title { font-family: var(--head); font-size: 1.375rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -651,19 +663,25 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .rs-seg.on em { color: var(--accent); }
 .rs-error { margin: 0.75rem 0 0; font-size: 0.875rem; color: var(--accent-hi); }
 /* Full screen: the whole picture, no fades, same controls. */
-.rs:fullscreen { aspect-ratio: auto; max-block-size: none; inline-size: 100vw; block-size: 100vh; background: #000; }
-.rs:fullscreen .rs-pic { position: absolute; inset: 0; aspect-ratio: auto; }
-.rs:fullscreen .rs-video { -webkit-mask-image: none; mask-image: none; object-fit: contain; background: #000; }
-.rs:fullscreen .rs-ui { position: absolute; inset: auto var(--pad) 1.5rem; padding: 0; }
-.rs:fullscreen .rs-pic::after { background: none; }
-.rs:-webkit-full-screen { aspect-ratio: auto; max-block-size: none; inline-size: 100vw; block-size: 100vh; background: #000; }
-.rs:-webkit-full-screen .rs-video { -webkit-mask-image: none; mask-image: none; object-fit: contain; background: #000; }
+.rs:fullscreen { inline-size: 100vw; block-size: 100vh; background: #000; }
+.rs:fullscreen .rs-pic { position: absolute; inset: 0; block-size: auto; aspect-ratio: auto; }
+.rs:fullscreen .rs-back { display: none; }
+.rs:fullscreen .rs-video { inset: 0; inline-size: 100%; block-size: 100%; aspect-ratio: auto; transform: none; -webkit-mask-image: none; mask-image: none; object-fit: contain; background: #000; }
+.rs:fullscreen .rs-ui { position: absolute; inset: auto 0 1.5rem; margin: 0; }
+.rs:fullscreen .rs-pic::after { background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0, rgba(0, 0, 0, 0.4) 14%, transparent 28%); }
+.rs:-webkit-full-screen { inline-size: 100vw; block-size: 100vh; background: #000; }
+.rs:-webkit-full-screen .rs-pic { position: absolute; inset: 0; block-size: auto; aspect-ratio: auto; }
+.rs:-webkit-full-screen .rs-back { display: none; }
+.rs:-webkit-full-screen .rs-video { inset: 0; inline-size: 100%; block-size: 100%; aspect-ratio: auto; transform: none; -webkit-mask-image: none; mask-image: none; object-fit: contain; background: #000; }
+.rs:-webkit-full-screen .rs-ui { position: absolute; inset: auto 0 1.5rem; margin: 0; }
+.rs:-webkit-full-screen .rs-pic::after { background: linear-gradient(0deg, rgba(0, 0, 0, 0.8) 0, rgba(0, 0, 0, 0.4) 14%, transparent 28%); }
 @media (max-width: 48em) {   /* narrow screens: a taller picture with the title and markers underneath it, names hidden */
-  .rs { aspect-ratio: auto; max-block-size: none; overflow: visible; }
-  .rs-pic { position: relative; aspect-ratio: 16 / 9; }
+  .rs { overflow: visible; }
+  .rs-pic { block-size: auto; aspect-ratio: var(--ar); }
   .rs-pic::after { background: none; }
+  .rs-back { display: none; }
   .rs-video { -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 90%, transparent 100%); mask-image: linear-gradient(180deg, transparent 0, #000 8%, #000 90%, transparent 100%); }
-  .js .rs-ui { position: static; padding: 0.5rem var(--gutter) 0; }
+  .js .rs-ui { position: static; margin: 0; padding: 0.5rem var(--gutter) 0; }
   .js .rs-play { inline-size: 4.25rem; block-size: 4.25rem; margin: -2.125rem 0 0 -2.125rem; }
   .rs-play svg { inline-size: 1.875rem; block-size: 1.875rem; }
   .rs-row { flex-wrap: wrap; row-gap: 0.125rem; }
