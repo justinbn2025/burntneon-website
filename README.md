@@ -128,7 +128,7 @@ seconds, under 4 MB).
 The reel plays under the Film & Games banner. It stays hidden until a file is named.
 
 1. Put the video in `static/video/` (an `.mp4`, H.264 with AAC sound, under 100 MB) and a thumbnail
-   for it in `static/img/` (the picture shown, dimmed, until play is pressed).
+   for it in `static/img/` (the picture shown until play is pressed).
 2. In `content/site.json`, under `"reels"` > `"film"`, fill in `"video"` and `"thumbnail"` with the
    two file names, and one line per clip under `"chapters"`, in the order they play: its
    `"title"`, your `"role"` on it, and its `"duration"` (`"0:22"`, or `"0:22.5"` for half
