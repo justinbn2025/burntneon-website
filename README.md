@@ -108,7 +108,7 @@ build. Sizes are a guide; JPG at about 80% quality.
 | `tile-film.jpg`, `tile-music.jpg`, `tile-podcasts.jpg` | Home tiles | portrait, 800 px wide |
 | `portrait.jpg`       | About                          | portrait 4:5, 900 px wide |
 | `theater.jpg`        | Music, theater writers section | landscape 4:3          |
-| `reel-film.jpg`      | Still shown on the sound reel before play | 16:9 or wider |
+| `reel-film.jpg`      | Thumbnail shown on the sound reel before play | 16:9 or wider |
 | `posters/<name>.jpg` | Film credits                   | portrait 2:3, 800 px wide |
 
 The Home banner video loop goes in `static/video/hero-home.mp4` (muted, 8 to 10
@@ -127,9 +127,9 @@ seconds, under 4 MB).
 
 The reel plays under the Film & Games banner. It stays hidden until a file is named.
 
-1. Put the video in `static/video/` (an `.mp4`, H.264 with AAC sound, under 100 MB) and a still
+1. Put the video in `static/video/` (an `.mp4`, H.264 with AAC sound, under 100 MB) and a thumbnail
    for it in `static/img/` (the picture shown, dimmed, until play is pressed).
-2. In `content/site.json`, under `"reels"` > `"film"`, fill in `"video"` and `"poster"` with the
+2. In `content/site.json`, under `"reels"` > `"film"`, fill in `"video"` and `"thumbnail"` with the
    two file names, and one line per clip under `"chapters"`, in the order they play: its
    `"title"`, your `"role"` on it, and its `"duration"` (`"0:22"`, or `"0:22.5"` for half
    seconds). Each clip's marker is worked out by adding up the durations before it, so to add

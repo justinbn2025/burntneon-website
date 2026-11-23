@@ -259,7 +259,7 @@ def film_reel():
             missing("video file not found: static/video/" + src)
         src = "video/" + src
     label = r.get("label") or "Sound reel"
-    poster = r.get("poster") or "reel-film.jpg"
+    poster = r.get("thumbnail") or r.get("poster") or "reel-film.jpg"      # the thumbnail: the picture shown until play is pressed
     poster = ' poster="img/%s"' % e(poster) if (STATIC / "img" / poster).exists() else ""
     chapters = [c for c in r.get("chapters", []) if c.get("title")]
     fps = float(r.get("fps") or 0)                        # set: times are timecode, as the editor shows them (last number = frames)
