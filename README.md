@@ -130,8 +130,13 @@ The reel plays under the Film & Games banner. It stays hidden until a file is na
 1. Put the video in `static/video/` (an `.mp4`, H.264 with AAC sound, under 100 MB) and a still
    for it in `static/img/` (the picture shown, dimmed, until play is pressed).
 2. In `content/site.json`, under `"reels"` > `"film"`, fill in `"video"` and `"poster"` with the
-   two file names, and one line per film under `"chapters"`: its `"title"`, your `"role"` on it,
-   and the time it `"start"`s in the reel (`"0:22"`). Leave `"chapters"` empty for one plain line.
+   two file names, and one line per clip under `"chapters"`, in the order they play: its
+   `"title"`, your `"role"` on it, and its `"duration"` (`"0:22"`, or `"0:22.5"` for half
+   seconds). Each clip's marker is worked out by adding up the durations before it, so to add
+   or reorder clips, add or move lines and change nothing else. The last clip's duration is
+   optional: it runs to the end of the video. (`"start"` still works in place of a duration
+   and overrides the running count from that clip on.) Leave `"chapters"` empty for one plain
+   line.
    A chapter can also have a `"link"` (a full address, for example the film's official trailer).
    A "Watch the trailer" link then shows beside the title while that chapter plays, and opens
    in a new tab. `"link_text"` changes the wording for that one chapter.

@@ -30,7 +30,7 @@
       "video": "",
       "poster": "reel-film.jpg",
       "chapters": [
-        { "title": "", "role": "", "start": "0:00", "link": "" }
+        { "title": "", "role": "", "duration": "", "link": "" }
       ]
     }
   },

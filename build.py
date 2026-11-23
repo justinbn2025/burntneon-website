@@ -234,6 +234,9 @@ def film_reel():
     """The sound reel under the Film & Games banner: edge to edge, cinema-wide, one marker per film.
     Left out entirely until "reels" > "film" > "video" in site.json names a file in static/video
     (or a full address). "chapters" is optional: without it there is one plain progress line.
+    Each chapter gives its "duration" ("0:22", "1:05.5"): the clips are taken in the order listed and each
+    one's starting point is added up from the ones before it, so reordering or adding a clip needs no
+    other edits. A "start" on a chapter is still honoured and overrides the running count.
     A chapter may carry "link" (an address, e.g. the film's official trailer) and "link_text": the link
     shows beside the title while that chapter plays, and opens in a new tab."""
     r = SITE["reels"].get("film") or {}
@@ -254,6 +257,17 @@ def film_reel():
     poster = r.get("poster") or "reel-film.jpg"
     poster = ' poster="img/%s"' % e(poster) if (STATIC / "img" / poster).exists() else ""
     chapters = [c for c in r.get("chapters", []) if c.get("title")]
+    at = 0.0                                              # where the next clip begins, counted up from the durations
+    for c in chapters:
+        if c.get("start") not in (None, ""):              # a written "start" wins, and the count carries on from it
+            at = clock(c["start"])
+        elif at < 0:
+            missing('sound reel: "%s" needs a "start", or a "duration" on the clip before it' % c["title"])
+            at = 0.0
+        c["_at"] = at
+        at = at + clock(c["duration"]) if c.get("duration") not in (None, "") else -1.0
+    if any(b["_at"] <= a["_at"] for a, b in zip(chapters, chapters[1:])):
+        missing("sound reel: chapter times are not in order")
     link_text = PAGES["film"].get("reel_link", "Watch the trailer")
     first = chapters[0] if chapters else {}
     link = ('<a class="rs-link" href="%s" target="_blank" rel="noopener"%s><span class="rs-link-text">%s</span>%s'
@@ -264,7 +278,7 @@ def film_reel():
         segs = "".join(
             '<button class="rs-seg" type="button" data-start="%g" data-title="%s" data-role="%s"%s aria-label="Jump to %s">'
             '<i></i><span><em>%02d</em>%s</span></button>'
-            % (clock(c.get("start")), e(c["title"]), e(c.get("role", "")),
+            % (c["_at"], e(c["title"]), e(c.get("role", "")),
                ' data-link="%s" data-link-text="%s"' % (e(c["link"]), e(c.get("link_text") or link_text)) if c.get("link") else "",
                e(c["title"]), n, e(c["title"]))
             for n, c in enumerate(chapters, 1))
