@@ -40,7 +40,7 @@ In `pages.json`:
 - `*asterisks*` around words colour them orange (headlines).
 - `_underscores_` around words set them in italics (for example the title of a show or film).
 - A banner's buttons are optional: a page's `"banner"` shows `"button"` and `"second_button"` only if they are there. The same goes for `"button"` in Home's `"about"`.
-- A podcast before/after sample in `podcasts.json` can say where the clip is from: `"show"` (set in italics) and `"episode"`, either or both. Leave them out and no credit line shows.
+- A podcast before/after sample in `podcasts.json` can say where the clip is from: `"show"` and `"episode"`, either or both, shown as a line under the controls. Add `"episode_link"` (an address) and the line ends with a link to the episode. Leave them all out and no line shows.
 - The privacy note (`privacy.html`, linked from the footer) is the `"privacy"` block in `pages.json`. Change its date in `"updated"` whenever you change what it says. Take the whole block out and the page and its footer link both go.
 - The Music banner's line that jumps down to the reviews is `"reviews_link"` in its `"banner"` (the five stars and the arrow are added for you). Take the line out and the link goes; it is separate from `"reviews_line"`, the line under the reviews themselves, so a changed number is changed in both.
 - The footer shows the main address from `site.json` (`"email"`) as plain text, labelled by `"footer_email"` in `pages.json`.

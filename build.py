@@ -384,6 +384,9 @@ EXTERNAL = ('<svg class="ext-icon" aria-hidden="true" viewBox="0 0 16 16" fill="
             'a1 1 0 0 1 1-1h3"/></svg>')
 
 
+MIC_ICON = _icon('<rect x="5.5" y="1.5" width="5" height="8" rx="2.5"/><path d="M3 7.5a5 5 0 0 0 10 0M8 12.5v2"/>')
+
+
 def callout_line(tr, words):
     """The line under a sample's progress bar when its track has a "callout" in music.json:
     {"type": which icon, "showcase": the part in white ("200,000+"), "description": the rest
@@ -442,17 +445,22 @@ def ab_player(sample, n):
             if ready else "")
     off = "" if ready else " disabled"
     name = e(sample.get("title") or "sample %d" % n)
-    # Where the clip is from: "show" (set in italics) and "episode", either or both, under the note.
-    src = ", ".join(x for x in ('<i>%s</i>' % e(sample["show"]) if sample.get("show") else "",
-                                "&ldquo;%s&rdquo;" % e(sample["episode"]) if sample.get("episode") else "") if x)
-    credit_line = '<p class="ab-credit">%s %s</p>' % (e(PAGES["podcasts"]["sample"].get("credit", "From")), src) if src else ""
-    return ('<div class="ab%s" role="group" aria-label="Before and after: %s" %s><p class="ab-title">%s</p><p class="ab-note">%s</p>%s'
+    # Where the clip is from, as a line under the controls in the same style as a music sample's callout:
+    # a microphone, "show" in white, then "episode"; "episode_link" (optional) adds a link on the right.
+    credit_line = ""
+    if sample.get("show") or sample.get("episode"):
+        link = ('<a href="%s" target="_blank" rel="noopener">%s%s<span class="sr-only"> (opens in a new tab)</span></a>'
+                % (e(sample["episode_link"]), t(PAGES["podcasts"]["sample"].get("episode_link", "Hear the full episode")), EXTERNAL)
+                if sample.get("episode_link") else "")
+        credit_line = ('<p class="player-foot ab-foot"><span>%s%s%s</span>%s</p>'
+                       % (MIC_ICON, "<b>%s</b> " % e(sample["show"]) if sample.get("show") else "", e(sample.get("episode", "")), link))
+    return ('<div class="ab%s" role="group" aria-label="Before and after: %s" %s><p class="ab-title">%s</p><p class="ab-note">%s</p>'
             '<div class="ab-row"><button class="play" type="button" aria-label="Play %s"%s>%s</button>'
             '<div class="ab-switch" role="group" aria-label="Version"><button type="button" class="ab-before" aria-pressed="true"%s>Before</button>'
             '<button type="button" class="ab-after" aria-pressed="false"%s>After</button></div>'
             '<input class="ab-seek" type="range" min="0" max="1000" value="0" aria-label="Position in %s"%s>'
-            '<span class="ab-time">0:00</span>%s</div><p class="ab-error" role="alert" hidden></p></div>'
-            % ("" if ready else " slot", name, data, title, note, credit_line, name, off, PLAY, off, off, name, off, VOLCTL if ready else ""))
+            '<span class="ab-time">0:00</span>%s</div>%s<p class="ab-error" role="alert" hidden></p></div>'
+            % ("" if ready else " slot", name, data, title, note, name, off, PLAY, off, off, name, off, VOLCTL if ready else "", credit_line))
 
 
 STAR = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m8 1.3 2 4.2 4.6.6-3.4 3.2.9 4.6L8 11.7 3.9 13.9l.9-4.6L1.4 6.1 6 5.5z"/></svg>'
