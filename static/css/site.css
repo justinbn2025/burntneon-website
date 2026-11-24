@@ -379,10 +379,9 @@ img.hero-bg-home, img.hero-bg-music, img.hero-bg-film, img.hero-bg-podcasts { op
 .go-icon { inline-size: 1.2075em; block-size: 0.805em; margin-left: 0.4em; vertical-align: -0.1em; display: inline-block; transition: transform 0.2s; }   /* the arrow after "go to this page" links */
 a.go:hover .go-icon, a.go:focus-visible .go-icon, .tile:hover .go-icon { transform: translateX(0.25em); }
 @media (prefers-reduced-motion: reduce) { .go-icon { transition: none; } }
-/* the whole Home tile is the link: its "go" link is stretched over the tile (the tile clips it), with the sample's play button kept on top */
+/* the whole Home tile is the link: its "go" link is stretched over the tile (the tile clips it) */
 .tile { cursor: pointer; }
 .tile-panel a.go::after { content: ""; position: absolute; inset: -60rem 0 0 0; }
-.tile-play { position: relative; z-index: 1; }
 .sr-only { position: absolute; inline-size: 1px; block-size: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }   /* read aloud by screen readers, not shown */
 .player-time { color: var(--muted); font-size: 0.75rem; font-variant-numeric: tabular-nums; }
 .player.slot { text-align: left; }

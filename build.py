@@ -765,14 +765,9 @@ def home():
     tile_html = ""
     for key in ("film", "music", "podcasts"):
         tile = p["paths"][key]
-        sample = SITE["tile_samples"].get(key)
-        if not sample:
-            missing("audio: short %s sample for the Home tile" % key)
-        btn = ('<button class="play tile-play" type="button" data-src="%s" data-label="a %s sample" aria-label="Play a %s sample">%s</button>'
-               % (e(media(sample)), key, key, PLAY)) if sample else ""
-        tile_html += ('<div class="tile">%s<div class="tile-panel"><div class="tile-head"><h3>%s</h3>%s</div>'
+        tile_html += ('<div class="tile">%s<div class="tile-panel"><div class="tile-head"><h3>%s</h3></div>'
                       '<p>%s</p><a class="go" href="%s">%s%s</a></div></div>'
-                      % (image("tile-%s.jpg" % key, "", "tile-img tile-img-%s" % key, "Photo: " + slots[key]), t(tile["name"]), btn,
+                      % (image("tile-%s.jpg" % key, "", "tile-img tile-img-%s" % key, "Photo: " + slots[key]), t(tile["name"]),
                          t(tile["text"]), hrefs[key], t(tile["link"]), GO))
     b = p["banner"]
     body = hero("home", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#paths"),

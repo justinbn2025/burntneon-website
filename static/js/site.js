@@ -195,7 +195,7 @@
     volWatch.push(show); show();
   });
 
-  /* 3. Single audio samples: <div class="player" data-src="..."> and the Home tile buttons. */
+  /* 3. Single audio samples: <div class="player" data-src="...">. */
   function simplePlayer(button, src, name, timeEl, seek) {
     var audio = null, seeking = false, wired = false, shownOn = null, routed = canRoute(src), card = button.closest ? button.closest('.player') : null;
     function level() { if (audio && !routed) audio.volume = loud(); }
@@ -245,7 +245,6 @@
     var src = el.getAttribute('data-src');
     if (src) simplePlayer(el.querySelector('.play'), src, el.getAttribute('data-label'), el.querySelector('.player-time'), el.querySelector('.player-seek'));
   });
-  each('.tile-play[data-src]', function (b) { simplePlayer(b, b.getAttribute('data-src'), b.getAttribute('data-label')); });
 
   /* 4. Before/after samples. Both files play in step; the switch crossfades between them. */
   function loadBuffer(c, url) {
