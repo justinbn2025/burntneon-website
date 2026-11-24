@@ -570,6 +570,10 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
   -webkit-mask-image: radial-gradient(circle at 75% 45%, transparent calc(var(--ring) - 54%), rgba(0, 0, 0, 0.3) calc(var(--ring) - 48%), transparent calc(var(--ring) - 42%), transparent calc(var(--ring) - 30%), rgba(0, 0, 0, 0.6) calc(var(--ring) - 24%), transparent calc(var(--ring) - 18%), transparent calc(var(--ring) - 6%), #000 var(--ring), transparent calc(var(--ring) + 6%));
   mask-image: radial-gradient(circle at 75% 45%, transparent calc(var(--ring) - 54%), rgba(0, 0, 0, 0.3) calc(var(--ring) - 48%), transparent calc(var(--ring) - 42%), transparent calc(var(--ring) - 30%), rgba(0, 0, 0, 0.6) calc(var(--ring) - 24%), transparent calc(var(--ring) - 18%), transparent calc(var(--ring) - 6%), #000 var(--ring), transparent calc(var(--ring) + 6%)); }
 .band-dots { overflow: hidden; }
+/* The ripple only ever covers the first screenful of a section. A pricing section with its cards stacked on a
+   phone is a few screens tall, and there is no reason to animate a layer that size (it is the heaviest thing
+   on the page for a phone's graphics memory). */
+.band-dots::before { inset: 0 0 auto 0; block-size: min(100%, 110vh); }
 .pulse::before { animation: dot-pulse 3.75s linear 0.2s 1 both; }
 @keyframes dot-pulse { 0% { --ring: 0%; opacity: 0; } 10% { opacity: 1; } 70% { opacity: 0.8; } 100% { --ring: 165%; opacity: 0; } }
 
