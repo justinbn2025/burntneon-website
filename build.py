@@ -442,13 +442,17 @@ def ab_player(sample, n):
             if ready else "")
     off = "" if ready else " disabled"
     name = e(sample.get("title") or "sample %d" % n)
-    return ('<div class="ab%s" role="group" aria-label="Before and after: %s" %s><p class="ab-title">%s</p><p class="ab-note">%s</p>'
+    # Where the clip is from: "show" (set in italics) and "episode", either or both, under the note.
+    src = ", ".join(x for x in ('<i>%s</i>' % e(sample["show"]) if sample.get("show") else "",
+                                "&ldquo;%s&rdquo;" % e(sample["episode"]) if sample.get("episode") else "") if x)
+    credit_line = '<p class="ab-credit">%s %s</p>' % (e(PAGES["podcasts"]["sample"].get("credit", "From")), src) if src else ""
+    return ('<div class="ab%s" role="group" aria-label="Before and after: %s" %s><p class="ab-title">%s</p><p class="ab-note">%s</p>%s'
             '<div class="ab-row"><button class="play" type="button" aria-label="Play %s"%s>%s</button>'
             '<div class="ab-switch" role="group" aria-label="Version"><button type="button" class="ab-before" aria-pressed="true"%s>Before</button>'
             '<button type="button" class="ab-after" aria-pressed="false"%s>After</button></div>'
             '<input class="ab-seek" type="range" min="0" max="1000" value="0" aria-label="Position in %s"%s>'
             '<span class="ab-time">0:00</span>%s</div><p class="ab-error" role="alert" hidden></p></div>'
-            % ("" if ready else " slot", name, data, title, note, name, off, PLAY, off, off, name, off, VOLCTL if ready else ""))
+            % ("" if ready else " slot", name, data, title, note, credit_line, name, off, PLAY, off, off, name, off, VOLCTL if ready else ""))
 
 
 STAR = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="m8 1.3 2 4.2 4.6.6-3.4 3.2.9 4.6L8 11.7 3.9 13.9l.9-4.6L1.4 6.1 6 5.5z"/></svg>'

@@ -169,6 +169,7 @@
     "sample": {
       "label": "Before and after",
       "heading": "Hear the difference.",
+      "credit": "From",
       "hint": "Press play, then switch between *Before* and *After* while it plays. Headphones show it best."
     },
     "more_samples": { "label": "More examples", "heading": "Different problems, same result." },

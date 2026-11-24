@@ -8,6 +8,8 @@
     {
       "title": "Interview cleanup",
       "note": "Room echo, noise and mic bleed reduced. Harsh sounds tamed. Volume evened out.",
+      "show": "The Nate Biltz Podcast",
+      "episode": "#151 - John Paul Dejoria - Billionaire Life Lessons",
       "before": "https://justinbn2025.github.io/burntneon-website-assets/audio/natebiltz-ep152-before.mp3",
       "after": "https://justinbn2025.github.io/burntneon-website-assets/audio/natebiltz-ep152-after.mp3"
     },
