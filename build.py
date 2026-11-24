@@ -301,9 +301,9 @@ def film_reel():
     at = 0.0                                              # where the next clip begins, counted up from the durations
     for c in chapters:
         for key in ("start", "duration"):
-            t = str(c.get(key) or "")
-            if fps and ":" in t and float(t.split(":")[-1]) >= fps:
-                missing('sound reel: "%s" has %s frames in "%s", but "fps" is %g' % (c["title"], t.split(":")[-1], t, fps))
+            tc = str(c.get(key) or "")
+            if fps and ":" in tc and float(tc.split(":")[-1]) >= fps:
+                missing('sound reel: "%s" has %s frames in "%s", but "fps" is %g' % (c["title"], tc.split(":")[-1], tc, fps))
         if c.get("start") not in (None, ""):              # a written "start" wins, and the count carries on from it
             at = clock(c["start"], fps)
         elif at < 0:
@@ -313,6 +313,21 @@ def film_reel():
         at = at + clock(c["duration"], fps) if c.get("duration") not in (None, "") else -1.0
     if any(b["_at"] <= a["_at"] for a, b in zip(chapters, chapters[1:])):
         missing("sound reel: chapter times are not in order")
+    # The heading above the player ("reel" in pages.json, under "film"): label, headline and one line that says
+    # the reel holds several projects. {count} and {length} in that line are worked out from the clip list
+    # ("Two", "under two minutes"); the line is left out when there is one clip or the last clip has no duration.
+    w = PAGES["film"].get("reel", {})
+    nums = ["zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten", "eleven", "twelve"]
+    say = lambda n: nums[n] if n < len(nums) else str(n)
+    line = ""
+    if w.get("line") and len(chapters) > 1 and at > 0:
+        mins = int(math.ceil(at / 60.0))
+        length = "under a minute" if mins <= 1 else "under %s minutes" % say(mins)
+        line = w["line"].replace("{count}", say(len(chapters))).replace("{length}", length)
+        line = '<p class="rs-lead">%s</p>' % t(line[:1].upper() + line[1:])
+    intro = ('<div class="wrap rs-intro">%s%s</div>' % (heading(t(w.get("label", "Sound reel")), t(w["heading"])), line)
+             if w.get("heading") else "")
+    clip_words = w.get("clip", "") if len(chapters) > 1 else ""      # "Clip {n} of {total}": the small label over the title, following playback
     link_text = PAGES["film"].get("reel_link", "Watch the trailer")
     first = chapters[0] if chapters else {}
     link = ('<a class="rs-link" href="%s" target="_blank" rel="noopener"%s><span class="rs-link-text">%s</span>%s'
@@ -329,7 +344,7 @@ def film_reel():
             for n, c in enumerate(chapters, 1))
     else:
         segs = '<button class="rs-seg rs-seek" type="button" data-start="0" aria-label="Skip to this point in the reel"><i></i></button>'
-    html = ('<section class="reelband" id="reel" aria-label="%s"><div class="rs">'
+    html = ('<section class="reelband@@TITLED@@" id="reel" aria-label="%s">@@INTRO@@<div class="rs"@@CLIP@@>'
             '<div class="rs-pic"><video class="rs-video" src="%s"%s preload="metadata" playsinline controls></video>'
             '<button class="play rs-play" type="button" aria-label="Play the %s">%s</button></div>'
             '<div class="rs-ui"><div class="rs-row rs-head"><span class="rs-kicker">%s</span><span class="rs-title">%s</span></div>'
@@ -337,8 +352,11 @@ def film_reel():
             '<button class="rs-full" type="button" aria-label="Full screen" aria-pressed="false">%s</button></div>'
             '<div class="rs-chapters">%s</div><p class="rs-error" role="alert" hidden>This video didn’t load. Try again in a moment.</p>'
             '</div></div></section>'
-            % (e(label), e(src), poster, e(label.lower()), PLAY, e(label),
+            % (e(label), e(src), poster, e(label.lower()), PLAY,
+               e(clip_words.replace("{n}", "1").replace("{total}", str(len(chapters)))) if clip_words else e(label),
                e(chapters[0]["title"]) if chapters else "", e(chapters[0].get("role", "")) if chapters else "", FULL, segs))
+    html = html.replace("@@TITLED@@", " titled" if intro else "").replace("@@INTRO@@", intro)
+    html = html.replace("@@CLIP@@", ' data-clip="%s"' % e(clip_words) if clip_words else "")
     return html.replace("@@VOL@@", VOLCTL).replace("@@LINK@@", link)
 
 

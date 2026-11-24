@@ -507,6 +507,7 @@
   each('.rs', function (box) {
     var v = box.querySelector('video'), playBtn = box.querySelector('.rs-play'), full = box.querySelector('.rs-full');
     var time = box.querySelector('.rs-time'), title = box.querySelector('.rs-title'), role = box.querySelector('.rs-role');
+    var kicker = box.querySelector('.rs-kicker'), clipWords = box.getAttribute('data-clip') || '', shownClip = -1;
     var rail = box.querySelector('.rs-chapters'), err = box.querySelector('.rs-error');
     var link = box.querySelector('.rs-link');
     var segs = Array.prototype.slice.call(box.querySelectorAll('.rs-seg'));
@@ -535,6 +536,10 @@
         segs[k].style.setProperty('--f', len > 0 ? Math.min(1, Math.max(0, (t - starts[k]) / len)).toFixed(4) : 0);
         segs[k].classList.toggle('on', k === cur && segs.length > 1);
         if (k === cur) segs[k].setAttribute('aria-current', 'true'); else segs[k].removeAttribute('aria-current');
+      }
+      if (kicker && clipWords && cur !== shownClip) {       // "Clip 2 of 3": which project of the reel is on screen
+        shownClip = cur;
+        kicker.textContent = clipWords.replace('{n}', cur + 1).replace('{total}', segs.length);
       }
       if (segs[cur].getAttribute('data-title')) {
         title.textContent = segs[cur].getAttribute('data-title');

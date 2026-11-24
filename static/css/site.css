@@ -648,6 +648,10 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 
 /* ---------- Film & Games: the sound reel, edge to edge under the banner ---------- */
 .reelband { position: relative; background: var(--bg); padding: 0.5rem 0 1.5rem; scroll-margin-top: var(--header-h); }
+/* The reel's heading: the same label and headline as any section, and a line saying it holds several projects. */
+.reelband.titled { padding-top: calc(var(--band) * 0.4); }
+.rs-intro { position: relative; z-index: 3; margin-bottom: 0.5rem; }
+.rs-lead { margin: 0.625rem 0 0; color: var(--soft); max-inline-size: 36rem; }
 .rs { position: relative; inline-size: 100%; overflow: hidden; background: var(--bg);
   --pad: max(var(--gutter), calc(50% - 35rem)); --ar: 1.7778; }   /* --ar: the video's own shape, set from the file once it loads */
 /* The picture is shown whole, centred, as tall as the screen allows; its edges fade into the page. */
@@ -704,6 +708,9 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .rs-seg i::after { content: ""; position: absolute; inset: 0; background: var(--accent); transform-origin: left center; transform: scaleX(var(--f, 0)); }
 .rs-seg span { display: flex; gap: 0.5rem; align-items: baseline; white-space: nowrap; overflow: hidden; }
 .rs-seg em { font-style: normal; font-size: 0.6875rem; letter-spacing: 0.1em; color: #6f6c67; font-variant-numeric: tabular-nums; }
+.rs-seg span { font-size: 0.9375rem; }
+.rs:not(.started) .rs-seg { color: var(--soft); }      /* before anything plays, every clip's name reads clearly, with its number in orange */
+.rs:not(.started) .rs-seg em { color: var(--accent); }
 .rs-seg:hover, .rs-seg.on { color: var(--text); }
 .rs-seg:hover i { background: rgba(255, 250, 240, 0.32); }
 .rs-seg.on i { background: rgba(210, 105, 30, 0.42); }

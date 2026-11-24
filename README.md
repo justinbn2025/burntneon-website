@@ -142,6 +142,12 @@ to each picture's address so a replaced picture is fetched afresh.
 
 The reel plays under the Film & Games banner. It stays hidden until a file is named.
 
+The heading above the player is `"reel"` under `"film"` in `content/pages.json`: `"label"`,
+`"heading"`, a `"line"` and `"clip"`. In the line, `{count}` and `{length}` are worked out from
+the clip list ("Two", "under two minutes"), so they stay right as clips are added; the line is
+left out when the reel has one clip. `"clip"` ("Clip {n} of {total}") is the small label over the
+title, which follows playback. Take `"heading"` out and the reel goes back to having no heading.
+
 1. Put the video in `static/video/` (an `.mp4`, H.264 with AAC sound, under 100 MB) and a thumbnail
    for it in `static/img/` (the picture shown until play is pressed).
 2. In `content/site.json`, under `"reels"` > `"film"`, fill in `"video"` and `"thumbnail"` with the
