@@ -822,7 +822,7 @@ def music():
     side = ""
     if MUSIC.get("show_banner_reel", True):
         side = '<div class="reel-audio">%s</div>' % player(t(p["reel"]["title"]), t(p["reel"]["text"]), MUSIC.get("reel"), "singing reel")
-    body = hero("music", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#listen"),
+    body = hero("music", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#services"),
                 "", "", "Background: you singing at the mic, on the right third")
     body = body.replace('<div class="btn-row">', side + '<div class="btn-row">', 1) if side else body
     # The reviews sit straight after the samples, and the banner links down to them: five stars and
