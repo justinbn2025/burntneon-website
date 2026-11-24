@@ -21,8 +21,11 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+      - id: pages
+        uses: actions/configure-pages@v5
       - run: python3 build.py
-      - uses: actions/configure-pages@v5
+        env:
+          SITE_URL: ${{ steps.pages.outputs.base_url }}   # where this build will be served: the preview address, or the domain once it is set
       - uses: actions/upload-pages-artifact@v3
         with:
           path: _site

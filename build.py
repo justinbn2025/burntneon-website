@@ -9,9 +9,11 @@ Standard library only: nothing to install.
 Everything you read on the site lives in content/*.json. Page wording is in
 content/pages.json; credits, quotes, samples, prices and links are in the others.
 """
+import hashlib
 import html
 import json
 import math
+import os
 import random
 import re
 import shutil
@@ -36,6 +38,10 @@ def load(name):
 
 
 SITE = load("site")
+# Where the site is being published. The publishing workflow passes the real address (the preview address
+# before the domain is switched, the domain after), so links meant for other sites to read, like the
+# picture shown when a page is shared, always point somewhere that exists. Locally, site.json's "url" is used.
+SITE["url"] = (os.environ.get("SITE_URL") or SITE["url"]).rstrip("/")
 CREDITS = load("credits")
 QUOTES = load("quotes")
 MUSIC = load("music")
@@ -135,6 +141,29 @@ def logo():
     return '<a class="logo" href="index.html">%s</a>' % mark
 
 
+SHARE_ALT = {"home": "The studio desk: monitor, speakers and keyboard, lit warm in a dark room",
+             "film": "Justin at the desk with a film's sound session on the monitor",
+             "music": "Justin singing at a studio microphone",
+             "podcasts": "A studio microphone, headphones and a speaker"}
+
+
+def share_image(page):
+    """The picture other sites and apps show when a page's link is shared (messages, LinkedIn, Slack...):
+    static/img/share-<page>.jpg, 1200 x 630. Without one, each app guesses and keeps its guess for a long time.
+    The address carries a short fingerprint of the file, so replacing the picture gives it a new address
+    and apps fetch it afresh instead of showing their saved copy."""
+    f = STATIC / "img" / ("share-%s.jpg" % page)
+    if not f.exists():
+        f = STATIC / "img" / "share-home.jpg"
+        if not f.exists():
+            return ""
+    src = "%s/img/%s?v=%s" % (SITE["url"], f.name, hashlib.sha1(f.read_bytes()).hexdigest()[:8])
+    alt = e(SHARE_ALT.get(f.name[6:-4], ""))
+    return ('<meta property="og:image" content="%s">\n<meta property="og:image:width" content="1200">\n'
+            '<meta property="og:image:height" content="630">\n<meta property="og:image:alt" content="%s">\n'
+            '<meta name="twitter:card" content="summary_large_image">\n<meta name="twitter:image" content="%s">\n' % (src, alt, src))
+
+
 def layout(page, title, description, body):
     short = PAGES["shared"].get("menu_on_phones", {})
 
@@ -174,7 +203,8 @@ def layout(page, title, description, body):
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{url}/{path}">
-<link rel="icon" href="favicon.ico" sizes="48x48">
+<meta property="og:site_name" content="{site_name}">
+{share}<link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -206,6 +236,7 @@ def layout(page, title, description, body):
 </body>
 </html>
 """.format(csp=csp, title=e(title), desc=e(description), url=SITE["url"], path=path, page=page,
+           site_name=e(SITE["name"]), share=share_image(page),
            defs=wave_defs(), ver=VERSION, nav=nav, logo=logo(), skip=e(PAGES["shared"]["skip_link"]),
            menu_button=e(PAGES["shared"]["menu_button"]), mail=mailto("", page), wave=WAVE_USE, body=body,
            legal=e(SITE["legal_name"]), loc=e(SITE["location"]), foot=foot)

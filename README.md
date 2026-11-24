@@ -110,6 +110,7 @@ build. Sizes are a guide; JPG at about 80% quality.
 | `portrait.jpg`       | About                          | portrait 4:5, 900 px wide |
 | `theater.jpg`        | Music, theater writers section | landscape 4:3          |
 | `reel-film.jpg`      | Thumbnail shown on the sound reel before play | 16:9 or wider |
+| `share-home.jpg`, `share-film.jpg`, `share-music.jpg`, `share-podcasts.jpg` | Picture shown when a page's link is shared (messages, LinkedIn, Slack) | 1200 x 630 |
 | `posters/<name>.jpg` | Film credits                   | portrait 2:3, 800 px wide |
 
 The Home banner video loop goes in `static/video/hero-home.mp4` (muted, 8 to 10
@@ -123,6 +124,14 @@ seconds, under 4 MB).
     static/js/site.js   scroll waveform, audio players, video cards
     static/img/         photos and posters
     _site/              the built site (not committed)
+
+## The picture shown when a link is shared
+
+Each page names a picture for apps to show beside its link: `static/img/share-<page>.jpg`
+(1200 x 630, a crop of that page's banner). They are separate files from the banners, so
+changing a banner does not change them: replace the matching `share-` file too. Apps keep
+their own saved copy of a link's picture, sometimes for days; the build adds a fingerprint
+to each picture's address so a replaced picture is fetched afresh.
 
 ## The sound reel (Film & Games)
 
