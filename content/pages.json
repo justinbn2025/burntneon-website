@@ -198,6 +198,29 @@
     }
   },
 
+  "privacy": {
+    "footer_link": "Privacy",
+    "browser_title": "Privacy: BURNT NEON Productions",
+    "search_description": "What this site does and doesn’t collect about visitors.",
+    "heading": "Privacy",
+    "intro": "The short version: this site doesn’t track you.",
+    "parts": [
+      { "heading": "What the site collects",
+        "text": "Nothing. There are no cookies, no analytics, no advertising trackers and no forms. The audio players remember your volume setting in your own browser for the length of your visit; it is never sent anywhere." },
+      { "heading": "When you email me",
+        "text": "The contact buttons open your own email app. I use your name, your address and whatever you send only to reply and to do the work you ask for. I don’t sell it or pass it on." },
+      { "heading": "Hosting",
+        "text": "The site is hosted on GitHub Pages. Like any web host, GitHub keeps standard server logs, which include visitors’ IP addresses, for security. I can’t see those logs. More in the",
+        "link": "https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement",
+        "link_text": "GitHub privacy statement" },
+      { "heading": "Links to other sites",
+        "text": "Links to Instagram, IMDb, LinkedIn, Spotify and YouTube open those sites in a new tab. What they collect is covered by their own policies. Nothing from them is loaded here until you follow a link." },
+      { "heading": "Do Not Track",
+        "text": "Since nothing here tracks you, the site behaves the same whether or not your browser sends a Do Not Track signal." }
+    ],
+    "contact": "Questions, or want something you sent me deleted? Write to",
+    "updated": "Last updated November 24, 2026. If this note changes, the new version and its date will be on this page."
+  },
   "not_found": {
     "browser_title": "Page not found: BURNT NEON Productions",
     "heading": "That page isn’t here.",

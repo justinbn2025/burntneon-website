@@ -40,6 +40,7 @@ In `pages.json`:
 - `*asterisks*` around words colour them orange (headlines).
 - `_underscores_` around words set them in italics (for example the title of a show or film).
 - A banner's buttons are optional: a page's `"banner"` shows `"button"` and `"second_button"` only if they are there. The same goes for `"button"` in Home's `"about"`.
+- The privacy note (`privacy.html`, linked from the footer) is the `"privacy"` block in `pages.json`. Change its date in `"updated"` whenever you change what it says. Take the whole block out and the page and its footer link both go.
 - The Music banner's line that jumps down to the reviews is `"reviews_link"` in its `"banner"` (the five stars and the arrow are added for you). Take the line out and the link goes; it is separate from `"reviews_line"`, the line under the reviews themselves, so a changed number is changed in both.
 - The footer shows the main address from `site.json` (`"email"`) as plain text, labelled by `"footer_email"` in `pages.json`.
 - `{reply_days}`, `{turnaround_days}`, `{revision_rounds}` and `{review_count}` are
@@ -190,3 +191,9 @@ If the site ever has to leave GitHub Pages, the plan is in `MIGRATING-TO-CLOUDFL
   for audio automatically.
 - No cookies, analytics or forms. Contact is by email link. The one thing the site keeps in a
   visitor's browser is their volume setting, and only until they close the tab.
+
+## Fonts
+
+The two typefaces, Inter and Oswald, are served by the site itself from `static/fonts/` (Latin
+subsets, with their license in `OFL.txt`), so pages call no outside server. If you add text in
+another alphabet, the fonts need re-making with those letters included.

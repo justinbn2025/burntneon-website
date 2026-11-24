@@ -184,8 +184,8 @@ def layout(page, title, description, body):
         if not links.get(k):
             missing("link: " + k)
     path = "" if page == "home" else page
-    csp = ("default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; "
-           "font-src https://fonts.gstatic.com; img-src 'self' data: https://i.ytimg.com; "
+    csp = ("default-src 'self'; script-src 'self'; style-src 'self'; "
+           "font-src 'self'; img-src 'self' data: https://i.ytimg.com; "
            "media-src 'self' {m}; connect-src 'self' {m}; "
            "frame-src https://www.youtube-nocookie.com https://player.vimeo.com; "
            "base-uri 'self'; form-action 'none'; object-src 'none'").format(m="@@MEDIA@@")
@@ -207,9 +207,8 @@ def layout(page, title, description, body):
 {share}<link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap">
+<link rel="preload" href="fonts/inter-400.woff" as="font" type="font/woff" crossorigin>
+<link rel="preload" href="fonts/oswald.woff" as="font" type="font/woff" crossorigin>
 <link rel="stylesheet" href="css/site.css?v={ver}">
 <script src="js/site.js?v={ver}" defer></script>
 </head>
@@ -229,7 +228,7 @@ def layout(page, title, description, body):
 </main>
 <footer class="site-footer">
 <div class="wrap foot-row">
-<span>&copy; 2026 {legal}. {loc}.</span>
+<span>&copy; 2026 {legal}. {loc}.{privacy}</span>
 <div class="foot-side">
 <span class="foot-mail">{mail_label} <a class="foot-addr" href="mailto:{mail_plain}">{mail_plain}</a></span>
 <ul class="foot-links" role="list">{foot}</ul>
@@ -243,7 +242,9 @@ def layout(page, title, description, body):
            mail_label=e(PAGES["shared"].get("footer_email", "Email:")), mail_plain=e(SITE["email"]),
            defs=wave_defs(), ver=VERSION, nav=nav, logo=logo(), skip=e(PAGES["shared"]["skip_link"]),
            menu_button=e(PAGES["shared"]["menu_button"]), mail=mailto("", page), wave=WAVE_USE, body=body,
-           legal=e(SITE["legal_name"]), loc=e(SITE["location"]), foot=foot)
+           legal=e(SITE["legal_name"]), loc=e(SITE["location"]), foot=foot,
+           privacy=(' <a class="foot-privacy" href="privacy.html"%s>%s</a>' % (' aria-current="page"' if page == "privacy" else "", e(PAGES["privacy"].get("footer_link", "Privacy")))
+                    if PAGES.get("privacy") else ""))
 
 
 def section(inner, cls="", sid=""):
@@ -928,12 +929,31 @@ def not_found():
                           % (t(p["heading"]), t(p["text"]), t(p["button"])), "glow-tr"))
 
 
+def privacy():
+    """The privacy note: plain text, linked from the footer. All of its words are under "privacy" in pages.json;
+    take that block out and the page and its footer link both go. A part may carry "link" and "link_text"
+    (shown after its text, opening in a new tab); the last line is followed by the main email address."""
+    p = PAGES["privacy"]
+    parts = ""
+    for x in p["parts"]:
+        link = (' <a href="%s" target="_blank" rel="noopener">%s%s<span class="sr-only"> (opens in a new tab)</span></a>.'
+                % (e(x["link"]), t(x.get("link_text", x["link"])), EXTERNAL)) if x.get("link") else ""
+        parts += "<h2>%s</h2><p>%s%s</p>" % (t(x["heading"]), t(x["text"]), link)
+    ask = '<p>%s <a href="mailto:%s">%s</a>.</p>' % (t(p["contact"]), e(SITE["email"]), e(SITE["email"])) if p.get("contact") else ""
+    updated = '<p class="prose-date">%s</p>' % t(p["updated"]) if p.get("updated") else ""
+    return layout("privacy", p["browser_title"], p["search_description"],
+                  section('<div class="prose"><h1>%s</h1><p class="lead">%s</p>%s%s%s</div>'
+                          % (t(p["heading"]), t(p["intro"]), parts, ask, updated), "glow-tr"))
+
+
 def main():
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(STATIC, OUT, ignore=shutil.ignore_patterns(".DS_Store"))
     pages = {"index.html": home(), "film.html": film(), "music.html": music(),
              "podcasts.html": podcasts(), "404.html": not_found()}
+    if PAGES.get("privacy"):
+        pages["privacy.html"] = privacy()
     hosts = " ".join(sorted(MEDIA_HOSTS))
     for name, text in pages.items():
         (OUT / name).write_text(text.replace("@@MEDIA@@", hosts), encoding="utf-8")
