@@ -11,6 +11,7 @@
     "menu": { "film": "Film & Games", "music": "Music", "podcasts": "Podcasts", "about": "About" },
     "menu_on_phones": { "film": "Film" },
     "menu_button": "Get in touch",
+    "footer_email": "Email:",
     "skip_link": "Skip to content",
     "reviews": { "read_full": "Read full review", "read_less": "Show less", "via": "via",
                  "of": "of", "showing": "Showing reviews", "previous": "Previous reviews", "next": "More reviews" }
@@ -22,9 +23,7 @@
     "banner": {
       "label": "Los Angeles audio studio",
       "headline": "Sound for *film*, *music* and *podcasts*.",
-      "text": "Sound editing and mixing, session vocals, and podcast post-production. One human, start to finish.",
-      "button": "Hear the work",
-      "second_button": "Get in touch"
+      "text": "Sound editing and mixing, session vocals, and podcast post-production. One human, start to finish."
     },
     "paths": {
       "label": "What do you need?",
@@ -41,8 +40,7 @@
       "paragraphs": [
         "I’m a Sound Editor, Mixer and Session Singer in Los Angeles. I started BURNT NEON Productions in 2025 to do the work I care about most: making *stories* and *songs* sound the way their makers imagined them.",
         "On screen, I’ve been a supervising sound editor, re-recording mixer, and actor on independent films. On stage, I’ve played Melchior in _Spring Awakening_ and Jamie in _The Last Five Years_. In the studio, I sing, produce and mix across Pop, Rock, R&B and Musical Theater."
-      ],
-      "button": "Tell me about your project"
+      ]
     },
     "contact": {
       "heading": "Have a project in mind?",

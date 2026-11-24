@@ -177,7 +177,7 @@ def layout(page, title, description, body):
     nav = "".join('<li><a href="%s"%s>%s</a></li>' % (href, ' aria-current="page"' if key == page else "", label(key))
                   for href, key in NAV)
     links = SITE["links"]
-    foot = "".join('<li><a href="%s" rel="noopener">%s</a></li>' % (e(links[k]), label)
+    foot = "".join('<li><a href="%s" target="_blank" rel="noopener">%s<span class="sr-only"> (opens in a new tab)</span></a></li>' % (e(links[k]), label)
                    for k, label in (("instagram", "Instagram"), ("imdb", "IMDb"), ("linkedin", "LinkedIn"))
                    if links.get(k))
     for k in ("imdb", "linkedin"):
@@ -230,6 +230,7 @@ def layout(page, title, description, body):
 <footer class="site-footer">
 <div class="wrap foot-row">
 <span>&copy; 2026 {legal}. {loc}.</span>
+<span class="foot-mail">{mail_label} <span class="foot-addr">{mail_plain}</span></span>
 <ul class="foot-links" role="list">{foot}</ul>
 </div>
 </footer>
@@ -237,6 +238,7 @@ def layout(page, title, description, body):
 </html>
 """.format(csp=csp, title=e(title), desc=e(description), url=SITE["url"], path=path, page=page,
            site_name=e(SITE["name"]), share=share_image(page),
+           mail_label=e(PAGES["shared"].get("footer_email", "Email:")), mail_plain=e(SITE["email"]),
            defs=wave_defs(), ver=VERSION, nav=nav, logo=logo(), skip=e(PAGES["shared"]["skip_link"]),
            menu_button=e(PAGES["shared"]["menu_button"]), mail=mailto("", page), wave=WAVE_USE, body=body,
            legal=e(SITE["legal_name"]), loc=e(SITE["location"]), foot=foot)
@@ -653,8 +655,9 @@ def hero(page, eyebrow, h1, lead, buttons, side, bg_alt, bg_label):
         pause = ""
     side_html = '<div class="hero-side">%s</div>' % side if side else ""
     return ('<section class="hero hero-%s">%s<div class="hero-shade"></div>%s<div class="wrap hero-row%s"><div class="hero-text">'
-            '<p class="eyebrow">%s</p><h1>%s</h1><p class="lead">%s</p><div class="btn-row">%s</div></div>'
-            '%s</div></section>' % (page, bg, pause, (" stack" if page in STACKED_HEROES else "") if side else " solo", eyebrow, h1, lead, btns, side_html))
+            '<p class="eyebrow">%s</p><h1>%s</h1><p class="lead">%s</p>%s</div>'
+            '%s</div></section>' % (page, bg, pause, (" stack" if page in STACKED_HEROES else "") if side else " solo", eyebrow, h1, lead,
+                                    '<div class="btn-row">%s</div>' % btns if btns else "", side_html))
 
 
 # ---------- wording ----------
@@ -704,7 +707,14 @@ def t(text):
 
 
 def banner_buttons(b, first_href, subject=""):
-    return [(first_href, t(b["button"])), (mailto(b.get("email_subject", subject), b.get("email_to", "")), t(b["second_button"]))]
+    """The banner's buttons, from pages.json: "button" (jumps down the page) and "second_button" (email).
+    Leave either out of pages.json and it is not shown; leave both out and the banner has no buttons."""
+    out = []
+    if b.get("button"):
+        out.append((first_href, t(b["button"])))
+    if b.get("second_button"):
+        out.append((mailto(b.get("email_subject", subject), b.get("email_to", "")), t(b["second_button"])))
+    return out
 
 
 def contact(c, blend=False):
@@ -738,10 +748,11 @@ def home():
                     "band-rings rings-side fade-in", "paths")
     body += quotes("home", t(p["quotes_label"]), "band-foam foam-fade band-line")
     a = p["about"]
-    body += section('<div class="about">%s<div class="about-text">%s%s<a class="btn btn-ghost" href="%s">%s</a></div></div>'
+    about_btn = '<a class="btn btn-ghost" href="%s">%s</a>' % (mailto(), t(a["button"])) if a.get("button") else ""   # optional: the contact band sits right under this section
+    body += section('<div class="about">%s<div class="about-text">%s%s%s</div></div>'
                     % (image("portrait.jpg", "Justin at the studio desk", "portrait", "Portrait: Justin at the desk or the mic"),
                        heading(t(a["label"]), t(a["heading"])), "".join("<p>%s</p>" % t(x) for x in a["paragraphs"]),
-                       mailto(), t(a["button"])), "glow-tr band-line", "about")
+                       about_btn), "glow-tr band-line", "about")
     body += contact(p["contact"])
     return layout("home", p["browser_title"], p["search_description"], body)
 
