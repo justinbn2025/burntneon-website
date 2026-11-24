@@ -909,7 +909,7 @@ def podcasts():
         items = "".join("<li>%s</li>" % x for x in (t(i) for i in pack["includes"]) if x.strip())
         packs += ('<div class="pack%s"><div class="pack-kind">%s</div><h3>%s</h3>%s<ul>%s</ul>'
                   '%s</div>'
-                  % (" pack-hi" if pack.get("highlight") else "", e(pack["kind"]), e(pack["name"]),
+                  % (" pack-hi" if pack.get("highlight") else " pack-hover", e(pack["kind"]), e(pack["name"]),      # the others get the white hover borders, like the Music services
                      '<div class="pack-price">%s%s</div>' % (price, " <span>/ %s</span>" % e(pack["per"]) if pack.get("per") else "") if price else "",
                      items, ask_button(t(pk["button"]), pack["name"], "Podcast: " + pack["name"], not pack.get("highlight"), "podcasts")))
     body += section(heading(t(pk["label"]), t(pk["heading"])) + '<div class="grid packs">%s</div>' % packs
