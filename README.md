@@ -195,5 +195,7 @@ If the site ever has to leave GitHub Pages, the plan is in `MIGRATING-TO-CLOUDFL
 ## Fonts
 
 The two typefaces, Inter and Oswald, are served by the site itself from `static/fonts/` (Latin
-subsets, with their license in `OFL.txt`), so pages call no outside server. If you add text in
+subsets, with their license in `OFL.txt`), so pages call no outside server. A build on your own
+computer puts the same fonts inside the stylesheet instead, because Safari will not load a font
+file for a page opened straight from disk; the published site serves the separate files. If you add text in
 another alphabet, the fonts need re-making with those letters included.

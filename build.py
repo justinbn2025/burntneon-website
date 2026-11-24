@@ -9,6 +9,7 @@ Standard library only: nothing to install.
 Everything you read on the site lives in content/*.json. Page wording is in
 content/pages.json; credits, quotes, samples, prices and links are in the others.
 """
+import base64
 import hashlib
 import html
 import json
@@ -185,7 +186,7 @@ def layout(page, title, description, body):
             missing("link: " + k)
     path = "" if page == "home" else page
     csp = ("default-src 'self'; script-src 'self'; style-src 'self'; "
-           "font-src 'self'; img-src 'self' data: https://i.ytimg.com; "
+           "font-src 'self'@@FONTSRC@@; img-src 'self' data: https://i.ytimg.com; "
            "media-src 'self' {m}; connect-src 'self' {m}; "
            "frame-src https://www.youtube-nocookie.com https://player.vimeo.com; "
            "base-uri 'self'; form-action 'none'; object-src 'none'").format(m="@@MEDIA@@")
@@ -207,9 +208,7 @@ def layout(page, title, description, body):
 {share}<link rel="icon" href="favicon.ico" sizes="48x48">
 <link rel="icon" href="icon-192.png" type="image/png" sizes="192x192">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
-<link rel="preload" href="fonts/inter-400.woff" as="font" type="font/woff" crossorigin>
-<link rel="preload" href="fonts/oswald.woff" as="font" type="font/woff" crossorigin>
-<link rel="stylesheet" href="css/site.css?v={ver}">
+@@FONTPRELOAD@@<link rel="stylesheet" href="css/site.css?v={ver}">
 <script src="js/site.js?v={ver}" defer></script>
 </head>
 <body class="page-{page}">
@@ -955,7 +954,19 @@ def main():
     if PAGES.get("privacy"):
         pages["privacy.html"] = privacy()
     hosts = " ".join(sorted(MEDIA_HOSTS))
+    # Fonts. The published site (built by the deploy workflow, which sets SITE_URL) serves the files in fonts/.
+    # A build on your own computer puts the same fonts inside the stylesheet instead, because Safari will not
+    # load a font file for a page opened straight from disk. Same fonts either way; only the delivery differs.
+    local = not os.environ.get("SITE_URL")
+    if local:
+        css = OUT / "css" / "site.css"
+        css.write_text(re.sub(r'url\("\.\./fonts/([\w.-]+\.woff)"\)',
+                              lambda m: 'url("data:font/woff;base64,%s")' % base64.b64encode((STATIC / "fonts" / m.group(1)).read_bytes()).decode(),
+                              css.read_text(encoding="utf-8")), encoding="utf-8")
+    preload = "" if local else "".join('<link rel="preload" href="fonts/%s" as="font" type="font/woff" crossorigin>\n' % f
+                                        for f in ("inter-400.woff", "oswald.woff"))
     for name, text in pages.items():
+        text = text.replace("@@FONTSRC@@", " data:" if local else "").replace("@@FONTPRELOAD@@", preload)
         (OUT / name).write_text(text.replace("@@MEDIA@@", hosts), encoding="utf-8")
     (OUT / ".nojekyll").write_text("")
     (OUT / "robots.txt").write_text("User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml\n" % SITE["url"])
