@@ -560,7 +560,9 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .foot-row { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.75rem 1.5rem; padding-block: 1.75rem 2.25rem; font-size: 0.8125rem; color: var(--soft); }
 .foot-links { display: flex; flex-wrap: wrap; gap: 0.5rem 1.25rem; margin: 0; padding: 0; list-style: none; }
 .foot-links a { color: var(--soft); display: inline-block; padding-block: 0.25rem; }
-.foot-addr { color: var(--text); -webkit-user-select: all; user-select: all; }   /* the address as plain text: one tap or click selects it all, for copying */
+.foot-side { display: grid; gap: 0.25rem; justify-items: end; margin-left: auto; }   /* the address on its own line above the links, both against the right edge */
+.foot-addr { color: var(--text); }                    /* a link, and ordinary text that can be selected and copied */
+@media (max-width: 40em) { .foot-side { justify-items: start; margin-left: 0; } }
 
 /* Dot texture ripple: three rings of orange dots travel outward, each fainter than the one
    ahead of it, like something dropped in a pond. Plays once (about 3.75 s) each time a dotted

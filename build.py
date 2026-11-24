@@ -230,8 +230,10 @@ def layout(page, title, description, body):
 <footer class="site-footer">
 <div class="wrap foot-row">
 <span>&copy; 2026 {legal}. {loc}.</span>
-<span class="foot-mail">{mail_label} <span class="foot-addr">{mail_plain}</span></span>
+<div class="foot-side">
+<span class="foot-mail">{mail_label} <a class="foot-addr" href="mailto:{mail_plain}">{mail_plain}</a></span>
 <ul class="foot-links" role="list">{foot}</ul>
+</div>
 </div>
 </footer>
 </body>
