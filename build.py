@@ -453,7 +453,8 @@ def ab_player(sample, n):
                 % (e(sample["episode_link"]), t(PAGES["podcasts"]["sample"].get("episode_link", "Hear the full episode")), EXTERNAL)
                 if sample.get("episode_link") else "")
         credit_line = ('<p class="player-foot ab-foot"><span>%s%s%s</span>%s</p>'
-                       % (MIC_ICON, "<b>%s</b> " % e(sample["show"]) if sample.get("show") else "", e(sample.get("episode", "")), link))
+                       % (MIC_ICON, "<b>%s</b> " % e(sample["show"]) if sample.get("show") else "",
+                          '<span class="ab-ep">%s</span>' % e(sample["episode"]) if sample.get("episode") else "", link))
     return ('<div class="ab%s" role="group" aria-label="Before and after: %s" %s><p class="ab-title">%s</p><p class="ab-note">%s</p>'
             '<div class="ab-row"><button class="play" type="button" aria-label="Play %s"%s>%s</button>'
             '<div class="ab-switch" role="group" aria-label="Version"><button type="button" class="ab-before" aria-pressed="true"%s>Before</button>'

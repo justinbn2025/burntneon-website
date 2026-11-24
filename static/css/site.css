@@ -393,7 +393,8 @@ a.go:hover .go-icon, a.go:focus-visible .go-icon, .tile:hover .go-icon { transfo
 .ab { background: var(--panel); border: 1px solid var(--line); border-radius: 0.375rem; padding: 1.125rem 1.25rem; }
 .ab-title { font-family: var(--head); font-weight: 500; font-size: 1.1875rem; color: var(--accent); margin: 0; }
 .ab-note { color: var(--muted); font-size: 0.875rem; margin-top: 0.125rem; }
-.ab-foot { margin-top: 1rem; }      /* where the clip is from: the music samples' callout line, under the controls */
+.ab-foot { margin-top: 1rem; }
+@media (max-width: 40em) { .ab-foot .ab-ep { display: block; margin-top: 0.125rem; padding-left: 1.275rem; } }   /* phones: the episode on its own line, under the show's name and in line with it */      /* where the clip is from: the music samples' callout line, under the controls */
 .ab-row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-top: 0.875rem; }
 .ab-switch { display: inline-flex; background: #2e2e2e; border-radius: 999px; padding: 3px; }
 .ab-switch button { border: 0; background: transparent; color: var(--soft); font: 600 0.8125rem var(--body); padding: 0.5rem 1rem; border-radius: 999px; cursor: pointer; }
