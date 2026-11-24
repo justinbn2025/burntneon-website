@@ -994,6 +994,19 @@ def main():
     for name, text in pages.items():
         text = text.replace("@@FONTSRC@@", " data:" if local else "").replace("@@FONTPRELOAD@@", preload)
         (OUT / name).write_text(text.replace("@@MEDIA@@", hosts), encoding="utf-8")
+    # Old addresses. Links shared from the previous site keep working: each name under "old_addresses" in
+    # site.json becomes a tiny page at that address which sends the visitor straight on to the new page
+    # (GitHub Pages cannot redirect by itself). The value is the new page: "" for Home, or "film", "music", "podcasts".
+    for old, new in (SITE.get("old_addresses") or {}).items():
+        if (OUT / (old + ".html")).exists() or new + ".html" not in list(pages) + [".html"]:
+            missing('old address "%s": %s' % (old, "a page already has that address" if (OUT / (old + ".html")).exists() else 'no page called "%s"' % new))
+            continue
+        to = (new or "index") + ".html" if local else (new or "./")
+        (OUT / (old + ".html")).write_text(
+            '<!doctype html>\n<html lang="en">\n<head>\n<meta charset="utf-8">\n<title>%s</title>\n'
+            '<link rel="canonical" href="%s/%s">\n<meta http-equiv="refresh" content="0; url=%s">\n</head>\n'
+            '<body>\n<p>This page has moved. <a href="%s">Continue to the new page</a>.</p>\n</body>\n</html>\n'
+            % (e(SITE["name"]), SITE["url"], new, to, to), encoding="utf-8")
     (OUT / ".nojekyll").write_text("")
     (OUT / "robots.txt").write_text("User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml\n" % SITE["url"])
     (OUT / "sitemap.xml").write_text(

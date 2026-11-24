@@ -206,3 +206,12 @@ subsets, with their license in `OFL.txt`), so pages call no outside server. A bu
 computer puts the same fonts inside the stylesheet instead, because Safari will not load a font
 file for a page opened straight from disk; the published site serves the separate files. If you add text in
 another alphabet, the fonts need re-making with those letters included.
+
+
+## Old addresses
+
+Links shared from the previous site keep working. Each name under `"old_addresses"` in
+`content/site.json` becomes a small page at that address which sends the visitor straight on to
+the new page: the name is the old address (without the slash), the value is the new page (`""`
+for Home, or `"film"`, `"music"`, `"podcasts"`). `/music` and `/podcasts` are the same on both
+sites, so they need no entry.
