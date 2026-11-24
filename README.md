@@ -215,3 +215,6 @@ Links shared from the previous site keep working. Each name under `"old_addresse
 the new page: the name is the old address (without the slash), the value is the new page (`""`
 for Home, or `"film"`, `"music"`, `"podcasts"`). `/music` and `/podcasts` are the same on both
 sites, so they need no entry.
+
+On the published site the pages link to each other without `.html` (`/film`, `/music`). A build
+on your own computer keeps `.html` in its links, because pages opened from disk need it.

@@ -993,6 +993,9 @@ def main():
                                         for f in ("inter-400.woff", "oswald.woff"))
     for name, text in pages.items():
         text = text.replace("@@FONTSRC@@", " data:" if local else "").replace("@@FONTPRELOAD@@", preload)
+        if not local:      # the published site links to its pages without ".html" (/film, not /film.html); both forms load
+            text = re.sub(r'href="(%s)\.html(#[^"]*)?"' % "|".join(n[:-5] for n in pages if n != "404.html"),
+                          lambda m: 'href="%s%s"' % ("./" if m.group(1) == "index" else m.group(1), m.group(2) or ""), text)
         (OUT / name).write_text(text.replace("@@MEDIA@@", hosts), encoding="utf-8")
     # Old addresses. Links shared from the previous site keep working: each name under "old_addresses" in
     # site.json becomes a tiny page at that address which sends the visitor straight on to the new page
