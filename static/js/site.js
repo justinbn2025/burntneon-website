@@ -197,7 +197,7 @@
 
   /* 3. Single audio samples: <div class="player" data-src="..."> and the Home tile buttons. */
   function simplePlayer(button, src, name, timeEl, seek) {
-    var audio = null, seeking = false, wired = false, routed = canRoute(src), card = button.closest ? button.closest('.player') : null;
+    var audio = null, seeking = false, wired = false, shownOn = null, routed = canRoute(src), card = button.closest ? button.closest('.player') : null;
     function level() { if (audio && !routed) audio.volume = loud(); }
     function wire() {                                     // once, on the first press of play
       if (!routed || wired) { if (routed) getCtx(); return; }
@@ -206,9 +206,12 @@
     }
     volWatch.push(level);
     function paint() {
-      var on = audio && !audio.paused;
-      button.innerHTML = on ? PAUSE : PLAY;
-      button.setAttribute('aria-label', (on ? 'Pause ' : 'Play ') + name);
+      var on = !!(audio && !audio.paused);
+      if (on !== shownOn) {                               // swap the icon only when it changes: replacing it mid-click loses the click
+        shownOn = on;
+        button.innerHTML = on ? PAUSE : PLAY;
+        button.setAttribute('aria-label', (on ? 'Pause ' : 'Play ') + name);
+      }
       if (card) card.classList.toggle('is-playing', !!on);
       if (timeEl && audio) timeEl.textContent = fmt(audio.currentTime) + (audio.duration ? ' / ' + fmt(audio.duration) : '');
       if (seek && audio && audio.duration && !seeking) {
