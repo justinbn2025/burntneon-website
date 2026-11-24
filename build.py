@@ -473,13 +473,13 @@ def credit(q):
     return ", ".join(x for x in (e(q.get("role", "")), '<i class="quote-project">%s</i>' % e(q["project"]) if q.get("project") else "") if x)
 
 
-def quotes(page, eyebrow, look="band-dots", reviews_line=""):
+def quotes(page, eyebrow, look="band-dots", reviews_line="", sid=""):
     """Client quotes for one page; the section appears once quotes.json has at least one quote for the page.
     A page with exactly one quote shows it as a single featured quote. With more, three are in view (two on
     tablets, one on phones) with the arrows there from the start, and the row loops once there are enough.
     Each quote may carry "stars" (1 to 5, as given on the platform), "source" (the platform's name) and
     "project" (the film, show or record it was for, set in italics after the role).
-    reviews_line is that page's own line under the quotes, if it has one."""
+    reviews_line is that page's own line under the quotes, if it has one; sid gives the section an id to link to."""
     items = [q for q in QUOTES if page in q.get("pages", [])]
     filled = [q for q in items if q.get("quote")]
     if len(filled) < len(items):
@@ -499,7 +499,7 @@ def quotes(page, eyebrow, look="band-dots", reviews_line=""):
                '<span class="qs-rule" aria-hidden="true"></span><figcaption>%s</figcaption></figure>'
                % (star_row(q.get("stars")), e(q["quote"]) if q.get("quote") else '<span class="todo">[client quote]</span>',
                   who or '<span class="todo">[name, role or project]</span>'))
-        return section(heading(eyebrow) + fig + (line and '<div class="rv-bar">%s</div>' % line), look + " quote-one")
+        return section(heading(eyebrow) + fig + (line and '<div class="rv-bar">%s</div>' % line), look + " quote-one", sid)
     figs = "".join(
         '<figure class="quote">%s<blockquote>&ldquo;%s&rdquo;</blockquote><figcaption>%s%s</figcaption></figure>'
         % (star_row(q.get("stars")),
@@ -515,7 +515,7 @@ def quotes(page, eyebrow, look="band-dots", reviews_line=""):
     return section(heading(eyebrow) + '<div class="rv" data-full="%s" data-less="%s" data-of="%s" data-showing="%s"><div class="rv-track" tabindex="0" role="group" aria-label="%s">%s</div>'
                    '<div class="rv-bar">%s%s</div></div>'
                    % (e(w.get("read_full", "Read full review")), e(w.get("read_less", "Show less")), e(w.get("of", "of")), e(w.get("showing", "Showing reviews")),
-                      e(eyebrow_text(eyebrow)), figs, line or "<span></span>", controls), look)
+                      e(eyebrow_text(eyebrow)), figs, line or "<span></span>", controls), look, sid)
 
 
 def eyebrow_text(html):
@@ -825,6 +825,13 @@ def music():
     body = hero("music", t(b["label"]), t(b["headline"]), t(b["text"]), banner_buttons(b, "#listen"),
                 "", "", "Background: you singing at the mic, on the right third")
     body = body.replace('<div class="btn-row">', side + '<div class="btn-row">', 1) if side else body
+    # The reviews sit straight after the samples, and the banner links down to them: five stars and
+    # the banner's own "reviews_link" line. Stars and words wrap as two whole lines when they don't fit on one.
+    music_quotes = quotes("music", t(p["quotes_label"]), "band-foam foam-fade band-line", p.get("reviews_line", ""), "reviews")
+    if music_quotes and b.get("reviews_link"):
+        proof = ('<p class="hero-proof"><a href="#reviews"><span class="hp-stars" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>'
+                 '<span class="hp-text">%s <span class="hp-down" aria-hidden="true">&darr;</span></span></a></p>' % t(b["reviews_link"]))
+        body = body.replace('</div></div></section>', proof + '</div></div></section>', 1)      # last thing in the banner's text column
     groups = ""
     for style in MUSIC["styles"]:
         rows = "".join(sample_player(tr, p["listen"]) for tr in style["tracks"] if not hidden_track(tr))
@@ -838,6 +845,7 @@ def music():
                     + '<div class="listen-row"><div class="grid styles">%s</div>%s</div>' % (groups, master_strip(li))
                     + ('<p class="aside">%s <a href="%s" target="_blank" rel="noopener">%s%s<span class="sr-only"> (opens in a new tab)</span></a>.</p>'
                        % (t(li["spotify_line"]), e(spotify), t(li["spotify_link"]), EXTERNAL) if spotify else ""), "band-spectro spectro-join", "listen")
+    body += music_quotes
     # Services is the page's pricing section, so it takes the dots (kept for pricing) and plain cards
     # like the podcast packages, with the same "Before you ask" questions under it.
     sv = p["services"]
@@ -862,10 +870,8 @@ def music():
     body += section('<div class="about"><div class="about-text">%s<p>%s</p><a class="btn" href="%s">%s</a></div>%s</div>'
                     % (heading(t(th["label"]), t(th["heading"])), t(th["text"]), mailto(th.get("email_subject", ""), th.get("email_to", "")), t(th["button"]),
                        image("theater.jpg", "A score on the music stand", "wide-img", "Photo: a score on the stand, or recording a cast number")),
-                    "band-notes")
-    music_quotes = quotes("music", t(p["quotes_label"]), "band-foam foam-fade band-line fade-ember", p.get("reviews_line", ""))
-    body += music_quotes
-    body += contact(p["contact"], blend=bool(music_quotes))      # the quotes fade out into the contact band
+                    "band-notes fade-ember")
+    body += contact(p["contact"], blend=True)      # the theater section fades out into the contact band
     return layout("music", p["browser_title"], p["search_description"], body)
 
 

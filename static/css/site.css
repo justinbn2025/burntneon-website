@@ -115,6 +115,7 @@ input[type="range"]:disabled { opacity: 0.45; cursor: default; }
    bottom edge, so the two join without a line or a dark gap. */
 .band-cta.seamless { border-top: 0; }
 .fade-ember { padding-bottom: calc(var(--band) + var(--blend) * 1.6); }   /* room for the colour change below the content */
+.band-notes.fade-ember { border-bottom: 0; }
 .fade-ember::after { content: ""; position: absolute; inset: auto 0 0 0; block-size: calc(var(--blend) * 1.15); pointer-events: none;
   background: var(--cta-bg); -webkit-mask-image: linear-gradient(0deg, #000 0, transparent 100%); mask-image: linear-gradient(0deg, #000 0, transparent 100%); }
 .fade-out { --fade-bottom: linear-gradient(0deg, var(--bg) 0, transparent var(--blend)); }
@@ -268,6 +269,14 @@ img.hero-bg-home, img.hero-bg-music, img.hero-bg-film, img.hero-bg-podcasts { op
 @media (min-width: 88em) { .hero-bg-podcasts { object-position: 54% 0%; } }
 .hint { margin-top: 0.75rem; color: var(--muted); font-size: 0.875rem; }
 .reel-audio { margin-top: 1.75rem; max-inline-size: 32rem; }
+/* Music banner: five stars and a line that jumps down to the reviews. Stars and words are two whole
+   pieces, so on a narrow screen the stars take their own line above the words instead of the words breaking. */
+.hero-proof { margin-top: 1.25rem; font-size: 0.9375rem; }
+.hero-proof a { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: 0.25rem 0.625rem; color: var(--soft); text-decoration: none; }
+.hero-proof .hp-stars { color: var(--accent); letter-spacing: 0.125em; white-space: nowrap; }
+.hero-proof .hp-text { text-decoration: underline; text-decoration-color: rgba(255, 250, 240, 0.35); text-underline-offset: 0.25em; }
+.hero-proof .hp-down { display: inline-block; margin-left: 0.25rem; color: var(--accent); }
+.hero-proof a:hover .hp-text, .hero-proof a:focus-visible .hp-text { color: var(--text); text-decoration-color: currentColor; }
 .hero-pause { position: absolute; right: var(--gutter); bottom: 1rem; z-index: 2; background: rgba(14, 14, 15, 0.8); color: var(--text);
   border: 1px solid #8a8782; border-radius: 0.25rem; font: 600 0.8125rem var(--body); padding: 0.5rem 0.75rem; cursor: pointer; }
 

@@ -40,6 +40,7 @@ In `pages.json`:
 - `*asterisks*` around words colour them orange (headlines).
 - `_underscores_` around words set them in italics (for example the title of a show or film).
 - A banner's buttons are optional: a page's `"banner"` shows `"button"` and `"second_button"` only if they are there. The same goes for `"button"` in Home's `"about"`.
+- The Music banner's line that jumps down to the reviews is `"reviews_link"` in its `"banner"` (the five stars and the arrow are added for you). Take the line out and the link goes; it is separate from `"reviews_line"`, the line under the reviews themselves, so a changed number is changed in both.
 - The footer shows the main address from `site.json` (`"email"`) as plain text, labelled by `"footer_email"` in `pages.json`.
 - `{reply_days}`, `{turnaround_days}`, `{revision_rounds}` and `{review_count}` are
   filled in from `site.json`, `music.json` and `podcasts.json`.
