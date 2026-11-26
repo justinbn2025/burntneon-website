@@ -506,6 +506,7 @@
   each('.rs', function (box) {
     var v = box.querySelector('video'), playBtn = box.querySelector('.rs-play'), full = box.querySelector('.rs-full');
     var time = box.querySelector('.rs-time'), title = box.querySelector('.rs-title'), role = box.querySelector('.rs-role');
+    var credit = box.querySelector('.rs-credit');
     var kicker = box.querySelector('.rs-kicker'), clipWords = box.getAttribute('data-clip') || '', shownClip = -1;
     var rail = box.querySelector('.rs-chapters'), err = box.querySelector('.rs-error');
     var link = box.querySelector('.rs-link');
@@ -543,6 +544,7 @@
       if (segs[cur].getAttribute('data-title')) {
         title.textContent = segs[cur].getAttribute('data-title');
         role.textContent = segs[cur].getAttribute('data-role') || '';
+        if (credit) credit.textContent = segs[cur].getAttribute('data-credit') || '';
       }
       if (link) {                                         // this chapter's own link (its official trailer, say), if it has one
         var href = segs[cur].getAttribute('data-link');

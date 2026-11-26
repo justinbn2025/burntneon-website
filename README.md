@@ -152,7 +152,8 @@ title, which follows playback. Take `"heading"` out and the reel goes back to ha
    for it in `static/img/` (the picture shown until play is pressed).
 2. In `content/site.json`, under `"reels"` > `"film"`, fill in `"video"` and `"thumbnail"` with the
    two file names, and one line per clip under `"chapters"`, in the order they play: its
-   `"title"`, your `"role"` on it, and its `"duration"` (`"0:22"`, or `"0:22.5"` for half
+   `"title"`, your `"role"` on it, a `"credit"` for whoever made it (optional, e.g.
+   `"Illustrated by ..."` or `"Directed by ..."`; shown beside the title), and its `"duration"` (`"0:22"`, or `"0:22.5"` for half
    seconds). Each clip's marker is worked out by adding up the durations before it, so to add
    or reorder clips, add or move lines and change nothing else. The last clip's duration is
    optional: it runs to the end of the video. (`"start"` still works in place of a duration

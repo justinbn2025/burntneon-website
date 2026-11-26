@@ -336,9 +336,9 @@ def film_reel():
             if any(c.get("link") for c in chapters) else "")
     if chapters:
         segs = "".join(
-            '<button class="rs-seg" type="button" data-start="%g" data-title="%s" data-role="%s"%s aria-label="Jump to %s">'
+            '<button class="rs-seg" type="button" data-start="%g" data-title="%s" data-role="%s" data-credit="%s"%s aria-label="Jump to %s">'
             '<i></i><span><em>%02d</em>%s</span></button>'
-            % (c["_at"], e(c["title"]), e(c.get("role", "")),
+            % (c["_at"], e(c["title"]), e(c.get("role", "")), e(c.get("credit", "")),      # "credit": the clip's own maker, e.g. "Illustrated by ..."
                ' data-link="%s" data-link-text="%s"' % (e(c["link"]), e(c.get("link_text") or link_text)) if c.get("link") else "",
                e(c["title"]), n, e(c["title"]))
             for n, c in enumerate(chapters, 1))
@@ -347,14 +347,15 @@ def film_reel():
     html = ('<section class="reelband@@TITLED@@" id="reel" aria-label="%s">@@INTRO@@<div class="rs"@@CLIP@@>'
             '<div class="rs-pic"><video class="rs-video" src="%s"%s preload="metadata" playsinline controls></video>'
             '<button class="play rs-play" type="button" aria-label="Play the %s">%s</button></div>'
-            '<div class="rs-ui"><div class="rs-row rs-head"><span class="rs-kicker">%s</span><span class="rs-title">%s</span></div>'
+            '<div class="rs-ui"><div class="rs-row rs-head"><span class="rs-kicker">%s</span><span class="rs-title">%s</span><span class="rs-credit">%s</span></div>'
             '<div class="rs-row"><span class="rs-role">%s</span>@@LINK@@<span class="rs-time">0:00</span>@@VOL@@'
             '<button class="rs-full" type="button" aria-label="Full screen" aria-pressed="false">%s</button></div>'
             '<div class="rs-chapters">%s</div><p class="rs-error" role="alert" hidden>This video didn’t load. Try again in a moment.</p>'
             '</div></div></section>'
             % (e(label), e(src), poster, e(label.lower()), PLAY,
                e(clip_words.replace("{n}", "1").replace("{total}", str(len(chapters)))) if clip_words else e(label),
-               e(chapters[0]["title"]) if chapters else "", e(chapters[0].get("role", "")) if chapters else "", FULL, segs))
+               e(chapters[0]["title"]) if chapters else "", e(chapters[0].get("credit", "")) if chapters else "",
+               e(chapters[0].get("role", "")) if chapters else "", FULL, segs))
     html = html.replace("@@TITLED@@", " titled" if intro else "").replace("@@INTRO@@", intro)
     html = html.replace("@@CLIP@@", ' data-clip="%s"' % e(clip_words) if clip_words else "")
     return html.replace("@@VOL@@", VOLCTL).replace("@@LINK@@", link)
