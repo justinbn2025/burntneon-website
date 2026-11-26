@@ -701,7 +701,7 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .rc-items { display: flex; flex-wrap: wrap; gap: 0.75rem 0; }
 .rc-item { display: grid; gap: 0.25rem; justify-items: start; align-content: start; padding-right: 1.75rem; }
 .rc-item + .rc-item { padding-left: 1.75rem; border-left: 1px solid #34343a; }
-.rc-text { color: var(--text); }
+.rc-text { color: var(--text); font-size: 0.875rem; line-height: 1.4; }      /* the same size as your role on the picture, so neither credit outranks the other */
 .rc-link { font-size: 0.8125rem; font-weight: 600; }
 .rc-own { margin-left: auto; white-space: nowrap; }
 .rs-time { margin-left: auto; font-size: 0.8125rem; color: var(--soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
