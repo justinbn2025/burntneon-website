@@ -693,11 +693,11 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .rs-role { font-size: 0.875rem; color: var(--soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 /* Under the timeline: the playing clip's credits card. Credits run from the left, a thin line between them,
    each with its own link under it; the clip's own link sits alone at the right. */
-.rc { display: flex; align-items: center; justify-content: space-between; gap: 1rem 1.5rem; margin-top: 1.25rem; padding: 0.875rem 1.125rem 1rem;
+.rc { display: flex; align-items: center; justify-content: space-between; gap: 1rem 1.5rem; margin-top: 1.25rem; padding: 0.875rem 1.125rem 1.25rem;
   background: var(--panel); border: 1px solid var(--line); border-radius: 0.375rem; }
 .rc[hidden], .rc-clip[hidden] { display: none; }
 .rc-clip { display: flex; align-items: center; justify-content: space-between; gap: 1rem 1.5rem; flex: 1; min-inline-size: 0; }
-.rc-label { display: block; color: var(--muted); margin-bottom: 0.625rem; }
+.rc-label { display: block; color: var(--muted); margin-bottom: 0.875rem; }
 .rc-items { display: flex; flex-wrap: wrap; gap: 0.75rem 0; }
 .rc-item { display: grid; gap: 0.25rem; justify-items: start; align-content: start; padding-right: 1.75rem; }
 .rc-item + .rc-item { padding-left: 1.75rem; border-left: 1px solid #34343a; }
