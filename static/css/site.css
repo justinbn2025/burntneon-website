@@ -683,13 +683,27 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
 .rs-head { margin-bottom: 0.125rem; }
 .rs-kicker { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
 .rs-title { font-family: var(--head); font-size: 1.375rem; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-/* the clip's own maker ("Illustrated by ..."), beside the title in a quieter voice; nothing shows when a clip has none */
-.rs-credit { font-size: 0.875rem; color: var(--soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 0 1 auto; min-inline-size: 0; }
-.rs-credit:empty { display: none; }
+/* Second line on the picture: what you did on this clip, under a small orange label, then the controls. */
 .rs-title { flex: 0 1 auto; min-inline-size: 0; }
-.rs-role { font-size: 0.875rem; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.rs-link { font-size: 0.8125rem; font-weight: 600; white-space: nowrap; flex: none; }   /* e.g. "Watch the trailer", only while a chapter that has a link plays */
-.rs-link[hidden] { display: none; }
+.rs-ctl { align-items: center; }
+.rs-mine { display: flex; align-items: baseline; gap: 0.75rem; min-inline-size: 0; }
+.rs-mine[hidden] { display: none; }
+.rs-mine-label, .rc-label { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; white-space: nowrap; }
+.rs-mine-label { color: var(--accent); }
+.rs-role { font-size: 0.875rem; color: var(--soft); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* Under the timeline: the playing clip's credits card. Credits run from the left, a thin line between them,
+   each with its own link under it; the clip's own link sits alone at the right. */
+.rc { display: flex; align-items: center; justify-content: space-between; gap: 1rem 1.5rem; margin-top: 1.25rem; padding: 0.875rem 1.125rem 1rem;
+  background: var(--panel); border: 1px solid var(--line); border-radius: 0.375rem; }
+.rc[hidden], .rc-clip[hidden] { display: none; }
+.rc-clip { display: flex; align-items: center; justify-content: space-between; gap: 1rem 1.5rem; flex: 1; min-inline-size: 0; }
+.rc-label { display: block; color: var(--muted); margin-bottom: 0.375rem; }
+.rc-items { display: flex; flex-wrap: wrap; gap: 0.75rem 0; }
+.rc-item { display: grid; gap: 0.25rem; justify-items: start; align-content: start; padding-right: 1.75rem; }
+.rc-item + .rc-item { padding-left: 1.75rem; border-left: 1px solid #34343a; }
+.rc-text { color: var(--text); }
+.rc-link { font-size: 0.8125rem; font-weight: 600; }
+.rc-own { margin-left: auto; white-space: nowrap; }
 .rs-time { margin-left: auto; font-size: 0.8125rem; color: var(--soft); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .rs-full { align-self: center; display: grid; place-items: center; inline-size: 2.25rem; block-size: 2.25rem; padding: 0; border: 1px solid transparent; border-radius: 0.25rem;
   background: none; color: var(--soft); cursor: pointer; }
@@ -741,11 +755,16 @@ ol.strips { list-style: none; padding: 0; margin-bottom: 0; }
   .rs-play svg { inline-size: 1.875rem; block-size: 1.875rem; }
   .rs-row { flex-wrap: wrap; row-gap: 0.125rem; }
   .rs-head { margin-bottom: 0.25rem; }
-  .rs-link { flex-basis: 100%; }                         /* the link takes its own line, the controls sit under it */
   .rs-kicker { flex-basis: 100%; }
-  .rs-credit { flex-basis: 100%; white-space: normal; }      /* phones: the credit on its own line under the title */
   .rs-title { font-size: 1.125rem; }
-  .rs-role { display: none; }
+  .rs-mine { flex-basis: 100%; flex-wrap: wrap; row-gap: 0; margin-bottom: 0.25rem; }      /* phones: your role on its own lines, the controls under it */
+  .rs-mine-label { flex-basis: 100%; }
+  .rs-role { white-space: normal; }
+  .rc, .rc-clip { flex-direction: column; align-items: flex-start; }      /* the credits stack, and the clip's own link drops below them */
+  .rc-items { flex-direction: column; gap: 0.75rem; }
+  .rc-item { padding-right: 0; }
+  .rc-item + .rc-item { padding: 0.75rem 0 0; border-left: 0; border-top: 1px solid #34343a; inline-size: 100%; }
+  .rc-own { margin-left: 0; }
   .rs-seg span { display: none; }
   .rs-seg { padding-bottom: 0.5rem; }
 }

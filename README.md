@@ -148,12 +148,24 @@ the clip list ("Two", "under two minutes"), so they stay right as clips are adde
 left out when the reel has one clip. `"clip"` ("Clip {n} of {total}") is the small label over the
 title, which follows playback. Take `"heading"` out and the reel goes back to having no heading.
 
+**Credits for other people.** Your `"role"` shows on the picture under a "My role" label. Everyone
+else goes in a card under the timeline, which changes with the clip. Give a clip a `"credits"` list:
+
+    "credits": [
+      { "text": "Illustrated by ...", "link": "https://...", "link_text": "Her website" },
+      { "text": "Music by ..." }
+    ]
+
+`"link"` and `"link_text"` are optional for each credit. The clip's own `"link"` and `"link_text"`
+(its trailer, the full film) show at the right of the same card. A clip with no credits and no
+link has no card. The two labels are `"role_label"` and `"credits_label"` under `"film"` > `"reel"`
+in `content/pages.json`.
+
 1. Put the video in `static/video/` (an `.mp4`, H.264 with AAC sound, under 100 MB) and a thumbnail
    for it in `static/img/` (the picture shown until play is pressed).
 2. In `content/site.json`, under `"reels"` > `"film"`, fill in `"video"` and `"thumbnail"` with the
    two file names, and one line per clip under `"chapters"`, in the order they play: its
-   `"title"`, your `"role"` on it, a `"credit"` for whoever made it (optional, e.g.
-   `"Illustrated by ..."` or `"Directed by ..."`; shown beside the title), and its `"duration"` (`"0:22"`, or `"0:22.5"` for half
+   `"title"`, your `"role"` on it, and its `"duration"` (`"0:22"`, or `"0:22.5"` for half
    seconds). Each clip's marker is worked out by adding up the durations before it, so to add
    or reorder clips, add or move lines and change nothing else. The last clip's duration is
    optional: it runs to the end of the video. (`"start"` still works in place of a duration

@@ -329,36 +329,58 @@ def film_reel():
              if w.get("heading") else "")
     clip_words = w.get("clip", "") if len(chapters) > 1 else ""      # "Clip {n} of {total}": the small label over the title, following playback
     link_text = PAGES["film"].get("reel_link", "Watch the trailer")
-    first = chapters[0] if chapters else {}
-    link = ('<a class="rs-link" href="%s" target="_blank" rel="noopener"%s><span class="rs-link-text">%s</span>%s'
-            '<span class="sr-only"> (opens in a new tab)</span></a>'
-            % (e(first.get("link", "")), "" if first.get("link") else " hidden", e(first.get("link_text") or link_text), EXTERNAL)
-            if any(c.get("link") for c in chapters) else "")
+    # Under the timeline: a card for the clip that is playing. Credits run from the left, each with its own link
+    # under it ("credits" on a clip: a list of {"text", "link", "link_text"}; link and link_text are optional).
+    # The clip's own "link" (its trailer, the full film) sits alone at the right. A clip with neither has no card.
+    NEW_TAB = ' target="_blank" rel="noopener"'
+    def clip_card(c):
+        creds = list(c.get("credits") or [])
+        if c.get("credit"):                               # the earlier single line still works
+            creds.insert(0, {"text": c["credit"]})
+        items = "".join(
+            '<div class="rc-item"><span class="rc-text">%s</span>%s</div>'
+            % (e(x.get("text", "")),
+               '<a class="rc-link" href="%s"%s>%s%s<span class="sr-only"> (opens in a new tab)</span></a>'
+               % (e(x["link"]), NEW_TAB, e(x.get("link_text") or x["link"]), EXTERNAL) if x.get("link") else "")
+            for x in creds if x.get("text"))
+        own = ('<a class="rc-link rc-own" href="%s"%s>%s%s<span class="sr-only"> (opens in a new tab)</span></a>'
+               % (e(c["link"]), NEW_TAB, e(c.get("link_text") or link_text), EXTERNAL) if c.get("link") else "")
+        if not (items or own):
+            return ""
+        main = ('<div class="rc-main"><span class="rc-label">%s</span><div class="rc-items">%s</div></div>'
+                % (t(w.get("credits_label", "Credits")), items) if items else "")
+        return main + own
+    cards = [clip_card(c) for c in chapters]
+    card_html = ""
+    if any(cards):
+        card_html = '<div class="wrap"><div class="rc"%s>%s</div></div>' % (
+            "" if cards[0] else " hidden",
+            "".join('<div class="rc-clip%s"%s>%s</div>' % ("" if x else " rc-none", "" if n == 0 else " hidden", x) for n, x in enumerate(cards)))
+    role_label = t(w.get("role_label", "My role"))
     if chapters:
         segs = "".join(
-            '<button class="rs-seg" type="button" data-start="%g" data-title="%s" data-role="%s" data-credit="%s"%s aria-label="Jump to %s">'
+            '<button class="rs-seg" type="button" data-start="%g" data-title="%s" data-role="%s" aria-label="Jump to %s">'
             '<i></i><span><em>%02d</em>%s</span></button>'
-            % (c["_at"], e(c["title"]), e(c.get("role", "")), e(c.get("credit", "")),      # "credit": the clip's own maker, e.g. "Illustrated by ..."
-               ' data-link="%s" data-link-text="%s"' % (e(c["link"]), e(c.get("link_text") or link_text)) if c.get("link") else "",
-               e(c["title"]), n, e(c["title"]))
+            % (c["_at"], e(c["title"]), e(c.get("role", "")), e(c["title"]), n, e(c["title"]))
             for n, c in enumerate(chapters, 1))
     else:
         segs = '<button class="rs-seg rs-seek" type="button" data-start="0" aria-label="Skip to this point in the reel"><i></i></button>'
     html = ('<section class="reelband@@TITLED@@" id="reel" aria-label="%s">@@INTRO@@<div class="rs"@@CLIP@@>'
             '<div class="rs-pic"><video class="rs-video" src="%s"%s preload="metadata" playsinline controls></video>'
             '<button class="play rs-play" type="button" aria-label="Play the %s">%s</button></div>'
-            '<div class="rs-ui"><div class="rs-row rs-head"><span class="rs-kicker">%s</span><span class="rs-title">%s</span><span class="rs-credit">%s</span></div>'
-            '<div class="rs-row"><span class="rs-role">%s</span>@@LINK@@<span class="rs-time">0:00</span>@@VOL@@'
+            '<div class="rs-ui"><div class="rs-row rs-head"><span class="rs-kicker">%s</span><span class="rs-title">%s</span></div>'
+            '<div class="rs-row rs-ctl"><span class="rs-mine"%s><span class="rs-mine-label">%s</span><span class="rs-role">%s</span></span><span class="rs-time">0:00</span>@@VOL@@'
             '<button class="rs-full" type="button" aria-label="Full screen" aria-pressed="false">%s</button></div>'
             '<div class="rs-chapters">%s</div><p class="rs-error" role="alert" hidden>This video didn’t load. Try again in a moment.</p>'
-            '</div></div></section>'
+            '</div></div>@@CARD@@</section>'
             % (e(label), e(src), poster, e(label.lower()), PLAY,
                e(clip_words.replace("{n}", "1").replace("{total}", str(len(chapters)))) if clip_words else e(label),
-               e(chapters[0]["title"]) if chapters else "", e(chapters[0].get("credit", "")) if chapters else "",
+               e(chapters[0]["title"]) if chapters else "",
+               "" if chapters and chapters[0].get("role") else " hidden", role_label,
                e(chapters[0].get("role", "")) if chapters else "", FULL, segs))
     html = html.replace("@@TITLED@@", " titled" if intro else "").replace("@@INTRO@@", intro)
     html = html.replace("@@CLIP@@", ' data-clip="%s"' % e(clip_words) if clip_words else "")
-    return html.replace("@@VOL@@", VOLCTL).replace("@@LINK@@", link)
+    return html.replace("@@VOL@@", VOLCTL).replace("@@CARD@@", card_html)
 
 
 def player(title, sub, src, label, foot="", extra=""):

@@ -56,7 +56,9 @@
       "label": "Sound reel",
       "heading": "Watch the work.",
       "line": "{count} projects in {length}. Jump between them on the timeline.",
-      "clip": "Clip {n} of {total}"
+      "clip": "Clip {n} of {total}",
+      "role_label": "My role",
+      "credits_label": "Credits"
     },
     "browser_title": "Film, animation, and game sound | BURNT NEON Productions",
     "search_description": "Sound design and dialogue editing for independent films, animation and video game trailers.",
